@@ -17,7 +17,7 @@ Vue.prototype.GLOBAL = global_;
 Vue.prototype.$axios = axios;
 Vue.prototype.$cookie = VueCookie;
 
-axios.defaults.baseURL = global_.baseURL;
+axios.defaults.baseURL = global_.Base_URL;
 axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
 
 
