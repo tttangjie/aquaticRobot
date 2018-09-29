@@ -18,8 +18,19 @@ Vue.prototype.$axios = axios;
 Vue.prototype.$cookie = VueCookie;
 
 axios.defaults.baseURL = global_.Base_URL;
-axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers['Content-Type'] = 'application/json';
 
+// axios请求拦截
+axios.interceptors.request.use(config => {
+  //判断VueCookie中是否存在token
+  if (VueCookie.get("token")) {
+    // 存在将api_token写入 request header
+    config.headers.Authorization = `Bearer ${VueCookie.get("token")}`;
+  }
+  return config;
+},error => {
+  return Promise.reject(err)
+})
 
 /* eslint-disable no-new */
 new Vue({
