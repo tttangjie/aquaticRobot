@@ -9,8 +9,11 @@
           <div class="content">
             <div class="container" >
               <span class="item" style="background: -webkit-linear-gradient(top left,rgba(128,26,11,0.67),white);">用户管理</span>
-              <!--<span class="smallItem">不</span>-->
-              <!--<span class="smallItem">意思</span>-->
+              <div>
+                <!--<span class="smallItem">不</span>-->
+                <!--<span class="smallItem">意思</span>-->
+              </div>
+
             </div>
             <div class="container" >
               <span class="item" style="background: -webkit-linear-gradient(top left,rgba(3,110,128,0.67),white);">所有专家</span>
@@ -19,13 +22,17 @@
             </div>
             <div class="container" >
               <span class="item" style="background: -webkit-linear-gradient(top left,rgba(31,60,7,0.75),white);">售后服务</span>
-              <span class="smallItem">维修</span>
-              <span class="smallItem">人员</span>
+              <div class="innerFlex">
+                <span class="smallItem">维修</span>
+                <span class="smallItem">人员</span>
+              </div>
             </div>
             <div class="container" >
               <span class="item" style="background: -webkit-linear-gradient(top left,rgba(11,2,128,0.67),white);">系统设置</span>
-              <span class="smallItem">参数</span>
-              <span class="smallItem">权限</span>
+              <div class="innerFlex">
+                <span class="smallItem">参数</span>
+                <span class="smallItem">权限</span>
+              </div>
             </div>
             <div class="container" >
               <span class="item" style="background: -webkit-linear-gradient(top left,rgba(82,2,128,0.67),white);">用户管理</span>
@@ -100,22 +107,28 @@
 .content h1 {
   text-align: center;
   margin-bottom: 20px;
+  vertical-align: center;
 }
 .content{
   padding: 30px;
+
 }
 .container{
   width: 260px;
   height: 200px;
-  float: left;
-  margin: 20px 50px;
   /*background: red;*/
+  float: left;
+  margin: 20px 60px;
+  /*background: red;*/
+  display: flex;
+  flex-direction: row;
 }
   .item{
     display: block;
     width: 120px;
     height: 120px;
-    margin: 0 auto;
+    /*margin: 0 auto;*/
+    margin-top: 40px;
     border-radius:50%;
     font-size:18px;
     line-height: 120px;
@@ -124,6 +137,10 @@
     -moz-transition: all .3s;
     transition: all .3s;
     color: #fff;
+  }
+  .innerFlex{
+    margin-top: 30px;
+    display: flex;flex-direction: column
   }
 .container:hover .item{
     padding: 15px;
@@ -138,7 +155,6 @@
     display: none;
     width: 60px;
     line-height: 60px;
-    margin-right: 10px;
     margin-left: 10px;
     margin-top: 10px;
     height: 60px;
