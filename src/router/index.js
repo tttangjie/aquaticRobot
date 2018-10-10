@@ -15,6 +15,11 @@ export default new Router({
       path: '/index',
       name: 'index',
       component: (resolve) => require(['../components/index'], resolve),
-    }
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: (resolve) => require(['../components/backStage/expert/ExpertManagement'], resolve),
+    },
   ]
 })
