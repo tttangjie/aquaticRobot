@@ -67,7 +67,7 @@ export default {
       if (that.loginForm.username == "" || that.loginForm.password == ""){
           that.loginError = true;
       } else{
-        this.$axios.post('/auth',
+        that.$axios.post('/auth',
         {
           "password": that.loginForm.password,
           "username": that.loginForm.username,
@@ -77,7 +77,10 @@ export default {
             console.log(res);
             if (res.data.code == 1){
               // 登录成功
+              that.$cookie.set("username",res.data.data.username);
+              that.$cookie.set("user_id",res.data.data.user_id);
               that.$cookie.set("token",res.data.data.token);
+              console.log(that.$cookie.get("token"));
               that.$router.push({path:'/index'});
             }else {
               that.errorMsg = res.data.msg;

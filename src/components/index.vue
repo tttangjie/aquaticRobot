@@ -8,8 +8,9 @@
         <div class="mainBody">
           <div class="content">
             <div class="container" >
-              <span class="item" style="background: -webkit-linear-gradient(top left,rgba(128,26,11,0.67),white);">用户管理</span>
-              <div>
+              <router-link to="/robot"><span class="item" style="background: -webkit-linear-gradient(top left,rgba(128,26,11,0.67),white);">用户管理</span>
+              </router-link>
+                <div>
                 <!--<span class="smallItem">不</span>-->
                 <!--<span class="smallItem">意思</span>-->
               </div>
@@ -24,7 +25,9 @@
               <span class="item" style="background: -webkit-linear-gradient(top left,rgba(31,60,7,0.75),white);">售后服务</span>
               <div class="innerFlex">
                 <span class="smallItem">维修</span>
-                <span class="smallItem">人员</span>
+                <router-link to="/technology">
+                  <span class="smallItem">人员</span>
+                </router-link>
               </div>
             </div>
             <div class="container" >
