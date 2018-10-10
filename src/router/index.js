@@ -25,6 +25,11 @@ export default new Router({
       path: '/technology',
       name: 'technologyController',
       component: (resolve) => require(['../components/technologyController'], resolve),
-    }
+    },
+    {
+      path: '/expert',
+      name: 'expert',
+      component: (resolve) => require(['../components/backStage/expert/ExpertManagement'], resolve),
+    },
   ]
 })
