@@ -28,11 +28,11 @@
 
       <!--登录-->
       <div class="submitLogin">
-        <el-button type="primary" style="margin-top: 20px;width: 400px;" @click="login()">登&#160&#160&#160录</el-button>
+        <el-button type="primary" style="margin-top: 20px;width: 80%;" @click="login()">登&#160&#160&#160录</el-button>
       </div>
 
       <div class="toRegist">
-        <el-button  style="margin-top: 20px;width: 400px;clear: both">注&#160&#160&#160册</el-button>
+        <el-button  style="margin-top: 20px;width: 80%;clear: both">注&#160&#160&#160册</el-button>
       </div>
     </div>
   </div>
@@ -67,7 +67,7 @@ export default {
       if (that.loginForm.username == "" || that.loginForm.password == ""){
           that.loginError = true;
       } else{
-        this.$axios.post('/auth',
+        that.$axios.post('/auth',
         {
           "password": that.loginForm.password,
           "username": that.loginForm.username,
@@ -77,7 +77,10 @@ export default {
             console.log(res);
             if (res.data.code == 1){
               // 登录成功
+              that.$cookie.set("username",res.data.data.username);
+              that.$cookie.set("user_id",res.data.data.user_id);
               that.$cookie.set("token",res.data.data.token);
+              console.log(that.$cookie.get("token"));
               that.$router.push({path:'/index'});
             }else {
               that.errorMsg = res.data.msg;
@@ -97,21 +100,27 @@ export default {
 #login{
   width: 100%;
   height: 100%;
-  position: relative;
+  position: absolute;
+  background: url("../../static/img/background6.jpg");
+  background-size: 100%;
 }
   .login{
     width: 40%;
+    margin-top:8%;
     /*height: 600px;*/
+    padding-bottom: 20px;
     display: flex;
     margin-left: auto;
     margin-right: auto;
     flex: 1;
+    border-radius: 10px;
     /*text-align: center;*/
     /*border: 1px red dashed;*/
     flex-direction:column;
+    background: rgba(255,255,255,0.3);
   }
   .login .logo{
-    margin-top: 60px;
+    /*margin-top: 60px;*/
     text-align: center;
   }
   /*.login .logo span{*/
@@ -122,16 +131,17 @@ export default {
   /*}*/
 .login .logo span:first-letter{
   font-size: 120px;
+  color: #f9f9f9;
 }
 .login .logo span{
   font-size: 100px;
   font-weight: 600;
   display: block;
-  /*color: #00a000;*/
+  color: #1d4e79;
   /*linear-gradient(to left, #00a000, transparent );*/
-  background: -webkit-linear-gradient(left top, #409eff, #ece5f5);
-  -webkit-background-clip: text;
-  color: transparent;
+  /*background: -webkit-linear-gradient(left top, #000000, #ece5f5);*/
+  /*-webkit-background-clip: text;*/
+  /*color: transparent;*/
 }
  .login .loginT{
    text-align: center;
@@ -139,7 +149,7 @@ export default {
 
   .login .loginT .username input{
     height: 40px;
-    width: 400px;
+    width: 80%;
     border-bottom: 1px solid #dbdbdb;
     border-top:0px;
     border-left:0px;
@@ -149,12 +159,13 @@ export default {
 .login .loginT .password input{
   height: 40px;
   margin-top: 20px;
-  width: 400px;
+  width: 80%;
   border-bottom: 1px solid #dbdbdb;
   border-top:0px;
   border-left:0px;
   border-right:0px;
   outline: none;
+  /*background:rgba(255,255,255,0.2) ;*/
 }
 .login .options{
   margin-top: 20px;
@@ -166,7 +177,7 @@ export default {
   float: right;
 }
 .login .options div{
-  width: 400px;
+  width: 80%;
   margin: 0 auto;
 }
   .login .submitLogin{

@@ -17,8 +17,18 @@ export default new Router({
       component: (resolve) => require(['../components/index'], resolve),
     },
     {
-      path: '/test',
-      name: 'test',
+      path: '/robot',
+      name: 'robotController',
+      component: (resolve) => require(['../components/robotController'], resolve),
+    },
+    {
+      path: '/technology',
+      name: 'technologyController',
+      component: (resolve) => require(['../components/technologyController'], resolve),
+    },
+    {
+      path: '/expert',
+      name: 'expert',
       component: (resolve) => require(['../components/backStage/expert/ExpertManagement'], resolve),
     },
   ]

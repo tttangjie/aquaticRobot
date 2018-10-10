@@ -58,6 +58,7 @@
             city:[],
             blockSelection:'',
             block:[],
+            areaDate:{},
           }
         },
         methods:{
@@ -116,6 +117,10 @@
                 this.blockSelection = this.province[item].children[0].children[0].value;
               }
             }
+            this.areaDate.province = this.provinceSelection;
+            this.areaDate.city = this.citySelection;
+            this.areaDate.block = this.blockSelection;
+            this.$emit('areaDate', this.areaDate);
           },
           chooseCity(e) {
             for(let item in this.city) {
@@ -124,23 +129,32 @@
                 this.blockSelection = this.city[item].children[0].value;
               }
             }
+            this.areaDate.province = this.provinceSelection;
+            this.areaDate.city = this.citySelection;
+            this.areaDate.block = this.blockSelection;
+            this.$emit('areaDate', this.areaDate);
           },
           chooseBlock(e) {
             this.E = e;
-            console.log(this.provinceSelection)
+            this.areaDate.province = this.provinceSelection;
+            this.areaDate.city = this.citySelection;
+            this.areaDate.block = this.blockSelection;
+            this.$emit('areaDate', this.areaDate);
+            // console.log(this.provinceSelection)
           },
         },
         mounted() {
           this.getCityData();
         },
         watch:{
-          'query': function () {
+         /* 'query': function () {
             let data = {};
             data.provinceSelection = this.provinceSelection;
             data.citySelection = this.citySelection;
             data.blockSelection = this.blockSelection;
             this.$emit('transmitArea', data);
-          },
+            console.log(data);
+          },*/
           'reset':function () {
               this.provinceSelection='';
               this.citySelection='';

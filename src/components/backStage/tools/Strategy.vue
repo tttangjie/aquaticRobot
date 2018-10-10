@@ -2,7 +2,7 @@
     <div class="strategy_body">
       <div>
         <span>地区</span>
-        <three-link :reset="flag.reset" :query="flag.query" v-on:transmitArea = transmitArea> </three-link>
+        <three-link :reset="flag.reset" :query="flag.query" v-on:areaDate = areaDate> </three-link>
       </div>
 
       <div>
@@ -41,15 +41,23 @@
           }
         },
         methods:{
+          areaDate(value) {
+            this.areaSelection = value;
+          },
           reset() {
             this.dateRange = [];
             this.flag.reset = !this.flag.reset;
           },
-          query() {
-            this.flag.query = !this.flag.query;
-          },
           transmitArea(value) {
             this.areaSelection = value;
+            console.log(value);
+          },
+          query() {
+            let queryData = this.areaSelection;
+            queryData.dateBegin = this.dateRange[0];
+            queryData.dateEnd = this.dateRange[1];
+            this.$emit('queryData', queryData);
+            // console.log(queryData);
           }
         },
     }
