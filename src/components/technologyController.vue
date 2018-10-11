@@ -6,7 +6,6 @@
         <Strategy ref="queryData" v-on:queryData = queryData></Strategy>
       </div>
 
-
       <!--技术人员信息展示-->
       <el-table
         :data="allTechnology"
@@ -14,60 +13,72 @@
         @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
+          align="center"
           width="55">
         </el-table-column>
         <el-table-column
           prop="address"
+          align="center"
           label="地区"
-        width="55">
+        width="80">
         </el-table-column>
         <el-table-column
           prop="enter_time"
+          align="center"
           width="100"
           label="入职时间">
         </el-table-column>
         <el-table-column
           prop="realname"
+          align="center"
           label="联系人"
           width="80">
         </el-table-column>
         <el-table-column
           prop="sex"
+          align="center"
           label="性别"
-          width="50">
+          width="90">
         </el-table-column>
         <el-table-column
           prop="age"
+          align="center"
           label="年龄"
-          width="50">
+          width="100">
         </el-table-column>
         <el-table-column
           prop="tel"
+          width="140"
+          align="center"
           label="联系电话">
         </el-table-column>
         <el-table-column
           prop="email"
+          width="140"
+          align="center"
           label="邮箱">
         </el-table-column>
         <el-table-column
           prop="number"
+          align="center"
           label="工号"
-          width="80">
+          width="100">
         </el-table-column>
         <el-table-column
           prop="position"
+          align="center"
           label="职位"
-          width="80">
+          width="100">
         </el-table-column>
         <el-table-column
-          label="正在维修数量">
+          label="正在维修数量" align="center">
           <template slot-scope="scope">
             <span>{{scope.row.repairNum}}</span>
             <a style="text-decoration: none;color: red;cursor:pointer;" v-show="scope.row.repairNum"
             @click="getDetails(scope.$index, scope.row)">(详情)</a>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" align="center"  width="150">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -80,7 +91,23 @@
         </el-table-column>
       </el-table>
 
-      <!--新建或编辑某个技术人员信息-->
+      <!--技术人员任务列表-->
+      <el-dialog title="维修任务" :visible.sync="dialogTableVisible" :width="tableWidth">
+        <el-table :data="tasks" style="text-align: center">
+          <el-table-column property="type" label="产品类型" width="100" align="center"></el-table-column>
+          <el-table-column property="number" label="机器人编号" width="100" align="center"></el-table-column>
+          <el-table-column property="time" label="送修时间" width="120" align="center"></el-table-column>
+          <el-table-column property="realname" label="客户" align="center"></el-table-column>
+          <el-table-column property="age" label="年龄" align="center"></el-table-column>
+          <el-table-column property="sex" label="性别" align="center"></el-table-column>
+          <el-table-column property="tel" label="电话" width="120" align="center"></el-table-column>
+          <el-table-column property="technology_name" label="负责技术员" width="120" align="center"></el-table-column>
+          <el-table-column property="description" label="故障描述" width="150" align="center"></el-table-column>
+          <el-table-column property="status" label="状态" align="center"></el-table-column>
+        </el-table>
+      </el-dialog>
+
+      <!--新建某个技术人员信息-->
       <el-dialog title="新建人员信息" :visible.sync="dialogFormVisible" >
         <el-form :model="updateTechnology" label-width="80px" size="mini">
           <el-form-item label="姓名">
@@ -131,6 +158,7 @@
         </div>
       </el-dialog>
 
+      <!--编辑某个技术人员信息-->
       <el-dialog title="更新人员信息" :visible.sync="dialogFormVisible2" >
         <el-form :model="updateTechnology" label-width="80px" size="mini">
           <el-form-item label="姓名">
@@ -217,8 +245,11 @@
          return {
            isNew:true,
            isFilter:false,
+           tableWidth:"80%",
            dialogFormVisible:false,
            dialogFormVisible2:false,
+           dialogTableVisible:false,
+           tasks:[],
            total:0,
            currentPage:1,
            allTechnology:[],
@@ -252,16 +283,18 @@
         getTechnologyByPage:function (pageNum,pageSize,OrderBy,condition) {
           this.$axios.get('/technology/?pageNum=' + pageNum + '&pageSize=' + pageSize + '&OrderBy=' + OrderBy + '&condition=' + condition)
             .then( res => {
-              if (res.data.code == 1){
+              if (res.data.code === 1){
                 let arr = res.data.data.list;
-                  arr.forEach(function (item,index,array) {
-                    if(array[index].sex == 1){
-                      array[index].sex = "男"
-                    } else {
-                      array[index].sex = "女"
-                    }
-                      array[index].enter_time = (array[index].enter_time).split(" ")[0] + (array[index].enter_time).split(" ")[1];
-                  })
+                arr.forEach(function (item,index,array) {
+                  if(array[index].sex == 1){
+                    array[index].sex = "男"
+                  } else {
+                    array[index].sex = "女"
+                  }
+                  if (array[index].enter_time){
+                    array[index].enter_time = (array[index].enter_time).split(" ")[0] + (array[index].enter_time).split(" ")[1];
+                  }
+                })
                 this.allTechnology = arr;
                 this.total = res.data.data.total
               }
@@ -403,12 +436,28 @@
         getDetails:function (index,row) {
           this.$axios.get('/technology/task?username=' + row.username)
             .then(res => {
+              if (res.data.code === 1){
+                let arr = res.data.data;
+                arr.forEach(function (item,index,array) {
+                  if(array[index].sex == 1){
+                    array[index].sex = "男"
+                  } else {
+                    array[index].sex = "女"
+                  }
+                  if (array[index].time){
+                    array[index].time = (array[index].time).split(" ")[0] + (array[index].time).split(" ")[1];
+                  }
+                })
+                this.tasks = arr;
+                this.dialogTableVisible = true;
+              }
               console.log(res);
             })
             .catch(err => {
               console.log(err);
             })
         },
+
         //按条件筛选技术人员
         getAllTechnologysByOrder:function(pageNum,pageSize,orderBy,condition,queryStrategy){
           this.$axios.put('/technology/stratery?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition,{
@@ -425,6 +474,7 @@
               console.log(err);
             })
         },
+
         // 删选技术人员
         queryData(value){
           this.isFilter = true;
