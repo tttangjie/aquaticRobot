@@ -4,7 +4,8 @@
       v-model="provinceSelection"
       @change="chooseProvince"
       placeholder="省级地区"
-      style="width: 160px;">
+      style="width: 160px;"
+      size="mini">
       <el-option
         v-for = "item in province"
         :key = item.id
@@ -17,7 +18,8 @@
       v-model="citySelection"
       @change="chooseCity"
       placeholder="市级地区"
-      style="width: 160px;">
+      style="width: 160px;"
+      size="mini">
       <el-option
         v-for = "item in city"
         :key = item.id
@@ -30,7 +32,8 @@
       v-model="blockSelection"
       @change = "chooseBlock"
       placeholder="区级地区"
-      style="width: 160px;">
+      style="width: 160px;"
+      size="mini">
       <el-option
         v-for = "item in block"
         :key = item.id
@@ -58,7 +61,11 @@
             city:[],
             blockSelection:'',
             block:[],
-            areaDate:{},
+            areaDate:{
+              province:'',
+              city:'',
+              block:'',
+            },
           }
         },
         methods:{
@@ -145,6 +152,7 @@
         },
         mounted() {
           this.getCityData();
+          this.$emit('areaDate', this.areaDate);
         },
         watch:{
          /* 'query': function () {

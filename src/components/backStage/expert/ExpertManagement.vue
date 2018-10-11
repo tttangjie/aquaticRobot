@@ -1,5 +1,6 @@
 <template>
   <div>
+    <strategy v-on:queryData = queryData> </strategy>
     <el-table
       ref="multipleTable"
       :data="expertList"
@@ -206,8 +207,12 @@
 </template>
 
 <script>
+    import Strategy from '../tools/Strategy'
     export default {
         name: "ExpertManagement",
+        components:{
+          'strategy':Strategy
+        },
         data() {
           return {
             expertList:[],
@@ -373,6 +378,27 @@
                 link.click();
                 document.body.removeChild(link);
               })
+          },
+
+          queryData(value) {
+       /*     if(value.city && value.province && value.block) {
+              value.province = value.province.slice(0,value.province.length-1);
+              value.city = value.city.slice(0,value.city.length-1);
+              value.block = value.block.slice(0,value.block.length-1);
+            }*/
+            console.log(value)
+            this.$axios.post('/expert/strategy?pageNum='+this.page.num+'&pageSize='+this.page.size, {
+              beginTime:value.dateBegin,
+              endTime:value.dateEnd,
+              province:value.province,
+              city:value.city,
+              county:value.block
+
+            }).then((res) => {
+              console.log(res);
+            }).catch((err) => {
+              console.log(err)
+            })
           }
         },
         mounted() {

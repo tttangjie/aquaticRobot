@@ -12,13 +12,14 @@
           type="daterange"
           value-format="yyyy-MM-dd"
           placeholder="选择日期"
-          style="width: 280px;">
+          style="width: 280px;"
+          size="mini">
         </el-date-picker>
       </div>
 
       <div class="btn_tools">
-        <el-button @click="query">查询</el-button>
-        <el-button @click="reset">重置</el-button>
+        <el-button @click="query" size="mini">查询</el-button>
+        <el-button @click="reset" size="mini">重置</el-button>
       </div>
     </div>
 </template>
@@ -32,7 +33,7 @@
         },
         data(){
           return{
-            dateRange:[],
+            dateRange:['',''],
             areaSelection:{},
             flag:{
               query:false,
@@ -45,7 +46,7 @@
             this.areaSelection = value;
           },
           reset() {
-            this.dateRange = [];
+            this.dateRange = ['',''];
             this.flag.reset = !this.flag.reset;
           },
           transmitArea(value) {
@@ -54,6 +55,11 @@
           },
           query() {
             let queryData = this.areaSelection;
+            if(queryData.city && queryData.province && queryData.block) {
+              queryData.province = queryData.province.slice(0,queryData.province.length-1);
+              queryData.city = queryData.city.slice(0,queryData.city.length-1);
+              queryData.block = queryData.block.slice(0,queryData.block.length-1);
+            }
             queryData.dateBegin = this.dateRange[0];
             queryData.dateEnd = this.dateRange[1];
             this.$emit('queryData', queryData);
