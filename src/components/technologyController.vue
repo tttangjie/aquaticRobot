@@ -19,10 +19,11 @@
         <el-table-column
           prop="address"
           label="地区"
-        width="80">
+        width="55">
         </el-table-column>
         <el-table-column
           prop="enter_time"
+          width="100"
           label="入职时间">
         </el-table-column>
         <el-table-column
@@ -33,12 +34,12 @@
         <el-table-column
           prop="sex"
           label="性别"
-          width="80">
+          width="50">
         </el-table-column>
         <el-table-column
           prop="age"
           label="年龄"
-          width="80">
+          width="50">
         </el-table-column>
         <el-table-column
           prop="tel"
