@@ -54,7 +54,9 @@
             console.log(value);
           },
           query() {
-            let queryData = this.areaSelection;
+            var queryData = Object.assign({}, this.areaSelection);
+            // let  = new Object();
+            // queryData = ;
             if(queryData.city && queryData.province && queryData.block) {
               queryData.province = queryData.province.slice(0,queryData.province.length-1);
               queryData.city = queryData.city.slice(0,queryData.city.length-1);

@@ -395,7 +395,11 @@
               county:value.block
 
             }).then((res) => {
-              console.log(res);
+              if(res.data.code === 1) {
+                this.page.pages = res.data.data.pages;
+                this.page.total = res.data.data.total;
+                this.expertList = res.data.data.list;
+              }
             }).catch((err) => {
               console.log(err)
             })

@@ -169,6 +169,12 @@
               this.city=[];
               this.blockSelection='';
               this.block=[];
+              this.areaDate = {
+                province:'',
+                city:'',
+                block:''
+              };
+              this.$emit('areaDate', this.areaDate);
           }
         }
     }
