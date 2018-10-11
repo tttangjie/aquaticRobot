@@ -31,5 +31,20 @@ export default new Router({
       name: 'expert',
       component: (resolve) => require(['../components/backStage/expert/ExpertManagement'], resolve),
     },
+    {
+      path: '/admin-controller',
+      name: 'adminController',
+      component: (resolve) => require(['../components/backStage/systemSetup/AdminController'], resolve),
+    },
+    {
+      path: '/disease',
+      name: 'disease',
+      component: (resolve) => require(['../components/backStage/repository/Disease'], resolve),
+    },
+    {
+      path: '/product',
+      name: 'product',
+      component: (resolve) => require(['../components/backStage/repository/Product'], resolve),
+    },
   ]
 })
