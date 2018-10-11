@@ -103,8 +103,43 @@
           <el-table-column property="tel" label="电话" width="120" align="center"></el-table-column>
           <el-table-column property="technology_name" label="负责技术员" width="120" align="center"></el-table-column>
           <el-table-column property="description" label="故障描述" width="150" align="center"></el-table-column>
-          <el-table-column property="status" label="状态" align="center"></el-table-column>
+          <el-table-column label="状态" align="center">
+            <template slot-scope="scope">
+                <el-popover trigger="hover" placement="top">
+                  <p>0: 待维修</p>
+                  <p>1: 维修中</p>
+                  <p>2: 维修完成</p>
+                  <p>3: 无法维修</p>
+                  <div slot="reference" class="name-wrapper">
+                    <el-tag size="medium">{{ scope.row.status }}</el-tag>
+                  </div>
+                </el-popover>
+              <a style="text-decoration: none;color: red;cursor:pointer;" v-show="scope.row.status != 2"
+                 @click="changeStatus(scope.$index, scope.row)">(更改)</a>
+            </template>
+          </el-table-column>
         </el-table>
+
+        <el-dialog
+          width="30%"
+          title="修改维修状态"
+          :visible.sync="innerVisible"
+          append-to-body>
+          <el-select v-model="currentStatus" clearable placeholder="请选择">
+            <el-option
+              v-for="item in repairStatus"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
+          <span slot="footer" class="dialog-footer">
+              <el-button @click="innerVisible = false">取 消</el-button>
+              <el-button type="primary" @click="submitStatus">确 定</el-button>
+          </span>
+        </el-dialog>
+
+
       </el-dialog>
 
       <!--新建某个技术人员信息-->
@@ -245,10 +280,11 @@
          return {
            isNew:true,
            isFilter:false,
-           tableWidth:"80%",
+           tableWidth:'80%',
            dialogFormVisible:false,
            dialogFormVisible2:false,
            dialogTableVisible:false,
+           innerVisible:false,
            tasks:[],
            total:0,
            currentPage:1,
@@ -273,29 +309,47 @@
            multipleSelection: [],
            currentId:"",
            queryDatas:{},
-           // dataRangeQuery:{},
-           // areaSelectionQuery:{}
+           repairStatus: [{
+             value: '0',
+             label: '待维修'
+           },{
+             value: '1',
+             label: '维修中'
+           },{
+             value: '2',
+             label: '维修完成'
+           },{
+             value: '3',
+             label: '无法维修'
+           }],
+           currentStatus:-1,
+           currentTaskId:-1,
+           currentTechnologyUsername:''
          }
       },
       components:{Strategy},
       methods:{
+         //拉取全部技术人员 性别，日期转换
+        changeDateAndSexOfAllTechnology:function(arr){
+          let arr2 = arr;
+          arr2.forEach(function (item,index,array) {
+            if(array[index].sex == 1){
+              array[index].sex = "男"
+            } else {
+              array[index].sex = "女"
+            }
+            if (array[index].enter_time){
+              array[index].enter_time = (array[index].enter_time).split(" ")[0] + (array[index].enter_time).split(" ")[1];
+            }
+          })
+          return arr2;
+        },
       //   分页获取技术人员
         getTechnologyByPage:function (pageNum,pageSize,OrderBy,condition) {
           this.$axios.get('/technology/?pageNum=' + pageNum + '&pageSize=' + pageSize + '&OrderBy=' + OrderBy + '&condition=' + condition)
             .then( res => {
               if (res.data.code === 1){
-                let arr = res.data.data.list;
-                arr.forEach(function (item,index,array) {
-                  if(array[index].sex == 1){
-                    array[index].sex = "男"
-                  } else {
-                    array[index].sex = "女"
-                  }
-                  if (array[index].enter_time){
-                    array[index].enter_time = (array[index].enter_time).split(" ")[0] + (array[index].enter_time).split(" ")[1];
-                  }
-                })
-                this.allTechnology = arr;
+                this.allTechnology = this.changeDateAndSexOfAllTechnology(res.data.data.list);
                 this.total = res.data.data.total
               }
             })
@@ -432,9 +486,9 @@
           }
         },
 
-        // 获取任务列表
-        getDetails:function (index,row) {
-          this.$axios.get('/technology/task?username=' + row.username)
+        // 获取某一个技术人员的任务列表
+        getTaskListByName:function(username){
+          this.$axios.get('/technology/task?username=' + username)
             .then(res => {
               if (res.data.code === 1){
                 let arr = res.data.data;
@@ -458,9 +512,15 @@
             })
         },
 
+        //在表格中选中一个技术人员查看他的任务列表
+        getDetails:function (index,row) {
+          this.getTaskListByName(row.username);
+          this.currentTechnologyUsername = row.username;
+        },
+
         //按条件筛选技术人员
         getAllTechnologysByOrder:function(pageNum,pageSize,orderBy,condition,queryStrategy){
-          this.$axios.put('/technology/stratery?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition,{
+          this.$axios.post('/technology/strategy?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition,{
             "beginTime": queryStrategy.dateBegin,
             "city": queryStrategy.city,
             "county": queryStrategy.block,
@@ -468,26 +528,75 @@
             "province": queryStrategy.province
           })
             .then(res => {
-              console.log(res);
+              if (res.data.code === 1){
+                if (res.data.data.total === 0){
+                  this.allTechnology = [];
+                  this.total = 0;
+                  this.$message.success({
+                    message:"查询成功！没有相关技术人员信息！",
+                    showClose:true
+                  })
+                } else {
+                  this.allTechnology = this.changeDateAndSexOfAllTechnology(res.data.data.list);
+                  this.total = res.data.data.total
+                }
+              } else {
+                this.$message.error({
+                  message:"查询失败！",
+                  showClose:true
+                })
+              }
             })
             .catch(err => {
               console.log(err);
             })
         },
 
-        // 删选技术人员
+        // 筛选技术人员
         queryData(value){
-          this.isFilter = true;
-          // console.log(value);
-          if (value.city){
-            value.city = value.city.slice(0,value.city.length-1);
+          console.log(value);
+          // 检查是不是空查询
+          if (value.dateBegin === "" && value.dateEnd === "" && value.province === "" && value.city === "" && value.block === "") {  //查询条件全部为空，判断为空查询
+            this.getAllTechnologysByOrder(this.currentPage,10);
+          } else{
+            this.isFilter = true;
+            this.queryDatas = value;
+            this.getAllTechnologysByOrder(1,10,"","",value);
           }
-          //时间转时间戳
-          value.dateBegin = Date.parse(value.dateBegin);
-          value.dateEnd = Date.parse(value.dateEnd);
-          // console.log(value);
-          this.queryDatas = value;
-          this.getAllTechnologysByOrder(1,10,"","",value);
+        },
+
+        //修改维修状态
+        changeStatus:function(index,row){
+          this.innerVisible = true;
+          // this.currentStatus = row.status;
+          this.currentTaskId = row.id;
+        },
+
+        //提交维修状态的修改
+        submitStatus:function(){
+          if (this.currentStatus === -1){
+            this.$message.warning({
+              message:"未选择状态！",
+              showClose:true
+            });
+            return ;
+          }
+          this.$axios.put('/technology/repair/' + this.currentTaskId + '?status=' + this.currentStatus)
+            .then(res => {
+              if (res.data.code === 1){
+                this.innerVisible = false;
+                this.dialogTableVisible = true;
+                this.getTaskListByName(this.this.currentTechnologyUsername);
+              }else{
+                this.$message.error({
+                  message:res.data.msg,
+                  showClose:true
+                })
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
         },
 
         // 导出excel
