@@ -13,7 +13,7 @@
         active-text-color="#ffd04b">
         <el-submenu index="1">
         <template slot="title">
-        <i class="el-icon-location"></i>
+        <i class="el-icon-menu"></i>
         <span>用户管理</span>
         </template>
         <el-menu-item-group>
@@ -22,7 +22,7 @@
         </el-submenu>
         <el-submenu index="2">
         <template slot="title">
-        <i class="el-icon-location"></i>
+        <i class="el-icon-document"></i>
         <span>所有专家</span>
         </template>
         <el-menu-item-group>
@@ -31,7 +31,7 @@
         </el-submenu>
         <el-submenu index="3">
         <template slot="title">
-        <i class="el-icon-location"></i>
+        <i class="el-icon-edit-outline"></i>
         <span>售后服务</span>
         </template>
         <el-menu-item-group>
@@ -40,7 +40,7 @@
         </el-submenu>
         <el-submenu index="4">
         <template slot="title">
-        <i class="el-icon-location"></i>
+        <i class="el-icon-tickets"></i>
         <span>数据报告</span>
         </template>
         <el-menu-item-group>
@@ -52,7 +52,7 @@
         </el-submenu>
         <el-submenu index="5">
         <template slot="title">
-        <i class="el-icon-location"></i>
+        <i class="el-icon-setting"></i>
         <span>系统设置</span>
         </template>
         <el-menu-item-group>
