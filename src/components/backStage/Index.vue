@@ -44,8 +44,11 @@
         <span>数据报告</span>
         </template>
         <el-menu-item-group>
-        <el-menu-item index="/index/robot">机器人管理</el-menu-item>
+        <el-menu-item index="/index/disease">疾病百科</el-menu-item>
         </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/index/product">产品百科</el-menu-item>
+          </el-menu-item-group>
         </el-submenu>
         <el-submenu index="5">
         <template slot="title">
@@ -53,7 +56,7 @@
         <span>系统设置</span>
         </template>
         <el-menu-item-group>
-        <el-menu-item index="/index/robot">机器人管理</el-menu-item>
+        <el-menu-item index="/index/admin-controller">系统权限</el-menu-item>
         </el-menu-item-group>
         </el-submenu>
         </el-menu>
