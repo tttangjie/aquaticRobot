@@ -81,7 +81,7 @@ export default {
               that.$cookie.set("user_id",res.data.data.user_id);
               that.$cookie.set("token",res.data.data.token);
               console.log(that.$cookie.get("token"));
-              that.$router.push({path:'/index'});
+              that.$router.push({path:'/index/robot'});
             }else {
               that.errorMsg = res.data.msg;
               that.loginError = true;
@@ -155,6 +155,7 @@ export default {
     border-left:0px;
     border-right:0px;
     outline: none;
+    background: transparent;
   }
 .login .loginT .password input{
   height: 40px;
@@ -165,6 +166,7 @@ export default {
   border-left:0px;
   border-right:0px;
   outline: none;
+  background: transparent;
   /*background:rgba(255,255,255,0.2) ;*/
 }
 .login .options{

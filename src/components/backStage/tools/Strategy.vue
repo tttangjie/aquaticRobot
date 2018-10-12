@@ -73,6 +73,7 @@
 
 <style scoped>
   .strategy_body {
+    margin-top: 10px;
     display: inline-flex;
     font-size: 16px;
     font-weight: 100;

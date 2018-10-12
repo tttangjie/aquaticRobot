@@ -20,7 +20,7 @@
           prop="address"
           align="center"
           label="地区"
-        width="80">
+        width="55">
         </el-table-column>
         <el-table-column
           prop="enter_time"
@@ -38,13 +38,13 @@
           prop="sex"
           align="center"
           label="性别"
-          width="90">
+          width="55">
         </el-table-column>
         <el-table-column
           prop="age"
           align="center"
           label="年龄"
-          width="100">
+          width="55">
         </el-table-column>
         <el-table-column
           prop="tel"
@@ -62,7 +62,7 @@
           prop="number"
           align="center"
           label="工号"
-          width="100">
+          width="80">
         </el-table-column>
         <el-table-column
           prop="position"
@@ -333,7 +333,7 @@
         changeDateAndSexOfAllTechnology:function(arr){
           let arr2 = arr;
           arr2.forEach(function (item,index,array) {
-            if(array[index].sex == 1){
+            if(array[index].sex == 0){
               array[index].sex = "男"
             } else {
               array[index].sex = "女"
@@ -361,9 +361,9 @@
         // 编辑某一个技术员状态
         handleEdit:function (index,row) {
           if (row.sex === "男"){
-            row.sex = "1";
-          } else {
             row.sex = "0";
+          } else {
+            row.sex = "1";
           }
             this.updateTechnology = row;
             this.isNew = false;
@@ -493,7 +493,7 @@
               if (res.data.code === 1){
                 let arr = res.data.data;
                 arr.forEach(function (item,index,array) {
-                  if(array[index].sex == 1){
+                  if(array[index].sex == 0){
                     array[index].sex = "男"
                   } else {
                     array[index].sex = "女"
@@ -520,6 +520,7 @@
 
         //按条件筛选技术人员
         getAllTechnologysByOrder:function(pageNum,pageSize,orderBy,condition,queryStrategy){
+          console.log(queryStrategy);
           this.$axios.post('/technology/strategy?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition,{
             "beginTime": queryStrategy.dateBegin,
             "city": queryStrategy.city,
@@ -556,9 +557,11 @@
         queryData(value){
           console.log(value);
           // 检查是不是空查询
-          if (value.dateBegin === "" && value.dateEnd === "" && value.province === "" && value.city === "" && value.block === "") {  //查询条件全部为空，判断为空查询
-            this.getAllTechnologysByOrder(this.currentPage,10);
+          if (value.dateBegin == "" && value.dateEnd == "" && value.province == "" && value.city == "" && value.block == "") {  //查询条件全部为空，判断为空查询
+            console.log(11111111);
+            this.getTechnologyByPage(this.currentPage,10);
           } else{
+            console.log(22222222);
             this.isFilter = true;
             this.queryDatas = value;
             this.getAllTechnologysByOrder(1,10,"","",value);

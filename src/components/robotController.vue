@@ -1,5 +1,17 @@
 <template>
     <div class="robotController">
+
+      <!--按条件搜索-->
+      <div style="margin-top: 15px;width: 40%;" >
+        <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
+          <el-select v-model="select"  placeholder="请选择" slot="prepend" style="width: 130px;">
+            <el-option label="机器人类型" value="1"></el-option>
+            <el-option label="客户ID" value="2"></el-option>
+          </el-select>
+          <el-button slot="append" icon="el-icon-search" @click.native="searchByKey"></el-button>
+        </el-input>
+      </div>
+
       <!--机器人列表展示-->
       <el-table
         :data="robots"
@@ -146,6 +158,8 @@
           :total="total">
         </el-pagination>
       </div>
+
+
     </div>
 </template>
 
@@ -161,6 +175,8 @@
             robots:[],
             currentPage:1,
             currentRobotId:'',
+            input5:'',
+            select:'',
             addRobot:{
               id: '',
               number: '',
@@ -170,24 +186,27 @@
           }
       },
       methods:{
+          // 拉取机器人列表 时间和性别转换
+        changeDateAndSex(arr){
+          let arr2 = arr;
+          arr2.forEach(function (item,index,array) {
+            if(array[index].sex == 1){
+              array[index].sex = "男"
+            } else {
+              array[index].sex = "女"
+            }
+            if (array[index].registertime){
+              array[index].registertime = (array[index].registertime).split(" ")[0] + (array[index].registertime).split(" ")[1];
+            }
+          })
+          return arr2;
+        },
         // 分页获取机器人信息
         getAllRoobotsByParams(pageNum,pageSize,orderBy,condition){
           this.$axios.get('/robert/all?pageNum='+ pageNum  + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition)
             .then( res => {
-              console.log(res);
               if(res.data.code === 1){
-                let arr = res.data.data.list;
-                arr.forEach(function (item,index,array) {
-                  if(array[index].sex == 1){
-                    array[index].sex = "男"
-                  } else {
-                    array[index].sex = "女"
-                  }
-                  if (array[index].registertime){
-                    array[index].registertime = (array[index].registertime).split(" ")[0] + (array[index].registertime).split(" ")[1];
-                  }
-                })
-                this.robots = arr;
+                this.robots = this.changeDateAndSex( res.data.data.list);
               }
             })
             .catch(function (err) {
@@ -203,7 +222,6 @@
         },
         // 删除当前机器人
         handleDelete(index,row){
-          console.log(1111);
           this.$axios.delete('/robert/' + row.id)
             .then(res => {
               if (res.data.code === 1){
@@ -257,7 +275,57 @@
         },
         // 分页
         handleCurrentChange(val){
-            this.getAllRoobotsByParams(val,10);
+          //判断是什么条件下的分页
+          switch (this.select) {
+            case '':
+              this.getAllRoobotsByParams(val, 10);
+              break;
+            case 1:
+              this.getRobotsByType(val, 10, "", "", this.input5);
+              break;
+            case 2:
+              this.getRobotsByCustomer(val, 10, "", "", this.input5);
+              break;
+            default:
+              break;
+          }
+        },
+        //根据机器人类型获取机器人
+        getRobotsByType(pageNum,pageSize,orderBy,condition,type){
+          this.$axios.get('/robert/type?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition + '&type=' + type)
+            .then(res => {
+              if (res.data.code === 1){
+                this.robots = this.changeDateAndSex(res.data.data.list);
+                this.select = '';
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        },
+
+        //根据客户Id获取机器人
+        getRobotsByCustomer(pageNum,pageSize,orderBy,condition,customer_id){
+          this.$axios.get('/robert/customer?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition + '&customer_id=' + customer_id)
+            .then(res => {
+              if (res.data.code === 1){
+                this.robots = this.changeDateAndSex(res.data.data.list);
+                this.select = '';
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        },
+        //根据客户Id或者机器人类型获取机器人
+        searchByKey(){
+          if (this.select === 1){  //根据机器人类型获取机器人
+            this.getRobotsByType(1,10,"","",this.input5);
+          } else if(this.select === 2){
+            this.getRobotsByType(1,10,"","",this.input5);
+          } else {
+            this.getAllRoobotsByParams(1,10);
+          }
         },
         // 导出excel
         getExcel(){
@@ -283,6 +351,12 @@
 <style scoped>
   .options{
     display: inline-block;
+  }
+  .el-select .el-input {
+    width: 130px;
+  }
+  .input-with-select .el-input-group__prepend {
+    background-color: #fff;
   }
   .options li{
     list-style: none;
