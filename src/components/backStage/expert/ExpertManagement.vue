@@ -63,11 +63,6 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="学位证书">
-        <template slot-scope="scope">{{ scope.row.remark }}</template>
-      </el-table-column>
-      <el-table-column
-        align="center"
         label="所在单位">
         <template slot-scope="scope">{{ scope.row.company }}</template>
       </el-table-column>
@@ -79,6 +74,11 @@
           <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>
           <el-button size="mini" @click="deleteRow(scope.row.id)" type="danger">删除</el-button>
         </template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="备注">
+        <template slot-scope="scope">{{ scope.row.remark }}</template>
       </el-table-column>
     </el-table>
 
@@ -127,9 +127,6 @@
         <el-form-item label="产品类别" :label-width="formLabelWidth">
           <el-input v-model="expertForm.product"></el-input>
         </el-form-item>
-        <el-form-item label="人员类别" :label-width="formLabelWidth">
-          <el-input v-model="expertForm.remark"></el-input>
-        </el-form-item>
         <el-form-item label="学位" :label-width="formLabelWidth">
           <el-input v-model="expertForm.degree"></el-input>
         </el-form-item>
@@ -154,6 +151,9 @@
         <el-form-item label="地址" :label-width="formLabelWidth">
           <el-input v-model="expertForm.address"></el-input>
         </el-form-item>
+        <el-form-item label="备注" :label-width="formLabelWidth">
+          <el-input v-model="expertForm.remark"></el-input>
+        </el-form-item>
 
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -177,9 +177,6 @@
         <el-form-item label="年龄" :label-width="formLabelWidth">
           <el-input v-model="currentModify.age"></el-input>
         </el-form-item>
-        <el-form-item label="人员类别" :label-width="formLabelWidth">
-          <el-input v-model="currentModify.remark"></el-input>
-        </el-form-item>
         <el-form-item label="学位" :label-width="formLabelWidth">
           <el-input v-model="currentModify.degree"></el-input>
         </el-form-item>
@@ -194,6 +191,9 @@
         </el-form-item>
         <el-form-item label="地址" :label-width="formLabelWidth">
           <el-input v-model="currentModify.address"></el-input>
+        </el-form-item>
+        <el-form-item label="备注" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.remark"></el-input>
         </el-form-item>
 
       </el-form>
@@ -354,7 +354,8 @@
                   this.$message({
                     message:'专家注册成功！',
                     type:'success'
-                  })
+                  });
+                  this.loadList();
                   this.showRegisterDialog = false;
                 }
               })
@@ -385,7 +386,6 @@
               value.city = value.city.slice(0,value.city.length-1);
               value.block = value.block.slice(0,value.block.length-1);
             }*/
-            console.log(value)
             this.$axios.post('/expert/strategy?pageNum='+this.page.num+'&pageSize='+this.page.size, {
               beginTime:value.dateBegin,
               endTime:value.dateEnd,
