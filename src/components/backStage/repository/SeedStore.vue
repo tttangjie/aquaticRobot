@@ -149,7 +149,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="showModifyDialog = false">取 消</el-button>
-    <el-button type="primary" @click="modifyDisease">保 存</el-button>
+    <el-button type="primary" @click="modifySeed">保 存</el-button>
   </span>
     </el-dialog>
   </div>
@@ -259,7 +259,7 @@
         this.currentModify = Object.assign({}, value);
         this.showModifyDialog = true;
       },
-      modifyDisease() {
+      modifySeed() {
         this.$axios.put('/seedStore/'+this.currentModify.id,this.currentModify)
           .then((res) => {
             if(res.data.code === 1) {

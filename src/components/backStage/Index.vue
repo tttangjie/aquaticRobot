@@ -49,6 +49,7 @@
           <el-menu-item-group>
             <el-menu-item index="/index/product">产品百科</el-menu-item>
           </el-menu-item-group>
+
           <el-menu-item-group>
             <el-menu-item index="/index/drugstore">药品百科</el-menu-item> <!-- add by liuyunxing-->
           </el-menu-item-group>
