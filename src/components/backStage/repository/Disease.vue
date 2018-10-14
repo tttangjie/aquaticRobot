@@ -187,6 +187,7 @@
         this.loadList();
       },
       registerExpert() {
+        this.diseaseForm.publishTime = new Date().getTime();
         this.$axios.post('/disease/add', this.diseaseForm)
           .then((res) => {
             if(res.data.code === 1) {
