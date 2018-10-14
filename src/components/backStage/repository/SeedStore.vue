@@ -6,9 +6,11 @@
       <el-button size="medium" @click="query">筛选</el-button>
       <el-button size="medium" @click="reset">重置</el-button>
     </div>
+
+    <!-- 主界面 -->
     <el-table
       ref="multipleTable"
-      :data="productList"
+      :data="seedStoreList"
       tooltip-effect="dark"
       size="mini"
       style="width: 100%;"
@@ -36,8 +38,51 @@
       <el-table-column
         align="center"
         label="名称">
-        <template slot-scope="scope">{{ scope.row.name }}</template>
+        <template slot-scope="scope">{{ scope.row.title }}</template>
       </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="价格">
+        <template slot-scope="scope">{{ scope.row.price }}</template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="产地">
+        <template slot-scope="scope">{{ scope.row.productPlace }}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="公司">
+        <template slot-scope="scope">{{ scope.row.company }}</template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="联系人">
+        <template slot-scope="scope">{{ scope.row.contact }}</template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="联系电话">
+        <template slot-scope="scope">{{ scope.row.telPhone }}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="访问数量">
+        <template slot-scope="scope">{{ scope.row.visitCount }}</template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="发布时间">
+        <!--显示时间，publishTime为date类型，格式化显示的时间-->
+        <template slot-scope="scope">{{scope.row.publishTime.getFullYear()
+          +'-' +( scope.row.publishTime.getMonth()+1)+'-'+scope.row.publishTime.getDate()  }}</template>
+      </el-table-column>
+
       <el-table-column
         align="center"
         label="编辑"
@@ -63,18 +108,18 @@
       title="疾病添加"
       :visible.sync="showRegisterDialog"
       width="450px">
-      <el-form :model="productForm">
+      <el-form :model="seedStoreForm">
         <el-form-item label="名称" :label-width="formLabelWidth">
-          <el-input v-model="productForm.name"></el-input>
+          <el-input v-model="seedStoreForm.title"></el-input>
         </el-form-item>
         <el-form-item label="种类" :label-width="formLabelWidth">
-          <el-input v-model="productForm.kind"></el-input>
+          <el-input v-model="seedStoreForm.kind"></el-input>
         </el-form-item>
         <el-form-item label="子类" :label-width="formLabelWidth">
-          <el-input v-model="productForm.subKind"></el-input>
+          <el-input v-model="seedStoreForm.subKind"></el-input>
         </el-form-item>
         <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="productForm.description"></el-input>
+          <el-input v-model="seedStoreForm.description"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -85,12 +130,12 @@
 
     <!-- 更新用户的对话框 -->
     <el-dialog
-      title="管理员更新"
+      title="更新图片"
       :visible.sync="showModifyDialog"
       width="450px">
       <el-form :model="currentModify">
         <el-form-item label="名称" :label-width="formLabelWidth">
-          <el-input v-model="currentModify.name"></el-input>
+          <el-input v-model="currentModify.title"></el-input>
         </el-form-item>
         <el-form-item label="种类" :label-width="formLabelWidth">
           <el-input v-model="currentModify.kind"></el-input>
@@ -104,18 +149,20 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="showModifyDialog = false">取 消</el-button>
-    <el-button type="primary" @click="modifyDisease">保 存</el-button>
+    <el-button type="primary" @click="modifySeed">保 存</el-button>
   </span>
     </el-dialog>
   </div>
 </template>
 
 <script>
+
+  import {strToDate}  from './utils/strUtils'
   export default {
-    name: "Product",
+    name: "SeedStore",
     data() {
       return {
-        productList:[],
+        seedStoreList:[],
         currentModify:{},
         page:{
           num: 1,
@@ -123,7 +170,7 @@
           pages: 0,
           total: 0,
         },
-        productForm:{
+        seedStoreForm:{
           image:'',
         },
         showRegisterDialog:false,
@@ -134,7 +181,7 @@
     },
     methods:{
       loadList() {
-        this.$axios.get('/product/',
+        this.$axios.get('/seedStore/',
           {
             params:{
               pageNum:this.page.num,
@@ -146,9 +193,18 @@
         )
           .then((res) => {
             if(res.data.code === 1) {
-              this.productList = res.data.data.list;
+
+              const  resList= res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
+              console.log(this.seedStoreList)
+              resList.forEach((entry)=>{
+                entry.publishTime =  strToDate(entry.publishTime);
+
+              })
+              this.seedStoreList = resList;
+
+
             }
           })
           .catch((err) => {
@@ -159,7 +215,7 @@
         this.loadList();
       },
       registerExpert() {
-        this.$axios.post('/product/add', this.productForm)
+        this.$axios.post('/seedStore/add', this.seedStoreForm)
           .then((res) => {
             if(res.data.code === 1) {
               this.$message({
@@ -181,7 +237,7 @@
           type:'warning'
         })
           .then(() => {
-            this.$axios.delete('/product/' + id )
+            this.$axios.delete('/seedStore/' + id )
               .then((res) => {
                 if(res.data.code === 1) {
                   this.$message({
@@ -203,8 +259,8 @@
         this.currentModify = Object.assign({}, value);
         this.showModifyDialog = true;
       },
-      modifyDisease() {
-        this.$axios.put('/product/'+this.currentModify.id,this.currentModify)
+      modifySeed() {
+        this.$axios.put('/seedStore/'+this.currentModify.id,this.currentModify)
           .then((res) => {
             if(res.data.code === 1) {
               this.loadList();
@@ -216,7 +272,7 @@
           })
       },
       query() {
-        this.$axios.get('/product/subKind',
+        this.$axios.get('/seedStore/subKind',
           {
             params:{
               pageNum:this.page.num,
@@ -229,9 +285,14 @@
         )
           .then((res) => {
             if(res.data.code === 1) {
-              this.productList = res.data.data.list;
+              const  resList= res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
+              resList.forEach((entry)=>{
+                entry.publishTime =  strToDate(entry.publishTime);
+
+              })
+              this.seedStoreList = resList;
             }
           })
           .catch((err) => {

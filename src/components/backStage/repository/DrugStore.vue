@@ -8,22 +8,25 @@
     </div>
     <el-table
       ref="multipleTable"
-      :data="productList"
+      :data="drugList"
       tooltip-effect="dark"
       size="mini"
       style="width: 100%;"
       height="550"
       highlight-current-row>
+
+     <!-- 主界面折叠ban-->
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="描述">
-              <span class="form_text" >{{ scope.row.description }}</span>
+            <el-form-item label="使用说明书">
+              <span class="form_text" v-html=scope.row.manualInstruct></span>
             </el-form-item>
           </el-form>
         </template>
       </el-table-column>
       <el-table-column
+        width="50"
         align="center"
         label="种类">
         <template slot-scope="scope">{{ scope.row.kind }}</template>
@@ -38,6 +41,42 @@
         label="名称">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="药品种类">
+        <template slot-scope="scope">{{ scope.row.type }}</template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="价格">
+        <template slot-scope="scope">{{ scope.row.price }}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="公司">
+        <template slot-scope="scope">{{ scope.row.company}}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="联系电话">
+        <template slot-scope="scope">{{ scope.row.telPhone }}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="联系地址">
+        <template slot-scope="scope">{{ scope.row.contact }}</template>
+      </el-table-column>
+
+      <el-table-column
+        align="center"
+        label="发布时间">
+        <!--显示时间，publishTime为date类型，格式化显示的时间-->
+        <template slot-scope="scope">{{ scope.row.publishTime.getFullYear()
+          +'-' +( scope.row.publishTime.getMonth()+1)+'-'+scope.row.publishTime.getDate() }}</template>
+      </el-table-column>
+
       <el-table-column
         align="center"
         label="编辑"
@@ -47,6 +86,7 @@
           <el-button size="mini" @click="deleteRow(scope.row.id)" type="danger">删除</el-button>
         </template>
       </el-table-column>
+      <!-- 主界面折叠ban-->
     </el-table>
 
     <el-pagination
@@ -58,23 +98,53 @@
       :total="page.total">
     </el-pagination>
 
-    <!-- 新建用户的对话框 -->
+    <!-- 新建的对话框 -->
     <el-dialog
-      title="疾病添加"
+      title="添加药品"
       :visible.sync="showRegisterDialog"
       width="450px">
-      <el-form :model="productForm">
+      <el-form :model="medicineForm">
         <el-form-item label="名称" :label-width="formLabelWidth">
-          <el-input v-model="productForm.name"></el-input>
+          <el-input v-model="medicineForm.name"></el-input>
         </el-form-item>
         <el-form-item label="种类" :label-width="formLabelWidth">
-          <el-input v-model="productForm.kind"></el-input>
+          <el-input v-model="medicineForm.kind"></el-input>
         </el-form-item>
         <el-form-item label="子类" :label-width="formLabelWidth">
-          <el-input v-model="productForm.subKind"></el-input>
+          <el-input v-model="medicineForm.subKind"></el-input>
         </el-form-item>
-        <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="productForm.description"></el-input>
+        <el-form-item label="药品类型" :label-width="formLabelWidth">  <!--add by liuyunxing-->
+          <el-input v-model="medicineForm.type"></el-input>
+        </el-form-item>
+        <el-form-item label="价格" :label-width="formLabelWidth">
+          <el-input v-model="medicineForm.price"></el-input>
+        </el-form-item>
+        <el-form-item label="公司" :label-width="formLabelWidth">
+          <el-input v-model="medicineForm.company"></el-input>
+        </el-form-item>
+        <el-form-item label="发布时间" :label-width="formLabelWidth">
+          <el-date-picker
+            v-model=medicineForm.publishTime
+            type="datetime"
+            value-format="timestamp"
+            placeholder="选择日期时间">
+          </el-date-picker>
+        </el-form-item >
+        <el-form-item label="电话" :label-width="formLabelWidth">
+          <el-input v-model="medicineForm.telPhone"></el-input>
+        </el-form-item>
+        <el-form-item label="地址" :label-width="formLabelWidth">
+          <el-input
+            type="textarea"
+            :rows="2"
+            v-model="medicineForm.contact"></el-input>
+        </el-form-item>
+        <el-form-item label="说明书">
+          <el-input
+            type="textarea"
+            :rows="5"
+            :label-width="formLabelWidth"
+            v-model="medicineForm.manualInstruct"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -83,11 +153,11 @@
   </span>
     </el-dialog>
 
-    <!-- 更新用户的对话框 -->
+    <!-- 更新的对话框 -->
     <el-dialog
-      title="管理员更新"
+      title="管理员修改"
       :visible.sync="showModifyDialog"
-      width="450px">
+      width="600px">
       <el-form :model="currentModify">
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="currentModify.name"></el-input>
@@ -99,23 +169,44 @@
           <el-input v-model="currentModify.subKind"></el-input>
         </el-form-item>
         <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="currentModify.description"></el-input>
+          <el-input  type="textarea"
+                     :rows="5"
+                     v-model="currentModify.manualInstruct"></el-input>
+        </el-form-item>
+        <el-form-item label="发布时间" :label-width="formLabelWidth">
+          <el-date-picker
+            v-model=currentModify.publishTime
+            type="datetime"
+            placeholder="选择日期时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="价格" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.price"></el-input>
+        </el-form-item>
+        <el-form-item label="药品种类" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.type"></el-input>
+        </el-form-item>
+        <el-form-item label="电话" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.telPhone"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="showModifyDialog = false">取 消</el-button>
-    <el-button type="primary" @click="modifyDisease">保 存</el-button>
+    <el-button type="primary" @click="modifyDrug">保 存</el-button>
   </span>
     </el-dialog>
+  <!--  <img src="http://223.2.197.240:8062/image/seed024.jpg">-->
   </div>
 </template>
 
 <script>
+
+  import {newLineTransform , brTransform,  strToDate} from './utils/strUtils'
   export default {
-    name: "Product",
+    name: "DrugStore",
     data() {
       return {
-        productList:[],
+        drugList:[],
         currentModify:{},
         page:{
           num: 1,
@@ -123,7 +214,7 @@
           pages: 0,
           total: 0,
         },
-        productForm:{
+        medicineForm:{
           image:'',
         },
         showRegisterDialog:false,
@@ -134,7 +225,7 @@
     },
     methods:{
       loadList() {
-        this.$axios.get('/product/',
+        this.$axios.get('/drugstore/',
           {
             params:{
               pageNum:this.page.num,
@@ -146,9 +237,19 @@
         )
           .then((res) => {
             if(res.data.code === 1) {
-              this.productList = res.data.data.list;
+
+              // 文本换行显示，格式需要换行处理
+              this.drugList = res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
+             // console.log(this.drugList)
+              // 对文本格式进行转换
+              this.drugList.forEach((entry)=>{
+
+                entry.manualInstruct = newLineTransform(entry.manualInstruct)
+                entry.publishTime = strToDate(entry.publishTime)
+              })
+
             }
           })
           .catch((err) => {
@@ -159,7 +260,7 @@
         this.loadList();
       },
       registerExpert() {
-        this.$axios.post('/product/add', this.productForm)
+        this.$axios.post('/drugstore/add', this.medicineForm)
           .then((res) => {
             if(res.data.code === 1) {
               this.$message({
@@ -181,7 +282,7 @@
           type:'warning'
         })
           .then(() => {
-            this.$axios.delete('/product/' + id )
+            this.$axios.delete('/drugstore/' + id )
               .then((res) => {
                 if(res.data.code === 1) {
                   this.$message({
@@ -199,12 +300,18 @@
 
           })
       },
-      modifyRow(value) {
+      modifyRow(value) { // modify  by liuyunxing
         this.currentModify = Object.assign({}, value);
+  /*      console.log(this.currentModify.publishTime)*/
+        this.currentModify.manualInstruct = brTransform( this.currentModify.manualInstruct); // 格式化描述内容
         this.showModifyDialog = true;
       },
-      modifyDisease() {
-        this.$axios.put('/product/'+this.currentModify.id,this.currentModify)
+      modifyDrug() {
+
+       // if ( typeof (this.currentModify.publishTime) != 'string'){
+          this.currentModify.publishTime = this.currentModify.publishTime.getTime(); // 格式化时间数据
+        //}
+        this.$axios.put('/drugstore/'+this.currentModify.id,this.currentModify)
           .then((res) => {
             if(res.data.code === 1) {
               this.loadList();
@@ -216,7 +323,7 @@
           })
       },
       query() {
-        this.$axios.get('/product/subKind',
+        this.$axios.get('/drugstore/subKind',
           {
             params:{
               pageNum:this.page.num,
@@ -229,9 +336,18 @@
         )
           .then((res) => {
             if(res.data.code === 1) {
-              this.productList = res.data.data.list;
+               const resList =  res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
+              // 对文本格式进行转换
+              resList.forEach((entry)=>{
+
+                entry.manualInstruct = newLineTransform(entry.manualInstruct)
+                entry.publishTime = strToDate(entry.publishTime)
+                console.log(entry.publishTime)
+              })
+              this.drugList = resList;
+
             }
           })
           .catch((err) => {

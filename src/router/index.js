@@ -42,6 +42,16 @@ export default new Router({
           component: (resolve) => require(['../components/backStage/repository/Disease'], resolve),
         },
         {
+          path: 'drugstore',
+          name: 'drugstore',
+          component: (resolve) => require(['../components/backStage/repository/DrugStore'], resolve),
+        },
+        {
+          path: 'seedStore',
+          name: 'seedStore',
+          component: (resolve) => require(['../components/backStage/repository/seedStore'], resolve),
+        },
+        {
           path: 'product',
           name: 'product',
           component: (resolve) => require(['../components/backStage/repository/Product'], resolve),
