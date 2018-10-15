@@ -1,6 +1,6 @@
 <template>
   <div id="login">
-    <div class="login">
+    <div class="login" @keyup.13="login">
 
       <!--logo-->
         <div class="logo">
