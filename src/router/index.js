@@ -61,6 +61,11 @@ export default new Router({
           name: 'product',
           component: (resolve) => require(['../components/backStage/repository/Product'], resolve),
         },
+        {
+          path: 'feedStore',
+          name: 'feedStore',
+          component: (resolve) => require(['../components/backStage/repository/feedStore'], resolve),
+        },
 
       ]
     },

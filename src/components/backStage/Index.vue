@@ -1,13 +1,12 @@
 <template>
   <div id="index">
-
-    <div class="left">
+    <div class="left" style="height: 100%">
       <el-menu
         :router="isRouter"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
-        background-color="#545c64"
+        background-color="#6482A0"
         style="width: 100%;height: 100%;"
         text-color="#fff"
         active-text-color="#ffd04b">
@@ -56,6 +55,10 @@
 
           <el-menu-item-group>
             <el-menu-item index="/index/seedstore">种苗百科</el-menu-item> <!-- add by liuyunxing-->
+          </el-menu-item-group>
+
+          <el-menu-item-group>
+            <el-menu-item index="/index/feedStore">投喂百科</el-menu-item> <!-- add by liuyunxing-->
           </el-menu-item-group>
 
         </el-submenu>

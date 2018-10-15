@@ -105,7 +105,7 @@
 
     <!-- 新建用户的对话框 -->
     <el-dialog
-      title="疾病添加"
+      title="种苗信息添加"
       :visible.sync="showRegisterDialog"
       width="450px">
       <el-form :model="seedStoreForm">
@@ -128,10 +128,10 @@
           <el-input v-model="seedStoreForm.company"></el-input>
         </el-form-item>
         <el-form-item label="联系人" :label-width="formLabelWidth">
-          <el-input v-model="seedStoreForm.telPhone"></el-input>
+          <el-input v-model="seedStoreForm.contact"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" :label-width="formLabelWidth">
-          <el-input v-model="seedStoreForm.concat"></el-input>
+          <el-input v-model="seedStoreForm.telPhone"></el-input>
         </el-form-item>
         <el-form-item label="访问数量" :label-width="formLabelWidth">
           <el-input v-model="seedStoreForm.visitCount"></el-input>
@@ -161,7 +161,7 @@
 
     <!-- 更新用户的对话框 -->
     <el-dialog
-      title="更新图片"
+      title="更新种苗信息"
       :visible.sync="showModifyDialog"
       width="450px">
       <el-form :model="currentModify">
@@ -174,8 +174,39 @@
         <el-form-item label="子类" :label-width="formLabelWidth">
           <el-input v-model="currentModify.subKind"></el-input>
         </el-form-item>
-        <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="currentModify.description"></el-input>
+        <el-form-item label="价格" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.price"></el-input>
+        </el-form-item>
+        <el-form-item label="产地" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.productPlace"></el-input>
+        </el-form-item>
+        <el-form-item label="公司" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.company"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.contact"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.telPhone"></el-input>
+        </el-form-item>
+        <el-form-item label="访问数量" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.visitCount"></el-input>
+        </el-form-item>
+        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showRegisterDialog">
+          <el-date-picker
+            disabled
+            v-model=currentModify.publishTime
+            type="datetime"
+            value-format="timestamp"
+            placeholder="选择日期时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            type="textarea"
+            :rows="5"
+            :label-width="formLabelWidth"
+            v-model="currentModify.description"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -250,11 +281,25 @@
         this.showRegisterDialog = true;
       },
       registerSeedStore() {
-        this.$axios.post('/seedStore/add', this.seedStoreForm)
+        let formdata = new FormData();
+        formdata.append("company",this.seedStoreForm.company);
+        formdata.append("contact",this.seedStoreForm.contact);
+        formdata.append("description",this.seedStoreForm.description);
+        formdata.append("image",this.seedStoreForm.image);
+        formdata.append("kind",this.seedStoreForm.kind);
+        formdata.append("price",this.seedStoreForm.price);
+        formdata.append("productPlace",this.seedStoreForm.productPlace);
+        formdata.append("publishTime",this.seedStoreForm.publishTime);
+        formdata.append("subKind",this.seedStoreForm.subKind);
+        formdata.append("telPhone",this.seedStoreForm.telPhone);
+        formdata.append("title",this.seedStoreForm.title);
+        formdata.append("visitCount",this.seedStoreForm.visitCount);
+        this.$axios.post('/seedStore/', formdata)
           .then((res) => {
+            console.log(res)
             if(res.data.code === 1) {
               this.$message({
-                message:'产品信息添加成功！',
+                message:'种苗信息添加成功！',
                 type:'success'
               })
               this.loadList();
@@ -295,7 +340,21 @@
         this.showModifyDialog = true;
       },
       modifySeed() {
-        this.$axios.put('/seedStore/'+this.currentModify.id,this.currentModify)
+        let formdata = new FormData();
+        formdata.append("company",this.currentModify.company);
+        formdata.append("contact",this.currentModify.contact);
+        formdata.append("description",this.currentModify.description);
+        formdata.append("image",this.currentModify.image);
+        formdata.append("kind",this.currentModify.kind);
+        formdata.append("price",this.currentModify.price);
+        formdata.append("productPlace",this.currentModify.productPlace);
+        formdata.append("publishTime",this.currentModify.publishTime);
+        formdata.append("subKind",this.currentModify.subKind);
+        formdata.append("telPhone",this.currentModify.telPhone);
+        formdata.append("title",this.currentModify.title);
+        formdata.append("visitCount",this.currentModify.visitCount);
+        // formdata = this.currentModify;
+        this.$axios.put('/seedStore/'+this.currentModify.id,formdata,)
           .then((res) => {
             if(res.data.code === 1) {
               this.loadList();

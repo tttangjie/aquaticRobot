@@ -192,21 +192,20 @@
       methods:{
           // 新建投喂百科
         registerFeedStore(){
-          console.log(this.feedStoreForm);
-          this.$axios.post('/feedStore/',{
-            "company": this.feedStoreForm.company,
-            "contact": this.feedStoreForm.contact,
-            "image": "",
-            "kind": "",
-            "manualInstruct": this.feedStoreForm.manualInstruct,
-            "name": this.feedStoreForm.name,
-            "price": this.feedStoreForm.price,
-            "subKind": this.feedStoreForm.subKind,
-            "telPhone": this.feedStoreForm.telPhone,
-            "type": this.feedStoreForm.type,
-          })
+          let formdata = new FormData();
+          formdata.append("company",this.feedStoreForm.company);
+          formdata.append("contact",this.feedStoreForm.contact);
+          formdata.append("image",'');
+          formdata.append("kind",this.feedStoreForm.kind);
+          formdata.append("manualInstruct",this.feedStoreForm.manualInstruct);
+          formdata.append("name",this.feedStoreForm.name);
+          formdata.append("price",this.feedStoreForm.price);
+          formdata.append("subKind",this.feedStoreForm.subKind);
+          formdata.append("telPhone",this.feedStoreForm.telPhone);
+          formdata.append("type",this.feedStoreForm.type);
+          this.$axios.put('/feedStore/' + this.currentFeedStoreId, formdata)
+          this.$axios.post('/feedStore/',formdata)
             .then(res => {
-              console.log(res);
               if (res.data.code === 1){
                 this.getAllFeedStore(1,10);
                 this.showRegisterDialog = false;
@@ -277,22 +276,23 @@
         },
         // 更新投喂百科
         changeOneFeedStore(){
-          console.log(this.feedStoreForm);
-          this.$axios.put('/feedStore/' + this.currentFeedStoreId,{
-            "company": this.feedStoreForm.company,
-            "contact": this.feedStoreForm.contact,
-            "image": "",
-            "kind": this.feedStoreForm.kind,
-            "manualInstruct": this.feedStoreForm.manualInstruct,
-            "name": this.feedStoreForm.name,
-            "price": this.feedStoreForm.price,
-            "subKind": this.feedStoreForm.subKind,
-            "telPhone": this.feedStoreForm.telPhone,
-            "type": this.feedStoreForm.type,
-          })
+          let formdata = new FormData();
+          formdata.append("company",this.feedStoreForm.company);
+          formdata.append("contact",this.feedStoreForm.contact);
+          formdata.append("image",'');
+          formdata.append("kind",this.feedStoreForm.kind);
+          formdata.append("manualInstruct",this.feedStoreForm.manualInstruct);
+          formdata.append("name",this.feedStoreForm.name);
+          formdata.append("price",this.feedStoreForm.price);
+          formdata.append("subKind",this.feedStoreForm.subKind);
+          formdata.append("telPhone",this.feedStoreForm.telPhone);
+          formdata.append("type",this.feedStoreForm.type);
+          this.$axios.put('/feedStore/' + this.currentFeedStoreId, formdata)
             .then(res => {
-              console.log(res);
-            })
+              if(res.data.code === 1) {
+                this.getAllFeedStore(1,10);
+                this.changeRegisterDialog = false;
+              }            })
             .catch(err => {
               console.log(err);
             })
