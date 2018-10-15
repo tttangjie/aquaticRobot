@@ -37,6 +37,11 @@ export default new Router({
           component: (resolve) => require(['../components/backStage/systemSetup/AdminController'], resolve),
         },
         {
+          path: 'alarm',
+          name: 'alarm',
+          component: (resolve) => require(['../components/backStage/systemSetup/Alarm'], resolve),
+        },
+        {
           path: 'disease',
           name: 'disease',
           component: (resolve) => require(['../components/backStage/repository/Disease'], resolve),
@@ -56,6 +61,7 @@ export default new Router({
           name: 'product',
           component: (resolve) => require(['../components/backStage/repository/Product'], resolve),
         },
+
       ]
     },
 

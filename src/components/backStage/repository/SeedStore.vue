@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="btns">
-      <el-button size="medium" @click="showRegisterDialog = true" type="primary">新建</el-button>
+      <el-button size="medium" @click="showRegisterDialogFunc" type="primary">新建</el-button>
       <el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>
       <el-button size="medium" @click="query">筛选</el-button>
       <el-button size="medium" @click="reset">重置</el-button>
@@ -118,13 +118,44 @@
         <el-form-item label="子类" :label-width="formLabelWidth">
           <el-input v-model="seedStoreForm.subKind"></el-input>
         </el-form-item>
-        <el-form-item label="描述" :label-width="formLabelWidth">
-          <el-input v-model="seedStoreForm.description"></el-input>
+        <el-form-item label="价格" :label-width="formLabelWidth">
+          <el-input v-model="seedStoreForm.price"></el-input>
+        </el-form-item>
+        <el-form-item label="产地" :label-width="formLabelWidth">
+          <el-input v-model="seedStoreForm.productPlace"></el-input>
+        </el-form-item>
+        <el-form-item label="公司" :label-width="formLabelWidth">
+          <el-input v-model="seedStoreForm.company"></el-input>
+        </el-form-item>
+        <el-form-item label="联系人" :label-width="formLabelWidth">
+          <el-input v-model="seedStoreForm.telPhone"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话" :label-width="formLabelWidth">
+          <el-input v-model="seedStoreForm.concat"></el-input>
+        </el-form-item>
+        <el-form-item label="访问数量" :label-width="formLabelWidth">
+          <el-input v-model="seedStoreForm.visitCount"></el-input>
+        </el-form-item>
+        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showRegisterDialog">
+          <el-date-picker
+            disabled
+            v-model=seedStoreForm.publishTime
+            type="datetime"
+            value-format="timestamp"
+            placeholder="选择日期时间">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="描述">
+          <el-input
+            type="textarea"
+            :rows="5"
+            :label-width="formLabelWidth"
+            v-model="seedStoreForm.description"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="showRegisterDialog = false">取 消</el-button>
-    <el-button type="primary" @click="registerExpert">注 册</el-button>
+    <el-button type="primary" @click="registerSeedStore">注 册</el-button>
   </span>
     </el-dialog>
 
@@ -214,7 +245,11 @@
       jumpToOtherPage() {
         this.loadList();
       },
-      registerExpert() {
+      showRegisterDialogFunc() {
+        this.seedStoreForm.publishTime = new Date().getTime();
+        this.showRegisterDialog = true;
+      },
+      registerSeedStore() {
         this.$axios.post('/seedStore/add', this.seedStoreForm)
           .then((res) => {
             if(res.data.code === 1) {

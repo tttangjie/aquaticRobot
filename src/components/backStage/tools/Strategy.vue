@@ -33,7 +33,7 @@
         },
         data(){
           return{
-            dateRange:['',''],
+            dateRange:[ ],
             areaSelection:{},
             flag:{
               query:false,
@@ -46,7 +46,7 @@
             this.areaSelection = value;
           },
           reset() {
-            this.dateRange = ['',''];
+            this.dateRange = [];
             this.flag.reset = !this.flag.reset;
           },
           transmitArea(value) {
@@ -54,6 +54,9 @@
             console.log(value);
           },
           query() {
+            if(this.dateRange.length === 0) {
+              this.dateRange = ['', ''];
+            }
             var queryData = Object.assign({}, this.areaSelection);
             // let  = new Object();
             // queryData = ;
@@ -65,6 +68,9 @@
             queryData.dateBegin = this.dateRange[0];
             queryData.dateEnd = this.dateRange[1];
             this.$emit('queryData', queryData);
+            if(this.dateRange[0] === '' && this.dateRange[1] === '') {
+              this.dateRange = [];
+            }
             // console.log(queryData);
           }
         },

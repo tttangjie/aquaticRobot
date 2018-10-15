@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="btns">
-      <el-button size="medium" @click="showRegisterDialog = true" type="primary">新建</el-button>
+      <el-button size="medium" @click="showRegisterDialogFunc" type="primary">新建</el-button>
       <el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>
       <el-button size="medium" @click="query">筛选</el-button>
       <el-button size="medium" @click="reset">重置</el-button>
@@ -65,7 +65,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="联系地址">
+        label="联系方式">
         <template slot-scope="scope">{{ scope.row.contact }}</template>
       </el-table-column>
 
@@ -122,8 +122,9 @@
         <el-form-item label="公司" :label-width="formLabelWidth">
           <el-input v-model="medicineForm.company"></el-input>
         </el-form-item>
-        <el-form-item label="发布时间" :label-width="formLabelWidth">
+        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showRegisterDialog">
           <el-date-picker
+            disabled
             v-model=medicineForm.publishTime
             type="datetime"
             value-format="timestamp"
@@ -149,13 +150,13 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="showRegisterDialog = false">取 消</el-button>
-    <el-button type="primary" @click="registerExpert">注 册</el-button>
+    <el-button type="primary" @click="registerDrug">注 册</el-button>
   </span>
     </el-dialog>
 
     <!-- 更新的对话框 -->
     <el-dialog
-      title="管理员修改"
+      title="药品信息修改"
       :visible.sync="showModifyDialog"
       width="600px">
       <el-form :model="currentModify">
@@ -173,8 +174,9 @@
                      :rows="5"
                      v-model="currentModify.manualInstruct"></el-input>
         </el-form-item>
-        <el-form-item label="发布时间" :label-width="formLabelWidth">
+        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showModifyDialog">
           <el-date-picker
+            disabled
             v-model=currentModify.publishTime
             type="datetime"
             placeholder="选择日期时间">
@@ -216,6 +218,7 @@
         },
         medicineForm:{
           image:'',
+          manualInstruct:'',
         },
         showRegisterDialog:false,
         showModifyDialog:false,
@@ -259,7 +262,17 @@
       jumpToOtherPage() {
         this.loadList();
       },
-      registerExpert() {
+      showRegisterDialogFunc() {
+        this.medicineForm.publishTime = new Date().getTime();
+        this.showRegisterDialog = true;
+      },
+      registerDrug() {
+        if(this.medicineForm.publishTime === '') {
+          this.medicineForm.publishTime = new Date();
+        }
+        if(this.medicineForm.manualInstruct === '') {
+          this.medicineForm.manualInstruct = ''
+        }
         this.$axios.post('/drugstore/add', this.medicineForm)
           .then((res) => {
             if(res.data.code === 1) {
@@ -303,6 +316,7 @@
       modifyRow(value) { // modify  by liuyunxing
         this.currentModify = Object.assign({}, value);
   /*      console.log(this.currentModify.publishTime)*/
+        this.currentModify.publishTime = new Date();
         this.currentModify.manualInstruct = brTransform( this.currentModify.manualInstruct); // 格式化描述内容
         this.showModifyDialog = true;
       },

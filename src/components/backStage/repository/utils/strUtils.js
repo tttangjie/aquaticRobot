@@ -1,7 +1,6 @@
 // some function to handle string format
 
 export function newLineTransform( string ){  // translate \r \n to  <br>
-
     string = string.replace(/\r\n/g,"<br>")
     string = string.replace(/\n/g,"<br>")
     string = string.replace(/\s/g,"&nbsp")
@@ -9,7 +8,6 @@ export function newLineTransform( string ){  // translate \r \n to  <br>
 }
 
 export function brTransform( string ){  // translate   <br> to \r \n
-
   string = string.replace(/<br>/g,'\r\n',)  // 全局替换
   string = string.replace(/<br\/>/g,'\r\n',)  // 全局替换
   string = string.replace(/&nbsp/g,' ')
