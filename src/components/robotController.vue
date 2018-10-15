@@ -39,10 +39,12 @@
           label="注册时间">
         </el-table-column>
         <el-table-column
-          prop="username"
           align="center"
           label="联系人"
         width="70">
+          <template slot-scope="scope">
+            <span style="cursor:pointer;" @click="changeCustomer(scope.$index, scope.row)">{{scope.row.username}}</span>
+          </template>>
         </el-table-column>
         <el-table-column
           prop="sex"
@@ -121,18 +123,34 @@
       <el-dialog title="更新机器人" :visible.sync="dialogFormVisible2" >
         <el-form :model="addRobot" label-width="80px">
           <el-form-item label="编号">
-            <el-input v-model="addRobot.number" autocomplete="off" :disabled="true"></el-input>
+            <el-input v-model="addRobot.number" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="类别">
-            <el-input v-model="addRobot.type" autocomplete="off" :disabled="true"></el-input>
+            <el-input v-model="addRobot.type" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="客户ID">
-            <el-input v-model="addRobot.user_id" autocomplete="off"></el-input>
+            <el-input v-model="addRobot.user_id" autocomplete="off" :disabled="true"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">取 消</el-button>
           <el-button type="primary" @click="submitForm">确 定</el-button>
+        </div>
+      </el-dialog>
+
+      <!--重新分配机器人-->
+      <el-dialog title="重新分配机器人" :visible.sync="dialogFormVisible3" >
+        <el-select v-model="currentCustomerId" placeholder="请选择">
+          <el-option
+            v-for="(item,index) in customersId"
+            :key="index"
+            :label="item"
+            :value="item">
+          </el-option>
+        </el-select>
+        <div slot="footer" class="dialog-footer">
+          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button type="primary" @click="submitAssgin">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -171,6 +189,7 @@
             isNew:false,
             dialogFormVisible:false,
             dialogFormVisible2:false,
+            dialogFormVisible3:false,
             total:10,
             robots:[],
             currentPage:1,
@@ -182,7 +201,9 @@
               number: '',
               type: '',
               user_id: ''
-            }
+            },
+            customersId:[],
+            currentCustomerId:''
           }
       },
       methods:{
@@ -216,6 +237,7 @@
 
         // 编辑机器人信息
         handleEdit(index,row){
+            this.isNew = false;
             this.dialogFormVisible2 = true;
             this.addRobot = row;
             this.currentRobotId = row.id;
@@ -236,10 +258,12 @@
         newRobot(){
           this.addRobot = {};
           this.dialogFormVisible = true;
+          this.isNew = true;
         },
         // 新增或修改机器人信息
         submitForm(){
-            if(this.isNew === false){  //新增机器人
+          console.log(this.isNew);
+            if(this.isNew === true){  //新增机器人
               this.$axios.post('/robert/add',{
                 "number": this.addRobot.number,
                 "type": this.addRobot.type,
@@ -251,6 +275,7 @@
                     this.dialogFormVisible = false;
                     this.getAllRoobotsByParams(1,10);
                     this.addRobot = {};
+                    this.isNew = false;
                   }
                 })
                 .catch(err => {
@@ -263,9 +288,11 @@
                   "user_id": this.addRobot.user_id
                 })
                   .then(res => {
+                    console.log(res);
                     if (res.data.code === 1){
                       this.dialogFormVisible2 = false;
                       this.getAllRoobotsByParams(this.currentPage,10);
+                      this.isNew = false;
                     }
                   })
                   .catch(err => {
@@ -307,8 +334,9 @@
         //根据客户Id获取机器人
         getRobotsByCustomer(pageNum,pageSize,orderBy,condition,customer_id){
           this.$axios.get('/robert/customer?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition + '&customer_id=' + customer_id)
-            .then(res => {
-              if (res.data.code === 1){
+                .then(res => {
+                  console.log(res);
+                  if (res.data.code === 1){
                 this.robots = this.changeDateAndSex(res.data.data.list);
                 this.select = '';
               }
@@ -319,13 +347,47 @@
         },
         //根据客户Id或者机器人类型获取机器人
         searchByKey(){
-          if (this.select === 1){  //根据机器人类型获取机器人
+          if (this.select == 1){  //根据机器人类型获取机器人
             this.getRobotsByType(1,10,"","",this.input5);
-          } else if(this.select === 2){
-            this.getRobotsByType(1,10,"","",this.input5);
+          } else if(this.select == 2){
+            this.getRobotsByCustomer(1,10,"","",this.input5);
           } else {
             this.getAllRoobotsByParams(1,10);
           }
+        },
+        //获取客户id列表
+        getCustomersID(){
+          this.$axios.get('/customer/ids')
+            .then(res => {
+              if (res.data.code ===1 ){
+                this.customersId = res.data.data;
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        },
+        changeCustomer(index,row){
+          this.currentCustomerId = row.customer_id;
+          this.dialogFormVisible3 = true;
+          this.currentRobotId = row.id;
+        },
+        // 重新分配机器人
+        submitAssgin(){
+          this.$axios.post('/robert/assign?robert_id=' + this.currentRobotId + '&user_id=' + this.currentCustomerId)
+            .then(res => {
+              if (res.data.code === 1){
+                this.$message.success({
+                  message:"重新分配成功！",
+                  showClose:true
+                });
+                this.dialogFormVisible3 = false;
+                this.getAllRoobotsByParams(1,10);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
         },
         // 导出excel
         getExcel(){
@@ -344,6 +406,8 @@
       mounted(){
           // 初始化获取第一页机器人信息
         this.getAllRoobotsByParams(1,10);
+        //获取所有客户的id
+        this.getCustomersID();
       }
     }
 </script>

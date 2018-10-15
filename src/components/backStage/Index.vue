@@ -49,6 +49,9 @@
           <el-menu-item-group>
             <el-menu-item index="/index/product">产品百科</el-menu-item>
           </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/index/feedstore">投喂百科</el-menu-item>
+          </el-menu-item-group>
         </el-submenu>
         <el-submenu index="5">
         <template slot="title">
@@ -78,10 +81,10 @@
       },
       methods:{
         handleOpen(key, keyPath) {
-          console.log(key, keyPath);
+          // console.log(key, keyPath);
         },
         handleClose(key, keyPath) {
-          console.log(key, keyPath);
+          // console.log(key, keyPath);
         }
       },
       computed: {
