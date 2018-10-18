@@ -2,27 +2,37 @@
     <div class="robotController">
 
       <!--按条件搜索-->
-      <div style="margin-top: 15px;width: 40%;" >
-        <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
-          <el-select v-model="select"  placeholder="请选择" slot="prepend" style="width: 130px;">
+      <div style="margin-top: 15px" >
+          <el-select v-model="select"  placeholder="筛选类型" style="width: 130px;" @change="selectChange">
             <el-option label="机器人类型" value="1"></el-option>
             <el-option label="客户ID" value="2"></el-option>
           </el-select>
-          <el-button slot="append" icon="el-icon-search" @click.native="searchByKey"></el-button>
-        </el-input>
+        <el-select v-model="input5"  placeholder="筛选内容" style="width: 130px;">
+          <el-option
+            v-for="(item,index) in select_keys"
+            :key="index"
+            :label="item"
+            :value="item">
+          </el-option>
+        </el-select>
+        <!--<el-input type="text" v-model="input5" list="select_list" name="select" @focus="getSelectKeys" placeholder="请选择筛选内容" style="width: 130px"></el-input>-->
+        <!--<input id="" type="text" v-model="input5" list="select_list" name="select" @focus="getSelectKeys" placeholder="请选择筛选内容"/>-->
+        <!--<datalist id="select_list">-->
+          <!--<option v-for="(item,index) in select_keys"-->
+                  <!--:key="index"-->
+                  <!--:label="item"-->
+                  <!--:value="item"></option>-->
+        <!--</datalist>-->
+        <el-button size="medium" @click.native="searchByKey">筛选</el-button>
+        <el-button size="medium" @click.native="reset">重置</el-button>
       </div>
 
       <!--机器人列表展示-->
       <el-table
         :data="robots"
         style="width: 100%;margin-top: 20px;text-align: center">
-        <!--<el-table-column-->
-          <!--type="selection"-->
-          <!--align="center"-->
-          <!--width="55">-->
-        <!--</el-table-column>-->
         <el-table-column
-          prop="address"
+          prop="position"
           align="center"
           label="地区"
           width="80">
@@ -107,10 +117,24 @@
             <el-input v-model="addRobot.number" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="类别">
-            <el-input v-model="addRobot.type" autocomplete="off"></el-input>
+            <el-select v-model="addRobot.type" placeholder="请选择">
+              <el-option
+                v-for="(item,index) in robotType"
+                :key="index"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
           </el-form-item>
           <el-form-item label="客户ID">
-            <el-input v-model="addRobot.user_id" autocomplete="off"></el-input>
+            <el-select v-model="addRobot.user_id" placeholder="请选择">
+              <el-option
+                v-for="(item,index) in customersId"
+                :key="index"
+                :label="item"
+                :value="item">
+              </el-option>
+            </el-select>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -133,23 +157,24 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="dialogFormVisible2 = false">取 消</el-button>
           <el-button type="primary" @click="submitForm">确 定</el-button>
         </div>
       </el-dialog>
 
       <!--重新分配机器人-->
       <el-dialog title="重新分配机器人" :visible.sync="dialogFormVisible3" >
-        <el-select v-model="currentCustomerId" placeholder="请选择">
+        <label>客户名称</label>
+        <el-select v-model="currentCustomerRealname" placeholder="请选择">
           <el-option
-            v-for="(item,index) in customersId"
+            v-for="(item,index) in customersRealname"
             :key="index"
             :label="item"
             :value="item">
           </el-option>
         </el-select>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
+          <el-button @click="dialogFormVisible3 = false">取 消</el-button>
           <el-button type="primary" @click="submitAssgin">确 定</el-button>
         </div>
       </el-dialog>
@@ -158,11 +183,7 @@
       <div class="options">
         <ul>
           <li><el-button  plain @click="newRobot">新建</el-button></li>
-          <li><el-button plain>打印</el-button></li>
-          <!--<li><el-button plain @click="removeRobot">删除</el-button></li>-->
-          <li><el-button type="primary" plain>导出word</el-button></li>
           <li><el-button type="primary" plain @click.native="getExcel">导出excel</el-button></li>
-          <!--<a style="text-decoration: none;color: #40a9ff;" href="http://223.2.197.240:8062/excel/technology">导出excel</a>-->
         </ul>
       </div>
 
@@ -186,6 +207,7 @@
         name: "robotController",
       data(){
           return {
+            restaurants: [],
             isNew:false,
             dialogFormVisible:false,
             dialogFormVisible2:false,
@@ -202,12 +224,34 @@
               type: '',
               user_id: ''
             },
+            customersRealname:[],
             customersId:[],
-            currentCustomerId:''
+            customers:{},
+            currentCustomerId:-1,
+            currentCustomerRealname:'',
+            robotType:["水产机器人"],
+            select_keys:[],
           }
       },
       methods:{
-          // 拉取机器人列表 时间和性别转换
+        selectChange(){
+          console.log(this.select);
+          if (this.select == ""){
+            this.select_keys = [];
+          } else if(this.select == 1){
+            this.select_keys = this.robotType
+          } else if(this.select == 2) {
+            console.log(this.customersRealname);
+            this.select_keys = this.customersRealname
+          }
+        },
+
+        reset(){
+          this.select = '';
+          this.input5 = '';
+          this.getAllRoobotsByParams(1,10);
+        },
+          // 拉取机器人列表 时间和性别转换  省市区拼接
         changeDateAndSex(arr){
           let arr2 = arr;
           arr2.forEach(function (item,index,array) {
@@ -219,6 +263,16 @@
             if (array[index].registertime){
               array[index].registertime = (array[index].registertime).split(" ")[0] + (array[index].registertime).split(" ")[1];
             }
+            array[index]['position'] = "";
+            if (array[index].province != null && array[index].province != ""){
+              array[index]['position'] += array[index].province
+            }
+            if (array[index].city != null && array[index].city != ""){
+              array[index]['position'] += array[index].city;
+            }
+            if (array[index].county != null && array[index].county != ""){
+              array[index]['position'] += array[index].county;
+            }
           })
           return arr2;
         },
@@ -228,6 +282,7 @@
             .then( res => {
               if(res.data.code === 1){
                 this.robots = this.changeDateAndSex( res.data.data.list);
+                console.log(this.robots);
               }
             })
             .catch(function (err) {
@@ -323,7 +378,6 @@
             .then(res => {
               if (res.data.code === 1){
                 this.robots = this.changeDateAndSex(res.data.data.list);
-                this.select = '';
               }
             })
             .catch(err => {
@@ -338,7 +392,6 @@
                   console.log(res);
                   if (res.data.code === 1){
                 this.robots = this.changeDateAndSex(res.data.data.list);
-                this.select = '';
               }
             })
             .catch(err => {
@@ -347,10 +400,16 @@
         },
         //根据客户Id或者机器人类型获取机器人
         searchByKey(){
+          let select_id = -1;
           if (this.select == 1){  //根据机器人类型获取机器人
             this.getRobotsByType(1,10,"","",this.input5);
           } else if(this.select == 2){
-            this.getRobotsByCustomer(1,10,"","",this.input5);
+            for (let i = 0;i<this.customers.length;i++){
+              if (this.customers[i].username == this.input5){
+                select_id = this.customers[i].id
+              }
+            }
+            this.getRobotsByCustomer(1,10,"","",select_id);
           } else {
             this.getAllRoobotsByParams(1,10);
           }
@@ -360,7 +419,17 @@
           this.$axios.get('/customer/ids')
             .then(res => {
               if (res.data.code ===1 ){
-                this.customersId = res.data.data;
+                this.customers = res.data.data;
+                let arr = res.data.data;
+                let arr2 = new Array();
+                let arr3 = new Array();
+                arr.forEach(function (item) {
+                  arr2.push(item.username);
+                  arr3.push(item.id);
+                })
+                this.restaurants = arr2;
+                this.customersRealname = arr2;
+                this.customersId = arr3;
               }
             })
             .catch(err => {
@@ -369,13 +438,23 @@
         },
         changeCustomer(index,row){
           this.currentCustomerId = row.customer_id;
+          this.currentCustomerRealname = row.username;
           this.dialogFormVisible3 = true;
           this.currentRobotId = row.id;
         },
         // 重新分配机器人
         submitAssgin(){
-          this.$axios.post('/robert/assign?robert_id=' + this.currentRobotId + '&user_id=' + this.currentCustomerId)
+          // 根据username找出对应的id
+          let id = -1;
+          let arr = this.customers;
+          for (let i = 0;i< arr.length;i++){
+            if (arr[i].username === this.currentCustomerRealname){
+              id = arr[i].id;
+            }
+          }
+          this.$axios.post('/robert/assign?robert_id=' + this.currentRobotId + '&user_id=' + id)
             .then(res => {
+              console.log(res);
               if (res.data.code === 1){
                 this.$message.success({
                   message:"重新分配成功！",

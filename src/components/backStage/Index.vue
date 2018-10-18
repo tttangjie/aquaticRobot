@@ -6,7 +6,7 @@
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
-        background-color="#6482A0"
+        background-color="#545c64"
         style="width: 100%;height: 100%;"
         text-color="#fff"
         active-text-color="#ffd04b">
@@ -93,10 +93,10 @@
     },
     methods: {
       handleOpen(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       },
       handleClose(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       }
     },
     computed: {}
@@ -122,6 +122,7 @@
     height: 100%;
     float: left;
     background: #545c64;
+    overflow:hidden; padding-bottom:9999px; margin-bottom:-9999px;
   }
 
   .right {

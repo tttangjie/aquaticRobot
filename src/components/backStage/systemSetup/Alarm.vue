@@ -16,7 +16,7 @@
       highlight-current-row>
       <el-table-column
         align="center"
-        label="序号">
+        label="机器人ID">
         <template slot-scope="scope">{{ scope.row.robert_id }}</template>
       </el-table-column>
       <el-table-column

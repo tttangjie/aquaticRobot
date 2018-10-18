@@ -25,11 +25,11 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column
-        align="center"
-        label="种类">
-        <template slot-scope="scope">{{ scope.row.kind }}</template>
-      </el-table-column>
+      <!--<el-table-column-->
+        <!--align="center"-->
+        <!--label="种类">-->
+        <!--<template slot-scope="scope">{{ scope.row.kind }}</template>-->
+      <!--</el-table-column>-->
       <el-table-column
         align="center"
         label="子类">
