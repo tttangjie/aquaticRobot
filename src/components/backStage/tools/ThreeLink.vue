@@ -54,7 +54,7 @@
         ],
         data(){
           return{
-            mapJson:'../../../static/json/map.json',
+            mapJson:'/static/json/map.json',
             provinceSelection:'',
             province:[],
             citySelection:'',
