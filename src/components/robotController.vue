@@ -235,7 +235,8 @@
       },
       methods:{
         selectChange(){
-          console.log(this.select);
+          this.input5 = '';
+          // console.log(this.select);
           if (this.select == ""){
             this.select_keys = [];
           } else if(this.select == 1){

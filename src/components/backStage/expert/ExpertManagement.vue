@@ -196,7 +196,7 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="showRegisterDialog = false">取 消</el-button>
+    <el-button @click="showModifyDialog = false">取 消</el-button>
     <el-button type="primary" @click="modifyExpert">修 改</el-button>
   </span>
     </el-dialog>
