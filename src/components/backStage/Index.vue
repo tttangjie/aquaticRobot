@@ -1,12 +1,15 @@
 <template>
   <div id="index">
     <div class="left" style="height: 100%">
+      <div class="logo">
+        <span>Giz</span>
+      </div>
       <el-menu
         :router="isRouter"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
-        background-color="#545c64"
+        background-color="#C1BEBF"
         style="width: 100%;height: 100%;"
         text-color="#fff"
         active-text-color="#ffd04b">
@@ -131,5 +134,24 @@
     float: left;
     margin-left: 1%;
     /*background: yellow;*/
+  }
+
+  .logo{
+    text-align: center;
+    height: 120px;
+    line-height: 120px;
+    background: url("../../../static/img/bg.gif");
+  }
+
+  .logo span:first-letter{
+    font-size: 70px;
+    color: #9e9e9e;
+  }
+  .logo span{
+    font-size: 50px;
+    font-weight: 600;
+    display: block;
+    color: #1d4e79;
+
   }
 </style>
