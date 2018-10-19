@@ -19,18 +19,20 @@
 <style scoped>
 header{
   width: 100%;
-  height: 50px;
+  height: 30px;
+/*
   background: rgba(110, 132, 195, 0.4);
+*/
   text-align: right;
 }
   header span{
-    line-height: 50px;
+    line-height: 30px;
   }
   header a{
     cursor: pointer;
     margin-right: 5%;
   }
   header a:hover{
-    color: #ffff;
+    color: #9e9e9e;
   }
 </style>
