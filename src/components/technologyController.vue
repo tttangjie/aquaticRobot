@@ -17,7 +17,7 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="address"
+          prop="position"
           align="center"
           label="地区"
         width="55">
@@ -105,15 +105,10 @@
           <el-table-column property="description" label="故障描述" width="150" align="center"></el-table-column>
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
-                <el-popover trigger="hover" placement="top">
-                  <p>0: 待维修</p>
-                  <p>1: 维修中</p>
-                  <p>2: 维修完成</p>
-                  <p>3: 无法维修</p>
-                  <div slot="reference" class="name-wrapper">
-                    <el-tag size="medium">{{ scope.row.status }}</el-tag>
-                  </div>
-                </el-popover>
+              <span v-if="scope.row.status === 0">待维修</span>
+              <span v-if="scope.row.status === 1">维修中</span>
+              <span v-if="scope.row.status === 2">维修完成</span>
+              <span v-if="scope.row.status === 3">无法维修</span>
               <a style="text-decoration: none;color: red;cursor:pointer;" v-show="scope.row.status != 2"
                  @click="changeStatus(scope.$index, scope.row)">(更改)</a>
             </template>
@@ -248,11 +243,8 @@
       <div class="options">
         <ul>
           <li><el-button  plain @click="newTechnology">新建</el-button></li>
-          <li><el-button plain>打印</el-button></li>
           <li><el-button plain @click="removeMany">批量删除</el-button></li>
-          <li><el-button type="primary" plain>导出word</el-button></li>
           <li><el-button type="primary" plain @click.native="getExcel">导出excel</el-button></li>
-          <!--<a style="text-decoration: none;color: #40a9ff;" href="http://223.2.197.240:8062/excel/technology">导出excel</a>-->
         </ul>
       </div>
 
@@ -329,7 +321,7 @@
       },
       components:{Strategy},
       methods:{
-         //拉取全部技术人员 性别，日期转换
+         //拉取全部技术人员 性别，日期转换  地区转换
         changeDateAndSexOfAllTechnology:function(arr){
           let arr2 = arr;
           arr2.forEach(function (item,index,array) {
@@ -340,6 +332,16 @@
             }
             if (array[index].enter_time){
               array[index].enter_time = (array[index].enter_time).split(" ")[0] + (array[index].enter_time).split(" ")[1];
+            };
+            array[index]['position'] = "";
+            if (array[index].province != null && array[index].province != ""){
+              array[index]['position'] += array[index].province
+            }
+            if (array[index].city != null && array[index].city != ""){
+              array[index]['position'] += array[index].city;
+            }
+            if (array[index].county != null && array[index].county != ""){
+              array[index]['position'] += array[index].county;
             }
           })
           return arr2;
@@ -348,6 +350,7 @@
         getTechnologyByPage:function (pageNum,pageSize,OrderBy,condition) {
           this.$axios.get('/technology/?pageNum=' + pageNum + '&pageSize=' + pageSize + '&OrderBy=' + OrderBy + '&condition=' + condition)
             .then( res => {
+              console.log(res);
               if (res.data.code === 1){
                 this.allTechnology = this.changeDateAndSexOfAllTechnology(res.data.data.list);
                 this.total = res.data.data.total

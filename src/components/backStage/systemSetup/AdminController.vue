@@ -15,6 +15,11 @@
       </el-table-column>
       <el-table-column
         align="center"
+        label="用户名">
+        <template slot-scope="scope">{{ scope.row.username }}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
         label="工号">
         <template slot-scope="scope">{{ scope.row.number }}</template>
       </el-table-column>
@@ -68,8 +73,6 @@
     </el-table>
     <div class="btns">
       <el-button size="medium" @click="showRegisterDialog = true">新建</el-button>
-      <el-button size="medium">打印</el-button>
-      <el-button size="medium" type="primary" plain>导出word</el-button>
       <el-button size="medium" type="primary" plain @click="exportExcel">导出excel</el-button>
     </div>
 

@@ -17,7 +17,7 @@
       <el-table-column
         align="center"
         label="地区">
-        <template slot-scope="scope">{{ scope.row.city }}</template>
+        <template slot-scope="scope">{{ scope.row.position }}</template>
       </el-table-column>
       <el-table-column
         align="center"
@@ -85,8 +85,6 @@
     <div class="btns">
       <el-button size="medium" @click="showRegisterDialog = true">新建</el-button>
       <el-button size="medium" @click="batchDelete">批量删除</el-button>
-      <el-button size="medium">打印</el-button>
-      <el-button size="medium" type="primary" plain>导出word</el-button>
       <el-button size="medium" type="primary" plain @click="exportExcel">导出excel</el-button>
     </div>
 
@@ -245,11 +243,22 @@
               }
             )
               .then((res) => {
+                console.log(res);
                 if(res.data.code === 1) {
                   this.expertList = res.data.data.list;
                   this.page.pages = res.data.data.pages;
                   this.page.total = res.data.data.total;
                   for (let item in this.expertList) {
+                    this.expertList[item]['position'] = "";
+                    if (this.expertList[item].province != null && this.expertList[item].province != ""){
+                      this.expertList[item]['position'] += this.expertList[item].province;
+                    }
+                    if (this.expertList[item].city != null && this.expertList[item].city != ""){
+                      this.expertList[item]['position'] += this.expertList[item].city;
+                    }
+                    if (this.expertList[item].county != null && this.expertList[item].county != ""){
+                      this.expertList[item]['position'] += this.expertList[item].county;
+                    }
                     if(this.expertList.hasOwnProperty(item)) {
                       this.expertList[item].registerTime = this.expertList[item].sign_time.substring(0, 11);
                       if(this.expertList[item].sex === 0 )

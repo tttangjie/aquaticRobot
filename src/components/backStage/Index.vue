@@ -1,9 +1,6 @@
 <template>
   <div id="index">
     <div class="left" style="height: 100%">
-      <div class="logo">
-        <span>Giz</span>
-      </div>
       <el-menu
         :router="isRouter"
         class="el-menu-vertical-demo"
@@ -14,7 +11,7 @@
         text-color="#fff"
         active-text-color="#ffd04b">
         <el-submenu index="1">
-          <template slot="title" >
+          <template slot="title">
             <i class="el-icon-menu"></i>
             <span>用户管理</span>
           </template>
@@ -81,19 +78,14 @@
     </div>
 
     <div class="right">
-      <table-header></table-header>
       <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
-  import TableHeader from '../Header'
   export default {
     name: "Index",
-    components:{
-      'table-header':TableHeader
-    },
     data() {
       return {
         isRouter: true
@@ -101,10 +93,10 @@
     },
     methods: {
       handleOpen(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       },
       handleClose(key, keyPath) {
-        console.log(key, keyPath);
+        // console.log(key, keyPath);
       }
     },
     computed: {}
@@ -129,10 +121,8 @@
     width: 18%;
     height: 100%;
     float: left;
-/*
     background: #545c64;
-*/
-    background: url("/static/img/bg.gif");
+    overflow:hidden; padding-bottom:9999px; margin-bottom:-9999px;
   }
 
   .right {
@@ -141,20 +131,5 @@
     float: left;
     margin-left: 1%;
     /*background: yellow;*/
-  }
-
-  .logo{
-    text-align: center;
-    height: 90px;
-  }
-  .logo span:first-letter{
-    font-size: 60px;
-    color: #787878;
-  }
-  .logo span{
-    font-size: 50px;
-    font-weight: 600;
-    display: block;
-    color: #1d4e79;
   }
 </style>

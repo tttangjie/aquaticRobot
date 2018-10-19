@@ -101,7 +101,7 @@ export default {
   width: 100%;
   height: 100%;
   position: absolute;
-  background: url("/static/img/background6.jpg");
+  background: url('../../static/background6.jpg');
   background-size: 100%;
 }
   .login{

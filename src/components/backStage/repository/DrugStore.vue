@@ -2,7 +2,15 @@
   <div>
     <div class="btns">
       <el-button size="medium" @click="showRegisterDialogFunc" type="primary">新建</el-button>
-      <el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>
+      <el-select v-model="strategy" placeholder="请选择" style="width: 120px;">
+        <el-option
+          v-for="(item,index) in subKinds"
+          :key="index"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+      <!--<el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>-->
       <el-button size="medium" @click="query">筛选</el-button>
       <el-button size="medium" @click="reset">重置</el-button>
     </div>
@@ -25,12 +33,12 @@
           </el-form>
         </template>
       </el-table-column>
-      <el-table-column
-        width="50"
-        align="center"
-        label="种类">
-        <template slot-scope="scope">{{ scope.row.kind }}</template>
-      </el-table-column>
+      <!--<el-table-column-->
+        <!--width="50"-->
+        <!--align="center"-->
+        <!--label="种类">-->
+        <!--<template slot-scope="scope">{{ scope.row.kind }}</template>-->
+      <!--</el-table-column>-->
       <el-table-column
         align="center"
         label="子类">
@@ -224,6 +232,7 @@
         showModifyDialog:false,
         formLabelWidth:'120px',
         strategy:'',
+        subKinds:["虾类","蟹类","鱼类","其他","所有"]
       }
     },
     methods:{

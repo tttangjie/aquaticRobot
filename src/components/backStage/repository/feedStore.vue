@@ -21,7 +21,6 @@
         tooltip-effect="dark"
         size="mini"
         style="width: 100%;"
-        height="550"
         highlight-current-row>
         <el-table-column type="expand">
           <template slot-scope="scope">
@@ -36,8 +35,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          align="center"
-          label="类型">
+          label="类型" align="center">
           <template slot-scope="scope">{{ scope.row.subKind }}</template>
         </el-table-column>
         <el-table-column
@@ -172,7 +170,7 @@
             changeRegisterDialog:false,
             total:0,
             currentPage:1,
-            subKinds:["鱼类","虾类","蟹类","其他"],
+            subKinds:["鱼类","虾类","蟹类","其他","所有"],
             feedStores:[],
             feedStoreForm:{
               company: "",
