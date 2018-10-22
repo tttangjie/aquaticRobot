@@ -39,6 +39,9 @@
           <el-menu-item-group>
             <el-menu-item index="/index/technology">技术人员</el-menu-item>
           </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/index/service">维修</el-menu-item>
+          </el-menu-item-group>
         </el-submenu>
         <el-submenu index="4">
           <template slot="title">
