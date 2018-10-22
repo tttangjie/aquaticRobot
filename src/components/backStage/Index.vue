@@ -21,6 +21,9 @@
           <el-menu-item-group>
             <el-menu-item index="/index/robot">机器人管理</el-menu-item>
           </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="/index/customer">客户管理</el-menu-item>
+          </el-menu-item-group>
         </el-submenu>
         <el-submenu index="2">
           <template slot="title">
@@ -45,6 +48,12 @@
             <i class="el-icon-tickets"></i>
             <span>数据报告</span>
           </template>
+        </el-submenu>
+        <el-submenu index="5">
+          <template slot="title">
+            <i class="el-icon-tickets"></i>
+            <span>养殖百科</span>
+          </template>
           <el-menu-item-group>
             <el-menu-item index="/index/disease">疾病百科</el-menu-item>
           </el-menu-item-group>
@@ -65,7 +74,7 @@
           </el-menu-item-group>
 
         </el-submenu>
-        <el-submenu index="5">
+        <el-submenu index="6">
           <template slot="title">
             <i class="el-icon-setting"></i>
             <span>系统设置</span>

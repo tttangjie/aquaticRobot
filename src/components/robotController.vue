@@ -45,7 +45,7 @@
           label="联系人"
         width="70">
           <template slot-scope="scope">
-            <span style="cursor:pointer;" @click="changeCustomer(scope.$index, scope.row)">{{scope.row.username}}</span>
+            <span style="cursor:pointer;color: blue" @click="changeCustomer(scope.$index, scope.row)">{{scope.row.username}}</span>
           </template>>
         </el-table-column>
         <el-table-column
@@ -118,10 +118,10 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="客户ID">
-            <el-select v-model="addRobot.user_id" placeholder="请选择">
+          <el-form-item label="客户">
+            <el-select v-model="addRobot.currentCustomerRealname" placeholder="请选择">
               <el-option
-                v-for="(item,index) in customersId"
+                v-for="(item,index) in customersRealname"
                 :key="index"
                 :label="item"
                 :value="item">
@@ -214,14 +214,15 @@
               id: '',
               number: '',
               type: '',
-              user_id: ''
+              user_id: '',
+              currentCustomerRealname:''
             },
             customersRealname:[],
             customersId:[],
             customers:{},
             currentCustomerId:-1,
             currentCustomerRealname:'',
-            robotType:["水产机器人"],
+            robotType:[],
             select_keys:[],
           }
       },
@@ -297,7 +298,7 @@
           this.$axios.delete('/robert/' + row.id)
             .then(res => {
               if (res.data.code === 1){
-                this.getAllRoobotsByParams(1,10);
+                this.getAllRoobotsByParams(this.currentPage,10);
               }
             })
             .catch(err => {
@@ -314,16 +315,27 @@
         submitForm(){
           // console.log(this.isNew);
             if(this.isNew === true){  //新增机器人
+              // 根据username找出对应的id
+              let id = -1;
+              let arr = this.customers;
+              for (let i = 0;i< arr.length;i++){
+                if (arr[i].username === this.currentCustomerRealname){
+                  id = arr[i].id;
+                }
+              }
               this.$axios.post('/robert/add',{
                 "number": this.addRobot.number,
                 "type": this.addRobot.type,
-                "user_id": this.addRobot.user_id
+                "user_id": id
               })
                 .then(res => {
-                  // console.log(res);
                   if (res.data.code === 1){
+                    this.$message.success({
+                      message:"新建成功",
+                      showClose:true
+                    });
                     this.dialogFormVisible = false;
-                    this.getAllRoobotsByParams(1,10);
+                    this.getAllRoobotsByParams(this.currentPage,10);
                     this.addRobot = {};
                     this.isNew = false;
                   }
@@ -463,7 +475,19 @@
                   showClose:true
                 });
                 this.dialogFormVisible3 = false;
-                this.getAllRoobotsByParams(1,10);
+                this.getAllRoobotsByParams(this.currentPage,10);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        },
+        //获取所有机器人类型
+        getAllRobotType(){
+          this.$axios.get('/robert/all/type')
+            .then(res => {
+              if (res.data.code === 1){
+                this.robotType = res.data.data;
               }
             })
             .catch(err => {
@@ -492,6 +516,8 @@
         this.getAllRoobotsByParams(1,10);
         //获取所有客户的id
         this.getCustomersID();
+        //获取所有机器人类型
+        this.getAllRobotType();
       }
     }
 </script>

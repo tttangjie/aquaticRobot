@@ -2,7 +2,15 @@
   <div>
     <div class="btns">
       <el-button size="medium" @click="showRegisterDialogFunc" type="primary">新建</el-button>
-      <el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>
+      <el-select v-model="strategy" placeholder="请选择" style="width: 120px;">
+        <el-option
+          v-for="(item,index) in subKinds"
+          :key="index"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+      <!--<el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>-->
       <el-button size="medium" @click="query">筛选</el-button>
       <el-button size="medium" @click="reset">重置</el-button>
     </div>
@@ -16,6 +24,10 @@
       style="width: 100%;"
       height="550"
       highlight-current-row>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -133,9 +145,9 @@
         <el-form-item label="联系电话" :label-width="formLabelWidth">
           <el-input v-model="seedStoreForm.telPhone"></el-input>
         </el-form-item>
-        <el-form-item label="访问数量" :label-width="formLabelWidth">
-          <el-input v-model="seedStoreForm.visitCount"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="访问数量" :label-width="formLabelWidth">-->
+          <!--<el-input v-model="seedStoreForm.visitCount"></el-input>-->
+        <!--</el-form-item>-->
         <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showRegisterDialog">
           <el-date-picker
             disabled
@@ -239,6 +251,7 @@
         showModifyDialog:false,
         formLabelWidth:'120px',
         strategy:'',
+        subKinds:["蟹类","虾类","鱼类","其他","所有"],
       }
     },
     methods:{

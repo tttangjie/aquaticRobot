@@ -22,6 +22,11 @@ export default new Router({
           component: (resolve) => require(['../components/robotController'], resolve),
         },
         {
+          path: 'customer',
+          name: 'customerController',
+          component: (resolve) => require(['../components/customerController'], resolve),
+        },
+        {
           path: 'technology',
           name: 'technologyController',
           component: (resolve) => require(['../components/technologyController'], resolve),

@@ -155,11 +155,6 @@
           <el-form-item label="年龄">
             <el-input v-model="updateTechnology.age" autocomplete="off"></el-input>
           </el-form-item>
-          <!--<el-form-item label="时间">-->
-            <!--<el-col :span="11">-->
-              <!--<el-date-picker type="date" placeholder="选择日期" v-model="updateTechnology.enter_time" style="width: 100%;"></el-date-picker>-->
-            <!--</el-col>-->
-          <!--</el-form-item>-->
           <el-form-item label="工号">
             <el-input v-model="updateTechnology.number" autocomplete="off"></el-input>
           </el-form-item>
@@ -583,10 +578,8 @@
           console.log(value);
           // 检查是不是空查询
           if (value.dateBegin == "" && value.dateEnd == "" && value.province == "" && value.city == "" && value.block == "") {  //查询条件全部为空，判断为空查询
-            console.log(11111111);
             this.getTechnologyByPage(this.currentPage,10);
           } else{
-            console.log(22222222);
             this.isFilter = true;
             this.queryDatas = value;
             this.getAllTechnologysByOrder(1,10,"","",value);

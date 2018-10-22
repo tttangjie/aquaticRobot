@@ -16,8 +16,8 @@
       highlight-current-row>
       <el-table-column
         align="center"
-        label="机器人ID">
-        <template slot-scope="scope">{{ scope.row.robert_id }}</template>
+        label="机器人编号">
+        <template slot-scope="scope">{{ scope.row.id }}</template>
       </el-table-column>
       <el-table-column
         align="center"
@@ -198,6 +198,7 @@
           }
         )
           .then((res) => {
+            console.log(res);
             if(res.data.code === 1) {
               this.alarmList = res.data.data.list;
               this.page.pages = res.data.data.pages;

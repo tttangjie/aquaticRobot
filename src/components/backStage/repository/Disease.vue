@@ -21,6 +21,10 @@
       size="mini"
       style="width: 100%;"
       highlight-current-row>
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -92,9 +96,9 @@
         <el-form-item label="治疗方法" :label-width="formLabelWidth">
           <el-input v-model="diseaseForm.treatment"></el-input>
         </el-form-item>
-        <el-form-item label="浏览次数" :label-width="formLabelWidth">
-          <el-input v-model="diseaseForm.visitCount"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="浏览次数" :label-width="formLabelWidth">-->
+          <!--<el-input v-model="diseaseForm.visitCount"></el-input>-->
+        <!--</el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
     <el-button @click="showRegisterDialog = false">取 消</el-button>

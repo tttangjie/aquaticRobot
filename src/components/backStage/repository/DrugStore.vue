@@ -22,7 +22,10 @@
       style="width: 100%;"
       height="550"
       highlight-current-row>
-
+      <el-table-column
+        type="index"
+        width="50">
+      </el-table-column>
      <!-- 主界面折叠ban-->
       <el-table-column type="expand">
         <template slot-scope="scope">
