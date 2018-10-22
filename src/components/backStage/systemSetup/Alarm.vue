@@ -17,7 +17,7 @@
       <el-table-column
         align="center"
         label="机器人编号">
-        <template slot-scope="scope">{{ scope.row.id }}</template>
+        <template slot-scope="scope">{{ scope.row.robert_number}}</template>
       </el-table-column>
       <el-table-column
         align="center"
@@ -80,8 +80,15 @@
       :visible.sync="showRegisterDialog"
       width="450px">
       <el-form :model="alarmForm">
-        <el-form-item label="序号" :label-width="formLabelWidth">
-          <el-input v-model="alarmForm.robert_id"></el-input>
+        <el-form-item label="机器人编号" :label-width="formLabelWidth">
+          <el-select v-model="alarmForm.robert_id" placeholder="请选择" style="width: 120px;">
+            <el-option
+              v-for="(item,index) in robertList"
+              :key="item.number"
+              :label="item.number"
+              :value="item.id">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="水温" :label-width="formLabelWidth">
           <el-input v-model="alarmForm.temperature_min" style="width: 45%"></el-input>
@@ -124,8 +131,8 @@
       :visible.sync="showModifyDialog"
       width="450px">
       <el-form :model="currentModify">
-        <el-form-item label="序号" :label-width="formLabelWidth">
-          <el-input v-model="currentModify.robert_id" disabled></el-input>
+        <el-form-item label="机器人编号" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.robert_number" disabled></el-input>
         </el-form-item>
         <el-form-item label="水温" :label-width="formLabelWidth">
           <el-input v-model="currentModify.temperature_min" style="width: 45%"></el-input>
@@ -169,6 +176,7 @@
     data() {
       return {
         alarmList:[],
+        robertList:[],
         currentModify:{},
         page:{
           num: 1,
@@ -207,6 +215,17 @@
           })
           .catch((err) => {
             console.log(err)
+          })
+      },
+      loadRobert(){
+        this.$axios.get('/robert/all')
+          .then(res => {
+            if (res.data.code === 1){
+              this.robertList = res.data.data.list;
+            }
+          })
+          .catch(err => {
+            console.log(err);
           })
       },
       jumpToOtherPage() {
@@ -298,6 +317,7 @@
     },
     mounted() {
       this.loadList();
+      this.loadRobert();
     }
   }
 </script>
