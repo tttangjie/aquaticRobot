@@ -269,7 +269,11 @@
           })
       },
       jumpToOtherPage() {
-        this.loadList();
+        if (this.strategy === ''){
+          this.loadList();
+        } else {
+          this.query();
+        }
       },
       showRegisterDialogFunc() {
         this.medicineForm.publishTime = new Date().getTime();

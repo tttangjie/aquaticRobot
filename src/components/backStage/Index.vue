@@ -124,7 +124,7 @@
     width: 18%;
     height: 100%;
     float: left;
-    background: #545c64;
+    background: #c1bebf;
     overflow:hidden; padding-bottom:9999px; margin-bottom:-9999px;
   }
 

@@ -15,14 +15,6 @@
             :value="item">
           </el-option>
         </el-select>
-        <!--<el-input type="text" v-model="input5" list="select_list" name="select" @focus="getSelectKeys" placeholder="请选择筛选内容" style="width: 130px"></el-input>-->
-        <!--<input id="" type="text" v-model="input5" list="select_list" name="select" @focus="getSelectKeys" placeholder="请选择筛选内容"/>-->
-        <!--<datalist id="select_list">-->
-          <!--<option v-for="(item,index) in select_keys"-->
-                  <!--:key="index"-->
-                  <!--:label="item"-->
-                  <!--:value="item"></option>-->
-        <!--</datalist>-->
         <el-button size="medium" @click.native="searchByKey">筛选</el-button>
         <el-button size="medium" @click.native="reset">重置</el-button>
       </div>
@@ -242,7 +234,7 @@
           } else if(this.select == 1){
             this.select_keys = this.robotType
           } else if(this.select == 2) {
-            console.log(this.customersRealname);
+            // console.log(this.customersRealname);
             this.select_keys = this.customersRealname
           }
         },
@@ -281,9 +273,11 @@
         getAllRoobotsByParams(pageNum,pageSize,orderBy,condition){
           this.$axios.get('/robert/all?pageNum='+ pageNum  + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition)
             .then( res => {
+              // console.log(res);
               if(res.data.code === 1){
                 this.robots = this.changeDateAndSex( res.data.data.list);
-                console.log(this.robots);
+                this.total = res.data.data.total;
+                // console.log(this.robots);
               }
             })
             .catch(function (err) {
@@ -318,7 +312,7 @@
         },
         // 新增或修改机器人信息
         submitForm(){
-          console.log(this.isNew);
+          // console.log(this.isNew);
             if(this.isNew === true){  //新增机器人
               this.$axios.post('/robert/add',{
                 "number": this.addRobot.number,
@@ -326,7 +320,7 @@
                 "user_id": this.addRobot.user_id
               })
                 .then(res => {
-                  console.log(res);
+                  // console.log(res);
                   if (res.data.code === 1){
                     this.dialogFormVisible = false;
                     this.getAllRoobotsByParams(1,10);
@@ -344,7 +338,7 @@
                   "user_id": this.addRobot.user_id
                 })
                   .then(res => {
-                    console.log(res);
+                    // console.log(res);
                     if (res.data.code === 1){
                       this.dialogFormVisible2 = false;
                       this.getAllRoobotsByParams(this.currentPage,10);
@@ -358,15 +352,18 @@
         },
         // 分页
         handleCurrentChange(val){
+          console.log(this.select);
+          console.log(val);
           //判断是什么条件下的分页
           switch (this.select) {
             case '':
               this.getAllRoobotsByParams(val, 10);
               break;
-            case 1:
+            case '1':
+              console.log(1111);
               this.getRobotsByType(val, 10, "", "", this.input5);
               break;
-            case 2:
+            case '2':
               this.getRobotsByCustomer(val, 10, "", "", this.input5);
               break;
             default:
@@ -377,8 +374,11 @@
         getRobotsByType(pageNum,pageSize,orderBy,condition,type){
           this.$axios.get('/robert/type?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition + '&type=' + type)
             .then(res => {
+              console.log(res);
               if (res.data.code === 1){
                 this.robots = this.changeDateAndSex(res.data.data.list);
+                this.total = res.data.data.total;
+                this.currentPage = pageNum;
               }
             })
             .catch(err => {
@@ -390,9 +390,10 @@
         getRobotsByCustomer(pageNum,pageSize,orderBy,condition,customer_id){
           this.$axios.get('/robert/customer?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition + '&customer_id=' + customer_id)
                 .then(res => {
-                  console.log(res);
                   if (res.data.code === 1){
                 this.robots = this.changeDateAndSex(res.data.data.list);
+                    this.total = res.data.data.total;
+                    this.currentPage = pageNum;
               }
             })
             .catch(err => {
@@ -455,7 +456,7 @@
           }
           this.$axios.post('/robert/assign?robert_id=' + this.currentRobotId + '&user_id=' + id)
             .then(res => {
-              console.log(res);
+              // console.log(res);
               if (res.data.code === 1){
                 this.$message.success({
                   message:"重新分配成功！",
@@ -480,6 +481,9 @@
               });
               let objectUrl = URL.createObjectURL(blob);
               window.location.href = objectUrl;
+            })
+            .catch(err => {
+              console.log(err);
             })
         }
       },

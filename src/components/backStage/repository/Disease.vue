@@ -36,11 +36,6 @@
           </el-form>
         </template>
       </el-table-column>
-      <!--<el-table-column-->
-        <!--align="center"-->
-        <!--label="种类">-->
-        <!--<template slot-scope="scope">{{ scope.row.subKind }}</template>-->
-      <!--</el-table-column>-->
       <el-table-column
         align="center"
         label="疾病名称">
@@ -69,7 +64,7 @@
 
     <el-pagination
       style="text-align: center"
-      @current-change="jumpToOtherPage"
+      @current-change="handleCurrentChange"
       :current-page.sync="page.num"
       :page-size="page.size"
       layout="prev, pager, next, jumper"
@@ -191,8 +186,13 @@
             console.log(err)
           })
       },
-      jumpToOtherPage() {
-        this.loadList();
+      handleCurrentChange(val) {
+        // 判断是分类查询的分页还是全部的分页
+        if(this.strategy === ''){
+          this.loadList();
+        } else {
+          this.query();
+        }
       },
       registerExpert() {
         this.diseaseForm.publishTime = new Date().getTime();
@@ -241,7 +241,16 @@
         this.showModifyDialog = true;
       },
       modifyDisease() {
-        this.$axios.put('/disease/'+this.currentModify.id,this.currentModify)
+        this.$axios.put('/disease/'+this.currentModify.id,{
+         "cause":this.currentModify.cause,
+        "diseaseName" : this.currentModify.diseaseName,
+        "id":this.currentModify.id,
+       "image":this.currentModify.image,
+        "subKind":this.currentModify.subKind,
+        "symptom":this.currentModify.symptom,
+        "treatment":this.currentModify.treatment,
+        "visitCount":this.currentModify.visitCount
+        })
           .then((res) => {
             if(res.data.code === 1) {
               this.loadList();

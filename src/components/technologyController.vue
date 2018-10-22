@@ -17,7 +17,7 @@
           width="55">
         </el-table-column>
         <el-table-column
-          prop="position"
+          prop="location"
           align="center"
           label="地区"
         width="55">
@@ -155,11 +155,11 @@
           <el-form-item label="年龄">
             <el-input v-model="updateTechnology.age" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="时间">
-            <el-col :span="11">
-              <el-date-picker type="date" placeholder="选择日期" v-model="updateTechnology.enter_time" style="width: 100%;"></el-date-picker>
-            </el-col>
-          </el-form-item>
+          <!--<el-form-item label="时间">-->
+            <!--<el-col :span="11">-->
+              <!--<el-date-picker type="date" placeholder="选择日期" v-model="updateTechnology.enter_time" style="width: 100%;"></el-date-picker>-->
+            <!--</el-col>-->
+          <!--</el-form-item>-->
           <el-form-item label="工号">
             <el-input v-model="updateTechnology.number" autocomplete="off"></el-input>
           </el-form-item>
@@ -167,13 +167,24 @@
             <el-input v-model="updateTechnology.position" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="地址">
-            <el-col :span="11">
-              <el-input v-model="updateTechnology.province" autocomplete="off" placeholder="省"></el-input>
-            </el-col>
-            <el-col class="line" :span="2" style="text-align: center">-</el-col>
-            <el-col :span="11">
-              <el-input v-model="updateTechnology.address" autocomplete="off" placeholder="市"></el-input>
-            </el-col>
+            <el-row>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.province" autocomplete="off" placeholder="省"></el-input>
+              </el-col>
+              <el-col class="line" :span="2" style="text-align: center">-</el-col>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.city" autocomplete="off" placeholder="市"></el-input>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.county" autocomplete="off" placeholder="区"></el-input>
+              </el-col>
+              <el-col class="line" :span="2" style="text-align: center">-</el-col>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.address" autocomplete="off" placeholder="详细地址"></el-input>
+              </el-col>
+            </el-row>
           </el-form-item>
           <el-form-item label="电话">
             <el-input v-model="updateTechnology.tel" autocomplete="off"></el-input>
@@ -218,13 +229,24 @@
             <el-input v-model="updateTechnology.position" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="地址">
-            <el-col :span="11">
-              <el-input v-model="updateTechnology.province" autocomplete="off" placeholder="省"></el-input>
-            </el-col>
-            <el-col class="line" :span="2" style="text-align: center">-</el-col>
-            <el-col :span="11">
-              <el-input v-model="updateTechnology.address" autocomplete="off" placeholder="市"></el-input>
-            </el-col>
+            <el-row>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.province" autocomplete="off" placeholder="省" :disabled="true"></el-input>
+              </el-col>
+              <el-col class="line" :span="2" style="text-align: center">-</el-col>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.city" autocomplete="off" placeholder="市" :disabled="true"></el-input>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.county" autocomplete="off" placeholder="区" :disabled="true"></el-input>
+              </el-col>
+              <el-col class="line" :span="2" style="text-align: center">-</el-col>
+              <el-col :span="11">
+                <el-input v-model="updateTechnology.address" autocomplete="off" placeholder="详细地址"></el-input>
+              </el-col>
+            </el-row>
           </el-form-item>
           <el-form-item label="电话">
             <el-input v-model="updateTechnology.tel" autocomplete="off"></el-input>
@@ -287,7 +309,7 @@
              city: "",
              county: "",
              email: "",
-             enter_time: "",
+             // enter_time: "",
              id: 0,
              image: "",
              number: "",
@@ -333,15 +355,15 @@
             if (array[index].enter_time){
               array[index].enter_time = (array[index].enter_time).split(" ")[0] + (array[index].enter_time).split(" ")[1];
             };
-            array[index]['position'] = "";
+            array[index]['location'] = "";
             if (array[index].province != null && array[index].province != ""){
-              array[index]['position'] += array[index].province
+              array[index]['location'] += array[index].province
             }
             if (array[index].city != null && array[index].city != ""){
-              array[index]['position'] += array[index].city;
+              array[index]['location'] += array[index].city;
             }
             if (array[index].county != null && array[index].county != ""){
-              array[index]['position'] += array[index].county;
+              array[index]['location'] += array[index].county;
             }
           })
           return arr2;
@@ -444,7 +466,7 @@
               "city": this.updateTechnology.city,
               "county": this.updateTechnology.county,
               "email": this.updateTechnology.email,
-              "enter_time": enter_time,
+              // "enter_time": enter_time,
               "image": this.updateTechnology.image,
               "number": this.updateTechnology.number,
               "position": this.updateTechnology.position,
