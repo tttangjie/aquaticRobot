@@ -31,6 +31,9 @@
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item >
+              <span class="form_text"><img class="item_img" :src="scope.row.image"/></span>
+            </el-form-item>
             <el-form-item label="描述">
               <span class="form_text" >{{ scope.row.description }}</span>
             </el-form-item>
@@ -91,8 +94,7 @@
         align="center"
         label="发布时间">
         <!--显示时间，publishTime为date类型，格式化显示的时间-->
-        <template slot-scope="scope">{{scope.row.publishTime.getFullYear()
-          +'-' +( scope.row.publishTime.getMonth()+1)+'-'+scope.row.publishTime.getDate()  }}</template>
+        <template slot-scope="scope">{{ scope.row.publishTime }}</template>
       </el-table-column>
 
       <el-table-column
@@ -121,6 +123,17 @@
       :visible.sync="showRegisterDialog"
       width="450px">
       <el-form :model="seedStoreForm">
+        <el-form-item :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            :action="GLOBAL.Base_URL"
+            :auto-upload="false"
+            :on-change="handleImageChange"
+            :show-file-list="false">
+            <img v-if="seedStoreForm.image" :src="seedStoreForm.imageURL" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="seedStoreForm.title"></el-input>
         </el-form-item>
@@ -148,15 +161,6 @@
         <!--<el-form-item label="访问数量" :label-width="formLabelWidth">-->
           <!--<el-input v-model="seedStoreForm.visitCount"></el-input>-->
         <!--</el-form-item>-->
-        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showRegisterDialog">
-          <el-date-picker
-            disabled
-            v-model=seedStoreForm.publishTime
-            type="datetime"
-            value-format="timestamp"
-            placeholder="选择日期时间">
-          </el-date-picker>
-        </el-form-item>
         <el-form-item label="描述">
           <el-input
             type="textarea"
@@ -177,6 +181,17 @@
       :visible.sync="showModifyDialog"
       width="450px">
       <el-form :model="currentModify">
+        <el-form-item :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            :action="GLOBAL.Base_URL"
+            :auto-upload="false"
+            :on-change="handleImageModify"
+            :show-file-list="false">
+            <img v-if="currentModify.image" :src="currentModify.imageURL" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="currentModify.title"></el-input>
         </el-form-item>
@@ -203,15 +218,6 @@
         </el-form-item>
         <el-form-item label="访问数量" :label-width="formLabelWidth">
           <el-input v-model="currentModify.visitCount"></el-input>
-        </el-form-item>
-        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showRegisterDialog">
-          <el-date-picker
-            disabled
-            v-model=currentModify.publishTime
-            type="datetime"
-            value-format="timestamp"
-            placeholder="选择日期时间">
-          </el-date-picker>
         </el-form-item>
         <el-form-item label="描述">
           <el-input
@@ -273,10 +279,11 @@
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
               console.log(this.seedStoreList)
-              resList.forEach((entry)=>{
-                entry.publishTime =  strToDate(entry.publishTime);
-
-              })
+              for (let item in resList) {
+                if(resList.hasOwnProperty(item)) {
+                  resList[item].publishTime =resList[item].publishTime.substring(0, 11);
+                }
+              }
               this.seedStoreList = resList;
 
 
@@ -350,6 +357,7 @@
       },
       modifyRow(value) {
         this.currentModify = Object.assign({}, value);
+        this.currentModify.imageURL = this.currentModify.image;
         this.showModifyDialog = true;
       },
       modifySeed() {
@@ -378,6 +386,14 @@
             console.log(err)
           })
       },
+      handleImageChange(file) {
+        this.seedStoreForm.imageURL = URL.createObjectURL(file.raw);
+        this.seedStoreForm.image = file.raw
+      },
+      handleImageModify(file) {
+        this.currentModify.imageURL = URL.createObjectURL(file.raw);
+        this.currentModify.image = file.raw
+      },
       query() {
         this.$axios.get('/seedStore/subKind',
           {
@@ -395,10 +411,6 @@
               const  resList= res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
-              resList.forEach((entry)=>{
-                entry.publishTime =  strToDate(entry.publishTime);
-
-              })
               this.seedStoreList = resList;
             }
           })
@@ -444,4 +456,36 @@
     margin-bottom: 0;
     width: 100%;
   }
+  /*图片样式*/
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 150px;
+    height: 150px;
+    line-height: 150px;
+    text-align: center;
+  }
+  .avatar {
+    width: 150px;
+    height: 150px;
+    display: block;
+  }
+  .item_img {
+    width: 100px;
+    height: 100px;
+  }
 </style>
+
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+</style>
+
