@@ -30,7 +30,7 @@
         width="50">
       </el-table-column>
       <el-table-column type="expand" >
-        <template slot-scope="scope" @click="toggleRow(scope.row)">
+        <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item >
               <span class="form_text"><img class="item_img" :src="scope.row.image"/></span>
@@ -420,23 +420,24 @@
         this.strategy = '';
         this.loadList();
       },
-      toggleRow(row){
-        console.log(111);
-        this.$refs.multipleTable.toggleRowExpansion(row, expanded);
-      },
-      rowClick(row, expandedRows){
-        // for(var key in expandedRows){
-        //   delete expandedRows[key];
-        // }
-        // console.log(expandedRows);
-        this.$axios.get('/seedStore/' + row.id)
+      addVsit(id) {
+        this.$axios.get('/seedStore/' + id)
           .then(res => {
-            console.log(res);
+
           })
           .catch(err => {
             console.log(err);
           })
-      }
+      },
+      rowClick(row, expandedRows){
+        for (let item in expandedRows) {
+          if(expandedRows[item].id === row.id) {
+            this.addVsit(row.id);
+            row.visitCount++;
+            return;
+          }
+        }
+      },
     },
     mounted() {
       this.loadList();
