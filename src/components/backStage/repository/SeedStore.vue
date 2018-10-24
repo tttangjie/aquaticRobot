@@ -22,14 +22,15 @@
       tooltip-effect="dark"
       size="mini"
       style="width: 100%;"
+      @expand-change="rowClick"
       height="550"
       highlight-current-row>
       <el-table-column
         type="index"
         width="50">
       </el-table-column>
-      <el-table-column type="expand">
-        <template slot-scope="scope">
+      <el-table-column type="expand" >
+        <template slot-scope="scope" @click="toggleRow(scope.row)">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="描述">
               <span class="form_text" >{{ scope.row.description }}</span>
@@ -37,11 +38,6 @@
           </el-form>
         </template>
       </el-table-column>
-      <!--<el-table-column-->
-        <!--align="center"-->
-        <!--label="种类">-->
-        <!--<template slot-scope="scope">{{ scope.row.kind }}</template>-->
-      <!--</el-table-column>-->
       <el-table-column
         align="center"
         label="子类">
@@ -50,7 +46,9 @@
       <el-table-column
         align="center"
         label="名称">
-        <template slot-scope="scope">{{ scope.row.title }}</template>
+        <template slot-scope="scope">
+          <span style="color: blue;cursor:pointer;">{{ scope.row.title }}</span>
+        </template>
       </el-table-column>
 
       <el-table-column
@@ -409,6 +407,23 @@
       reset() {
         this.strategy = '';
         this.loadList();
+      },
+      toggleRow(row){
+        console.log(111);
+        this.$refs.multipleTable.toggleRowExpansion(row, expanded);
+      },
+      rowClick(row, expandedRows){
+        // for(var key in expandedRows){
+        //   delete expandedRows[key];
+        // }
+        // console.log(expandedRows);
+        this.$axios.get('/seedStore/' + row.id)
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          })
       }
     },
     mounted() {

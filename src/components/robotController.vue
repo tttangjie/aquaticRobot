@@ -44,21 +44,20 @@
           align="center"
           label="联系人"
         width="70">
-          <template slot-scope="scope">
-            <span style="cursor:pointer;color: blue" @click="changeCustomer(scope.$index, scope.row)">{{scope.row.username}}</span>
+          <template slot-scope="scope">{{scope.row.username}}
           </template>>
         </el-table-column>
         <el-table-column
           prop="sex"
           align="center"
           label="性别"
-        width="55">
+        width="40">
         </el-table-column>
         <el-table-column
           prop="age"
           align="center"
           label="年龄"
-          width="55">
+          width="40">
         </el-table-column>
         <el-table-column
           prop="tel"
@@ -79,9 +78,11 @@
           width="80">
         </el-table-column>
         <el-table-column
-          prop="medicine_name"
           align="center"
           label="药品">
+          <template slot-scope="scope">
+            <abbr v-if="scope.row.medicine_name != null" style="cursor:pointer;text-decoration: none" :title=scope.row.medicine_name>{{ (scope.row.medicine_name).slice(0,10)}}</abbr>
+          </template>
         </el-table-column>
         <el-table-column
           prop="number"
@@ -89,12 +90,19 @@
           label="编号"
           width="80">
         </el-table-column>
-        <el-table-column label="操作" align="center"  width="150">
+        <el-table-column label="操作" align="center"  width="180">
           <template slot-scope="scope">
             <el-button
+              style="width: 40px;padding: 5px"
               size="mini"
               @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button
+              style="width: 40px;padding: 5px"
+              size="mini"
+              type="primary"
+              @click="changeCustomer(scope.$index, scope.row)">分配</el-button>
+            <el-button
+              style="width: 40px;padding: 5px"
               size="mini"
               type="danger"
               @click="handleDelete(scope.$index, scope.row)">删除</el-button>

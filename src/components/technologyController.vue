@@ -120,7 +120,7 @@
           title="修改维修状态"
           :visible.sync="innerVisible"
           append-to-body>
-          <el-select v-model="currentStatus" clearable placeholder="请选择">
+          <el-select v-model="currentStatus"  placeholder="请选择">
             <el-option
               v-for="item in repairStatus"
               :key="item.value"
@@ -331,7 +331,7 @@
              value: '3',
              label: '无法维修'
            }],
-           currentStatus:-1,
+           currentStatus:'',
            currentTaskId:-1,
            currentTechnologyUsername:''
          }
@@ -589,25 +589,31 @@
         //修改维修状态
         changeStatus:function(index,row){
           this.innerVisible = true;
+          switch (row.status) {
+            case 0:
+              this.currentStatus = "待维修";
+              break;
+            case 1:
+              this.currentStatus = "维修中";
+              break;
+            case 3:
+              this.currentStatus = "无法维修";
+              break;
+            default :
+              break;
+          }
           // this.currentStatus = row.status;
           this.currentTaskId = row.id;
         },
 
         //提交维修状态的修改
         submitStatus:function(){
-          if (this.currentStatus === -1){
-            this.$message.warning({
-              message:"未选择状态！",
-              showClose:true
-            });
-            return ;
-          }
           this.$axios.put('/technology/repair/' + this.currentTaskId + '?status=' + this.currentStatus)
             .then(res => {
               if (res.data.code === 1){
                 this.innerVisible = false;
                 this.dialogTableVisible = true;
-                this.getTaskListByName(this.this.currentTechnologyUsername);
+                this.getTaskListByName(this.currentTechnologyUsername);
               }else{
                 this.$message.error({
                   message:res.data.msg,

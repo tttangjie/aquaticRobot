@@ -19,6 +19,7 @@
       :data="productList"
       tooltip-effect="dark"
       size="mini"
+      @expand-change="rowClick"
       style="width: 100%;"
       highlight-current-row>
       <el-table-column
@@ -252,6 +253,19 @@
       reset() {
         this.strategy = '';
         this.loadList();
+      },
+      rowClick(row, expandedRows){
+        // for(var key in expandedRows){
+        //   delete expandedRows[key];
+        // }
+        // console.log(expandedRows);
+        this.$axios.get('/product/' + row.id)
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          })
       }
     },
     mounted() {

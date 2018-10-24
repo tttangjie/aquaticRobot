@@ -19,6 +19,7 @@
         ref="multipleTable"
         :data="feedStores"
         tooltip-effect="dark"
+        @expand-change="rowClick"
         size="mini"
         style="width: 100%;"
         highlight-current-row>
@@ -308,7 +309,19 @@
             this.getFeedStoreBySunKind(val,10,"","",this.subKind);
           }
         },
-
+        rowClick(row, expandedRows){
+          // for(var key in expandedRows){
+          //   delete expandedRows[key];
+          // }
+          // console.log(expandedRows);
+          this.$axios.get('/feedStore/' + row.id)
+            .then(res => {
+              console.log(res);
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        }
       },
       mounted(){
           this.getAllFeedStore(1,10);

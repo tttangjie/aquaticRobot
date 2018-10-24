@@ -137,9 +137,23 @@
     height: 100%;
     float: left;
     background: #c1bebf;
-    overflow:hidden; padding-bottom:9999px; margin-bottom:-9999px;
+    overflow:auto; padding-bottom:9999px; margin-bottom:-9999px;
   }
-
+  /*滚动条样式*/
+  .left::-webkit-scrollbar {/*滚动条整体样式*/
+    width: 4px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height:4px;
+  }
+  .left::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 5px;
+    -webkit-box-shadow: inset 0 0 5px rgba(255,255,255,0.5);
+    background: rgba(255,255,255,0.5);
+  }
+  .left::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(255,255,255,0.2);
+    border-radius: 0;
+    background: rgba(255,255,255,0.1);
+  }
   .right {
     width: 80%;
     height: 100%;

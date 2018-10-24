@@ -19,6 +19,7 @@
       :data="drugList"
       tooltip-effect="dark"
       size="mini"
+      @expand-change="rowClick"
       style="width: 100%;"
       height="550"
       highlight-current-row>
@@ -387,6 +388,19 @@
       reset() {
         this.strategy = '';
         this.loadList();
+      },
+      rowClick(row, expandedRows){
+        // for(var key in expandedRows){
+        //   delete expandedRows[key];
+        // }
+        // console.log(expandedRows);
+        this.$axios.get('/drugStore/' + row.id)
+          .then(res => {
+            console.log(res);
+          })
+          .catch(err => {
+            console.log(err);
+          })
       }
     },
     mounted() {
