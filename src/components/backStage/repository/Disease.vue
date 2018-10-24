@@ -46,7 +46,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="疾病名称">
+        label="名称">
         <template slot-scope="scope">{{ scope.row.diseaseName }}</template>
       </el-table-column>
       <el-table-column
