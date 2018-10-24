@@ -26,9 +26,12 @@
         type="index"
         width="50">
       </el-table-column>
-      <el-table-column type="expand">
+      <el-table-column type="expand" >
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item >
+              <span class="form_text"><img class="item_img" :src="scope.row.image"/></span>
+            </el-form-item>
             <el-form-item label="发病原因">
               <span class="form_text">{{ scope.row.cause }}</span>
             </el-form-item>
@@ -48,7 +51,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="浏览数目">
+        label="访问数量">
         <template slot-scope="scope">{{ scope.row.visitCount }}</template>
       </el-table-column>
       <el-table-column
@@ -82,6 +85,17 @@
       :visible.sync="showRegisterDialog"
       width="450px">
       <el-form :model="diseaseForm">
+        <el-form-item :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            :action="GLOBAL.Base_URL"
+            :auto-upload="false"
+            :on-change="handleImageChange"
+            :show-file-list="false">
+            <img v-if="diseaseForm.image" :src="diseaseForm.imageURL" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="疾病名称" :label-width="formLabelWidth">
           <el-input v-model="diseaseForm.diseaseName"></el-input>
         </el-form-item>
@@ -113,6 +127,17 @@
       :visible.sync="showModifyDialog"
       width="450px">
       <el-form :model="currentModify">
+        <el-form-item :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            :action="GLOBAL.Base_URL"
+            :auto-upload="false"
+            :on-change="handleImageModify"
+            :show-file-list="false">
+            <img v-if="currentModify.image" :src="currentModify.imageURL" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="疾病名称" :label-width="formLabelWidth">
           <el-input v-model="currentModify.diseaseName"></el-input>
         </el-form-item>
@@ -164,6 +189,7 @@
       }
     },
     methods:{
+
       loadList() {
         this.$axios.get('/disease/',
           {
@@ -201,7 +227,16 @@
       },
       registerExpert() {
         this.diseaseForm.publishTime = new Date().getTime();
-        this.$axios.post('/disease/add', this.diseaseForm)
+        let formdata = new FormData();
+        formdata.append("cause",this.diseaseForm.cause);
+        formdata.append("diseaseName",this.diseaseForm.diseaseName);
+        formdata.append("image",this.diseaseForm.image);
+        formdata.append("publishTime",this.diseaseForm.publishTime);
+        formdata.append("subKind",this.diseaseForm.subKind);
+        formdata.append("symptom",this.diseaseForm.symptom);
+        formdata.append("treatment",this.diseaseForm.treatment);
+        formdata.append("visitCount",this.diseaseForm.visitCount);
+       this.$axios.post('/disease/add', formdata)
           .then((res) => {
             if(res.data.code === 1) {
               this.$message({
@@ -243,19 +278,20 @@
       },
       modifyRow(value) {
         this.currentModify = Object.assign({}, value);
+        this.currentModify.imageURL = this.currentModify.image;
         this.showModifyDialog = true;
       },
       modifyDisease() {
-        this.$axios.put('/disease/'+this.currentModify.id,{
-         "cause":this.currentModify.cause,
-        "diseaseName" : this.currentModify.diseaseName,
-        "id":this.currentModify.id,
-       "image":this.currentModify.image,
-        "subKind":this.currentModify.subKind,
-        "symptom":this.currentModify.symptom,
-        "treatment":this.currentModify.treatment,
-        "visitCount":this.currentModify.visitCount
-        })
+        let formdata = new FormData();
+        formdata.append("cause",this.currentModify.cause);
+        formdata.append("diseaseName",this.currentModify.diseaseName);
+        formdata.append("image",this.currentModify.image);
+        formdata.append("publishTime",this.currentModify.publishTime);
+        formdata.append("subKind",this.currentModify.subKind);
+        formdata.append("symptom",this.currentModify.symptom);
+        formdata.append("treatment",this.currentModify.treatment);
+        formdata.append("visitCount",this.currentModify.visitCount);
+        this.$axios.put('/disease/'+this.currentModify.id,formdata)
           .then((res) => {
             if(res.data.code === 1) {
               this.loadList();
@@ -265,6 +301,14 @@
           .catch((err) => {
             console.log(err)
           })
+      },
+      handleImageChange(file) {
+        this.diseaseForm.imageURL = URL.createObjectURL(file.raw);
+        this.diseaseForm.image = file.raw
+      },
+      handleImageModify(file) {
+        this.currentModify.imageURL = URL.createObjectURL(file.raw);
+        this.currentModify.image = file.raw
       },
       query() {
         this.$axios.get('/disease/subKind',
@@ -344,5 +388,36 @@
     margin-right: 0;
     margin-bottom: 0;
     width: 100%;
+  }
+  /*图片样式*/
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 150px;
+    height: 150px;
+    line-height: 150px;
+    text-align: center;
+  }
+  .avatar {
+    width: 150px;
+    height: 150px;
+    display: block;
+  }
+  .item_img {
+    width: 100px;
+    height: 100px;
+  }
+</style>
+
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
   }
 </style>

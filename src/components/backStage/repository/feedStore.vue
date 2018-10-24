@@ -30,6 +30,9 @@
         <el-table-column type="expand">
           <template slot-scope="scope">
             <el-form label-position="left" inline class="demo-table-expand">
+              <el-form-item >
+                <span class="form_text"><img class="item_img" :src="scope.row.image"/></span>
+              </el-form-item>
               <el-form-item label="公司">
                 <span class="form_text">{{ scope.row.company }}</span>
               </el-form-item>
@@ -55,6 +58,11 @@
         </el-table-column>
         <el-table-column
           align="center"
+          label="访问数量">
+          <template slot-scope="scope">{{ scope.row.visitCount }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
           label="编辑"
           width="150">
           <template slot-scope="scope">
@@ -70,6 +78,17 @@
         :visible.sync="showRegisterDialog"
         width="450px">
         <el-form :model="feedStoreForm">
+          <el-form-item :label-width="formLabelWidth">
+            <el-upload
+              class="avatar-uploader"
+              :action="GLOBAL.Base_URL"
+              :auto-upload="false"
+              :on-change="handleImageChange"
+              :show-file-list="false">
+              <img v-if="feedStoreForm.image" :src="feedStoreForm.imageURL" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
           <el-form-item label="名称" :label-width="formLabelWidth">
             <el-input v-model="feedStoreForm.name"></el-input>
           </el-form-item>
@@ -114,6 +133,17 @@
         :visible.sync="changeRegisterDialog"
         width="450px">
         <el-form :model="feedStoreForm">
+          <el-form-item :label-width="formLabelWidth">
+            <el-upload
+              class="avatar-uploader"
+              :action="GLOBAL.Base_URL"
+              :auto-upload="false"
+              :on-change="handleImageModify"
+              :show-file-list="false">
+              <img v-if="feedStoreForm.image" :src="feedStoreForm.imageURL" class="avatar">
+              <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-form-item>
           <el-form-item label="名称" :label-width="formLabelWidth">
             <el-input v-model="feedStoreForm.name"></el-input>
           </el-form-item>
@@ -198,7 +228,7 @@
           let formdata = new FormData();
           formdata.append("company",this.feedStoreForm.company);
           formdata.append("contact",this.feedStoreForm.contact);
-          formdata.append("image",'');
+          formdata.append("image",this.feedStoreForm.image);
           formdata.append("kind",this.feedStoreForm.kind);
           formdata.append("manualInstruct",this.feedStoreForm.manualInstruct);
           formdata.append("name",this.feedStoreForm.name);
@@ -206,7 +236,6 @@
           formdata.append("subKind",this.feedStoreForm.subKind);
           formdata.append("telPhone",this.feedStoreForm.telPhone);
           formdata.append("type",this.feedStoreForm.type);
-          this.$axios.put('/feedStore/' + this.currentFeedStoreId, formdata)
           this.$axios.post('/feedStore/',formdata)
             .then(res => {
               if (res.data.code === 1){
@@ -222,7 +251,6 @@
           getAllFeedStore(pageNum,pageSize,orderBy,condition){
             this.$axios.get('/feedStore/?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition)
               .then(res => {
-                console.log(res);
                 if (res.data.code === 1){
                   this.feedStores = res.data.data.list;
                   this.total = res.data.data.total;
@@ -244,6 +272,14 @@
             .catch(err => {
               console.log(err);
             })
+        },
+        handleImageChange(file) {
+          this.feedStoreForm.imageURL = URL.createObjectURL(file.raw);
+          this.feedStoreForm.image = file.raw
+        },
+        handleImageModify(file) {
+          this.feedStoreForm.imageURL = URL.createObjectURL(file.raw);
+          this.feedStoreForm.image = file.raw
         },
         //按照类别查询
         query(){
@@ -276,13 +312,14 @@
           this.currentFeedStoreId = row.id;
           this.changeRegisterDialog = true;
           this.feedStoreForm = row;
+          this.feedStoreForm.imageURL = this.feedStoreForm.image;
         },
         // 更新投喂百科
         changeOneFeedStore(){
           let formdata = new FormData();
           formdata.append("company",this.feedStoreForm.company);
           formdata.append("contact",this.feedStoreForm.contact);
-          formdata.append("image",'');
+          formdata.append("image",this.feedStoreForm.image);
           formdata.append("kind",this.feedStoreForm.kind);
           formdata.append("manualInstruct",this.feedStoreForm.manualInstruct);
           formdata.append("name",this.feedStoreForm.name);
@@ -356,4 +393,36 @@
     margin-bottom: 0;
     width: 100%;
   }
+  /*图片样式*/
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 150px;
+    height: 150px;
+    line-height: 150px;
+    text-align: center;
+  }
+  .avatar {
+    width: 150px;
+    height: 150px;
+    display: block;
+  }
+  .item_img {
+    width: 100px;
+    height: 100px;
+  }
 </style>
+
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
+  }
+</style>
+

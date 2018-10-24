@@ -46,13 +46,8 @@
             <el-menu-item index="/index/service">维修</el-menu-item>
           </el-menu-item-group>
         </el-submenu>
+
         <el-submenu index="4">
-          <template slot="title">
-            <i class="el-icon-tickets"></i>
-            <span>数据报告</span>
-          </template>
-        </el-submenu>
-        <el-submenu index="5">
           <template slot="title">
             <i class="el-icon-tickets"></i>
             <span>养殖百科</span>
@@ -76,6 +71,12 @@
             <el-menu-item index="/index/feedStore">投喂百科</el-menu-item> <!-- add by liuyunxing-->
           </el-menu-item-group>
 
+        </el-submenu>
+        <el-submenu index="5">
+          <template slot="title">
+            <i class="el-icon-tickets"></i>
+            <span>数据报告</span>
+          </template>
         </el-submenu>
         <el-submenu index="6">
           <template slot="title">

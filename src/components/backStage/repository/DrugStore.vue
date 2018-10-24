@@ -31,6 +31,9 @@
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item >
+              <span class="form_text"><img class="item_img" :src="scope.row.image"/></span>
+            </el-form-item>
             <el-form-item label="使用说明书">
               <span class="form_text" v-html=scope.row.manualInstruct></span>
             </el-form-item>
@@ -80,13 +83,17 @@
         label="联系方式">
         <template slot-scope="scope">{{ scope.row.contact }}</template>
       </el-table-column>
+      <el-table-column
+        align="center"
+        label="访问数量">
+        <template slot-scope="scope">{{ scope.row.visitCount }}</template>
+      </el-table-column>
 
       <el-table-column
         align="center"
         label="发布时间">
         <!--显示时间，publishTime为date类型，格式化显示的时间-->
-        <template slot-scope="scope">{{ scope.row.publishTime.getFullYear()
-          +'-' +( scope.row.publishTime.getMonth()+1)+'-'+scope.row.publishTime.getDate() }}</template>
+        <template slot-scope="scope">{{ scope.row.publishTime }}</template>
       </el-table-column>
 
       <el-table-column
@@ -116,6 +123,17 @@
       :visible.sync="showRegisterDialog"
       width="450px">
       <el-form :model="medicineForm">
+        <el-form-item :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            :action="GLOBAL.Base_URL"
+            :auto-upload="false"
+            :on-change="handleImageChange"
+            :show-file-list="false">
+            <img v-if="medicineForm.image" :src="medicineForm.imageURL" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="medicineForm.name"></el-input>
         </el-form-item>
@@ -134,15 +152,6 @@
         <el-form-item label="公司" :label-width="formLabelWidth">
           <el-input v-model="medicineForm.company"></el-input>
         </el-form-item>
-        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showRegisterDialog">
-          <el-date-picker
-            disabled
-            v-model=medicineForm.publishTime
-            type="datetime"
-            value-format="timestamp"
-            placeholder="选择日期时间">
-          </el-date-picker>
-        </el-form-item >
         <el-form-item label="电话" :label-width="formLabelWidth">
           <el-input v-model="medicineForm.telPhone"></el-input>
         </el-form-item>
@@ -172,6 +181,17 @@
       :visible.sync="showModifyDialog"
       width="600px">
       <el-form :model="currentModify">
+        <el-form-item :label-width="formLabelWidth">
+          <el-upload
+            class="avatar-uploader"
+            :action="GLOBAL.Base_URL"
+            :auto-upload="false"
+            :on-change="handleImageModify"
+            :show-file-list="false">
+            <img v-if="currentModify.image" :src="currentModify.imageURL" class="avatar">
+            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="currentModify.name"></el-input>
         </el-form-item>
@@ -185,14 +205,6 @@
           <el-input  type="textarea"
                      :rows="5"
                      v-model="currentModify.manualInstruct"></el-input>
-        </el-form-item>
-        <el-form-item label="发布时间" :label-width="formLabelWidth" v-if="showModifyDialog">
-          <el-date-picker
-            disabled
-            v-model=currentModify.publishTime
-            type="datetime"
-            placeholder="选择日期时间">
-          </el-date-picker>
         </el-form-item>
         <el-form-item label="价格" :label-width="formLabelWidth">
           <el-input v-model="currentModify.price"></el-input>
@@ -253,18 +265,17 @@
         )
           .then((res) => {
             if(res.data.code === 1) {
-
               // 文本换行显示，格式需要换行处理
               this.drugList = res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
              // console.log(this.drugList)
               // 对文本格式进行转换
-              this.drugList.forEach((entry)=>{
-
-                entry.manualInstruct = newLineTransform(entry.manualInstruct)
-                entry.publishTime = strToDate(entry.publishTime)
-              })
+              for (let item in this.drugList) {
+                if(this.drugList.hasOwnProperty(item)) {
+                  this.drugList[item].publishTime = this.drugList[item].publishTime.substring(0, 11);
+                }
+              }
 
             }
           })
@@ -280,17 +291,25 @@
         }
       },
       showRegisterDialogFunc() {
-        this.medicineForm.publishTime = new Date().getTime();
         this.showRegisterDialog = true;
       },
       registerDrug() {
-        if(this.medicineForm.publishTime === '') {
-          this.medicineForm.publishTime = new Date();
-        }
         if(this.medicineForm.manualInstruct === '') {
           this.medicineForm.manualInstruct = ''
         }
-        this.$axios.post('/drugstore/add', this.medicineForm)
+        let formdata = new FormData();
+        formdata.append("company",this.medicineForm.company);
+        formdata.append("contact",this.medicineForm.contact);
+        formdata.append("image",this.medicineForm.image);
+        formdata.append("kind",this.medicineForm.kind);
+        formdata.append("manualInstruct",this.medicineForm.manualInstruct);
+        formdata.append("name",this.medicineForm.name);
+        formdata.append("price",this.medicineForm.price);
+        formdata.append("subKind",this.medicineForm.subKind);
+        formdata.append("telPhone",this.medicineForm.telPhone);
+        formdata.append("type",this.medicineForm.type);
+        formdata.append("visitCount",this.medicineForm.visitCount);
+        this.$axios.post('/drugstore/add', formdata)
           .then((res) => {
             if(res.data.code === 1) {
               this.$message({
@@ -333,16 +352,25 @@
       modifyRow(value) { // modify  by liuyunxing
         this.currentModify = Object.assign({}, value);
   /*      console.log(this.currentModify.publishTime)*/
-        this.currentModify.publishTime = new Date();
         this.currentModify.manualInstruct = brTransform( this.currentModify.manualInstruct); // 格式化描述内容
+        this.currentModify.imageURL = this.currentModify.image;
         this.showModifyDialog = true;
       },
       modifyDrug() {
 
-       // if ( typeof (this.currentModify.publishTime) != 'string'){
-          this.currentModify.publishTime = this.currentModify.publishTime.getTime(); // 格式化时间数据
-        //}
-        this.$axios.put('/drugstore/'+this.currentModify.id,this.currentModify)
+        let formdata = new FormData();
+        formdata.append("company",this.currentModify.company);
+        formdata.append("contact",this.currentModify.contact);
+        formdata.append("image",this.currentModify.image);
+        formdata.append("kind",this.currentModify.kind);
+        formdata.append("manualInstruct",this.currentModify.manualInstruct);
+        formdata.append("name",this.currentModify.name);
+        formdata.append("price",this.currentModify.price);
+        formdata.append("subKind",this.currentModify.subKind);
+        formdata.append("telPhone",this.currentModify.telPhone);
+        formdata.append("type",this.currentModify.type);
+        formdata.append("visitCount",this.currentModify.visitCount);
+        this.$axios.put('/drugstore/'+this.currentModify.id,formdata)
           .then((res) => {
             if(res.data.code === 1) {
               this.loadList();
@@ -352,6 +380,14 @@
           .catch((err) => {
             console.log(err)
           })
+      },
+      handleImageChange(file) {
+        this.medicineForm.imageURL = URL.createObjectURL(file.raw);
+        this.medicineForm.image = file.raw
+      },
+      handleImageModify(file) {
+        this.currentModify.imageURL = URL.createObjectURL(file.raw);
+        this.currentModify.image = file.raw
       },
       query() {
         this.$axios.get('/drugstore/subKind',
@@ -374,8 +410,6 @@
               resList.forEach((entry)=>{
 
                 entry.manualInstruct = newLineTransform(entry.manualInstruct)
-                entry.publishTime = strToDate(entry.publishTime)
-                console.log(entry.publishTime)
               })
               this.drugList = resList;
 
@@ -435,5 +469,36 @@
     margin-right: 0;
     margin-bottom: 0;
     width: 100%;
+  }
+  /*图片样式*/
+  .avatar-uploader-icon {
+    font-size: 28px;
+    color: #8c939d;
+    width: 150px;
+    height: 150px;
+    line-height: 150px;
+    text-align: center;
+  }
+  .avatar {
+    width: 150px;
+    height: 150px;
+    display: block;
+  }
+  .item_img {
+    width: 100px;
+    height: 100px;
+  }
+</style>
+
+<style>
+  .avatar-uploader .el-upload {
+    border: 1px dashed #d9d9d9;
+    border-radius: 6px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .avatar-uploader .el-upload:hover {
+    border-color: #409EFF;
   }
 </style>
