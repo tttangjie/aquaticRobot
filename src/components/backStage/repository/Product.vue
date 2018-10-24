@@ -305,19 +305,24 @@
         this.strategy = '';
         this.loadList();
       },
-      rowClick(row, expandedRows){
-        // for(var key in expandedRows){
-        //   delete expandedRows[key];
-        // }
-        // console.log(expandedRows);
-        this.$axios.get('/product/' + row.id)
+      addVsit(id) {
+        this.$axios.get('/product/' + id)
           .then(res => {
-            console.log(res);
+
           })
           .catch(err => {
             console.log(err);
           })
-      }
+      },
+      rowClick(row, expandedRows){
+        for (let item in expandedRows) {
+          if(expandedRows[item].id === row.id) {
+            this.addVsit(row.id);
+            row.visitCount++;
+            return;
+          }
+        }
+      },
     },
     mounted() {
       this.loadList();
