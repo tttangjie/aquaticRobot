@@ -6,8 +6,8 @@
         <el-option
           v-for="(item,index) in robotNumber"
           :key="index"
-          :label="item"
-          :value="item">
+          :label="item.robert_number"
+          :value="item.robert_id">
         </el-option>
       </el-select>
       <!--<el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>-->
@@ -215,11 +215,11 @@
           }
         )
           .then((res) => {
-            console.log(res);
             if(res.data.code === 1) {
               this.alarmList = res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
+              this.robotNumber = this.alarmList.concat();
             }
           })
           .catch((err) => {
