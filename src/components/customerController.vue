@@ -74,7 +74,7 @@
         </el-table-column>
       </el-table>
 
-      <!--新建某个技术人员信息-->
+      <!--新建某个客户信息-->
       <el-dialog title="普通用户注册" :visible.sync="dialogFormVisible" >
         <el-form :model="customerRegist" label-width="80px" size="mini">
           <el-form-item label="姓名">
