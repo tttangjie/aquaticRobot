@@ -412,6 +412,24 @@
                 this.page.pages = res.data.data.pages;
                 this.page.total = res.data.data.total;
                 this.expertList = res.data.data.list;
+                for (let item in this.expertList) {
+                  this.expertList[item]['position'] = "";
+                  if (this.expertList[item].province != null && this.expertList[item].province != ""){
+                    this.expertList[item]['position'] += this.expertList[item].province;
+                  }
+                  if (this.expertList[item].city != null && this.expertList[item].city != ""){
+                    this.expertList[item]['position'] += this.expertList[item].city;
+                  }
+                  if (this.expertList[item].county != null && this.expertList[item].county != ""){
+                    this.expertList[item]['position'] += this.expertList[item].county;
+                  }
+                  if(this.expertList.hasOwnProperty(item)) {
+                    this.expertList[item].registerTime = this.expertList[item].sign_time.substring(0, 11);
+                    if(this.expertList[item].sex === 0 )
+                      this.expertList[item].sexString = '男';
+                    else this.expertList[item].sexString = '女';
+                  }
+                }
               }
             }).catch((err) => {
               console.log(err)

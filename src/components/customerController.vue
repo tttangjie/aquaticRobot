@@ -450,21 +450,13 @@
               })
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
-              this.customers = res.data.data.list;
+              this.customers = this.changeDateAndSex( res.data.data.list);
             }
           }).catch((err) => {
             console.log(err)
           })
         },
-        // getRepairDetails(index,row){
-        //   this.$axios.get('/customer/repair/list?status=')
-        //     .then(res => {
-        //       console.log(res);
-        //     })
-        //     .catch(err => {
-        //       console.log(err);
-        //     })
-        // }
+
       },
       mounted(){
           this.getAllCustomers();
