@@ -31,14 +31,14 @@
         <el-table-column
           prop="username"
           align="center"
-          label="用户名"
-          width="80">
+          width="70"
+          label="用户名">
         </el-table-column>
         <el-table-column
           prop="realname"
           align="center"
-          label="姓名"
-          width="80">
+          width="70"
+          label="姓名">
         </el-table-column>
         <el-table-column
           prop="sex"
@@ -54,13 +54,13 @@
         </el-table-column>
         <el-table-column
           prop="tel"
-          width="140"
+          width="120"
           align="center"
           label="联系电话">
         </el-table-column>
         <el-table-column
           prop="email"
-          width="140"
+          width="120"
           align="center"
           label="邮箱">
         </el-table-column>
@@ -68,13 +68,13 @@
           prop="number"
           align="center"
           label="工号"
-          width="80">
+          width="70">
         </el-table-column>
         <el-table-column
           prop="position"
           align="center"
           label="职位"
-          width="100">
+          width="70">
         </el-table-column>
         <el-table-column
           label="正在维修数量" align="center">
@@ -103,11 +103,12 @@
           <el-table-column property="type" label="产品类型" width="100" align="center"></el-table-column>
           <el-table-column property="number" label="机器人编号" width="100" align="center"></el-table-column>
           <el-table-column property="time" label="送修时间" width="120" align="center"></el-table-column>
-          <el-table-column property="realname" label="客户" align="center"></el-table-column>
-          <el-table-column property="age" label="年龄" align="center"></el-table-column>
-          <el-table-column property="sex" label="性别" align="center"></el-table-column>
+          <el-table-column property="username" label="用户名" align="center"></el-table-column>
+          <el-table-column property="realname" label="姓名" align="center"></el-table-column>
+          <el-table-column property="age" label="年龄" align="center" width="55" ></el-table-column>
+          <el-table-column property="sex" label="性别" align="center" width="55"></el-table-column>
           <el-table-column property="tel" label="电话" width="120" align="center"></el-table-column>
-          <el-table-column property="technology_name" label="负责技术员" width="120" align="center"></el-table-column>
+          <el-table-column property="technology_name" label="技术员" width="100" align="center"></el-table-column>
           <el-table-column property="description" label="故障描述" width="150" align="center"></el-table-column>
           <el-table-column label="状态" align="center">
             <template slot-scope="scope">
@@ -373,7 +374,7 @@
         getTechnologyByPage:function (pageNum,pageSize,OrderBy,condition) {
           this.$axios.get('/technology/?pageNum=' + pageNum + '&pageSize=' + pageSize + '&OrderBy=' + OrderBy + '&condition=' + condition)
             .then( res => {
-              // console.log(res);
+              console.log(res);
               if (res.data.code === 1){
                 this.allTechnology = this.changeDateAndSexOfAllTechnology(res.data.data.list);
                 this.total = res.data.data.total
@@ -532,7 +533,6 @@
                 this.tasks = arr;
                 this.dialogTableVisible = true;
               }
-              console.log(res);
             })
             .catch(err => {
               console.log(err);

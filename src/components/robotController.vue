@@ -43,7 +43,7 @@
         <el-table-column
           align="center"
           label="用户名"
-          width="70">
+        width="70">
           <template slot-scope="scope">{{scope.row.username}}
           </template>>
         </el-table-column>
@@ -58,13 +58,13 @@
           prop="sex"
           align="center"
           label="性别"
-        width="40">
+        width="50">
         </el-table-column>
         <el-table-column
           prop="age"
           align="center"
           label="年龄"
-          width="40">
+          width="50">
         </el-table-column>
         <el-table-column
           prop="tel"
@@ -76,7 +76,7 @@
           prop="category"
           align="center"
           label="养殖种类"
-          width="80">
+          width="60">
         </el-table-column>
         <el-table-column
           prop="feed_name"
@@ -289,7 +289,6 @@
         getAllRoobotsByParams(pageNum,pageSize,orderBy,condition){
           this.$axios.get('/robert/all?pageNum='+ pageNum  + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition)
             .then( res => {
-               console.log(res);
               if(res.data.code === 1){
                 this.robots = this.changeDateAndSex( res.data.data.list);
                 this.total = res.data.data.total;

@@ -76,12 +76,20 @@ export default {
           .then(res => {
             console.log(res);
             if (res.data.code == 1){
-              // 登录成功
-              that.$cookie.set("username",res.data.data.username);
-              that.$cookie.set("user_id",res.data.data.user_id);
-              that.$cookie.set("token",res.data.data.token);
-              console.log(that.$cookie.get("token"));
-              that.$router.push({path:'/index/robot'});
+              // 判断登录者角色
+              if (res.data.data.role === "ROLE_CUSTOMER"){ //客户登录
+                this.$message.error({
+                  message:"客户无权限登录管理平台",
+                  showClose:true
+                })
+              } else {
+                // 登录成功
+                that.$cookie.set("username",res.data.data.username);
+                that.$cookie.set("user_id",res.data.data.user_id);
+                that.$cookie.set("token",res.data.data.token);
+                // console.log(that.$cookie.get("token"));
+                that.$router.push({path:'/index/robot'});
+              }
             }else {
               that.errorMsg = res.data.msg;
               that.loginError = true;
