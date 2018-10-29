@@ -92,25 +92,11 @@
           <el-form-item label="年龄">
             <el-input v-model="customerRegist.age" autocomplete="off"></el-input>
           </el-form-item>
+          <el-form-item label="地区">
+            <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
+          </el-form-item>
           <el-form-item label="地址">
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="customerRegist.province" autocomplete="off" placeholder="省"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="customerRegist.city" autocomplete="off" placeholder="市"></el-input>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="customerRegist.county" autocomplete="off" placeholder="区"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="customerRegist.address" autocomplete="off" placeholder="详细地址"></el-input>
-              </el-col>
-            </el-row>
+            <el-input v-model="customerRegist.address" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="电话">
             <el-input v-model="customerRegist.tel" autocomplete="off"></el-input>
@@ -220,10 +206,11 @@
 </template>
 
 <script>
+  import ThreeLink from './backStage/tools/ThreeLink'
   import Strategy from '../components/backStage/tools/Strategy'
     export default {
       name: "customerController",
-      components:{Strategy},
+      components:{Strategy,ThreeLink},
       data(){
           return {
             // types:[""],
@@ -241,7 +228,8 @@
             },
             isFilter:false,
             queryDatas:{},
-            currentCustomerID:-1
+            currentCustomerID:-1,
+            areaSelection:{},
           }
       },
       methods:{
@@ -372,8 +360,25 @@
         newCustomer(){
           this.dialogFormVisible = true;
         },
+        areaDate(value) {
+          this.areaSelection = value;
+        },
         // 提交普通用户注册
         submitForm(){
+         /* if(this.areaSelection.city && this.areaSelection.province && this.areaSelection.block) {
+            this.customerRegist.province = this.areaSelection.province.slice(0,this.areaSelection.province.length-1);
+            this.customerRegist.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
+            this.customerRegist.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+          }*/
+          if(this.areaSelection.province)
+            this.customerRegist.province = this.areaSelection.province.slice(0,this.areaSelection.province.length-1);
+          else this.customerRegist.province = '';
+          if(this.areaSelection.city)
+            this.customerRegist.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
+          else this.customerRegist.city = '';
+          if(this.areaSelection.block)
+            this.customerRegist.block = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+          else this.customerRegist.block = '';
           this.$axios.post('/customer/',{
             "address": this.customerRegist.address,
             "age": this.customerRegist.age,

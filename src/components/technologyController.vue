@@ -31,14 +31,14 @@
         <el-table-column
           prop="username"
           align="center"
-          label="用户名"
-          width="70">
+          width="70"
+          label="用户名">
         </el-table-column>
         <el-table-column
           prop="realname"
           align="center"
-          label="姓名"
-          width="70">
+          width="70"
+          label="姓名">
         </el-table-column>
         <el-table-column
           prop="sex"
