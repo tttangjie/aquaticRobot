@@ -16,7 +16,9 @@ Vue.config.productionTip = false;
 Vue.prototype.GLOBAL = global_;
 Vue.prototype.$axios = axios;
 Vue.prototype.$cookie = VueCookie;
-
+router.afterEach((to,from,next) => {
+  window.scrollTo(0,0);
+});
 axios.defaults.baseURL = global_.Base_URL;
 axios.defaults.headers['Content-Type'] = 'application/json';
 

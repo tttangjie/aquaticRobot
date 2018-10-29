@@ -2,7 +2,15 @@
   <div>
     <div class="btns">
       <el-button size="medium" @click="showRegisterDialog = true" type="primary">新建</el-button>
-      <el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>
+      <el-select v-model="strategy" placeholder="请选择" style="width: 120px;">
+        <el-option
+          v-for="(item,index) in robotNumber"
+          :key="index"
+          :label="item"
+          :value="item">
+        </el-option>
+      </el-select>
+      <!--<el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>-->
       <el-button size="medium" @click="query">筛选</el-button>
       <el-button size="medium" @click="reset">重置</el-button>
     </div>
@@ -36,17 +44,17 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="电量">
+        label="电量(%)">
         <template slot-scope="scope">{{ scope.row.power }}</template>
       </el-table-column>
       <el-table-column
         align="center"
-        label="饵料箱">
+        label="饵料箱(%)">
         <template slot-scope="scope">{{ scope.row.feed }}</template>
       </el-table-column>
       <el-table-column
         align="center"
-        label="医疗箱">
+        label="医疗箱(%)">
         <template slot-scope="scope">{{ scope.row.medicine }}</template>
       </el-table-column>
       <el-table-column
@@ -56,7 +64,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="编辑"
+        label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>
@@ -90,7 +98,7 @@
             </el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="水温" :label-width="formLabelWidth">
+        <el-form-item label="水温(°C)" :label-width="formLabelWidth">
           <el-input v-model="alarmForm.temperature_min" style="width: 45%"></el-input>
           ~
           <el-input v-model="alarmForm.temperature_max" style="width: 45%;"></el-input>
@@ -105,13 +113,13 @@
           ~
           <el-input v-model="alarmForm.oxygen_max" style="width: 45%;"></el-input>
         </el-form-item>
-        <el-form-item label="电量" :label-width="formLabelWidth">
+        <el-form-item label="电量(%)" :label-width="formLabelWidth">
           <el-input v-model="alarmForm.power"></el-input>
         </el-form-item>
-        <el-form-item label="饵料箱" :label-width="formLabelWidth">
+        <el-form-item label="饵料箱(%)" :label-width="formLabelWidth">
           <el-input v-model="alarmForm.feed"></el-input>
         </el-form-item>
-        <el-form-item label="医疗箱" :label-width="formLabelWidth">
+        <el-form-item label="医疗箱(%)" :label-width="formLabelWidth">
           <el-input v-model="alarmForm.medicine"></el-input>
         </el-form-item>
         <el-form-item label="传感器自动清洗（天）" :label-width="formLabelWidth">
@@ -134,7 +142,7 @@
         <el-form-item label="机器人编号" :label-width="formLabelWidth">
           <el-input v-model="currentModify.robert_number" disabled></el-input>
         </el-form-item>
-        <el-form-item label="水温" :label-width="formLabelWidth">
+        <el-form-item label="水温(°C)" :label-width="formLabelWidth">
           <el-input v-model="currentModify.temperature_min" style="width: 45%"></el-input>
           ~
           <el-input v-model="currentModify.temperature_max" style="width: 45%;"></el-input>
@@ -149,13 +157,13 @@
           ~
           <el-input v-model="currentModify.oxygen_max" style="width: 45%;"></el-input>
         </el-form-item>
-        <el-form-item label="电量" :label-width="formLabelWidth">
+        <el-form-item label="电量(%)" :label-width="formLabelWidth">
           <el-input v-model="currentModify.power"></el-input>
         </el-form-item>
-        <el-form-item label="饵料箱" :label-width="formLabelWidth">
+        <el-form-item label="饵料箱(%)" :label-width="formLabelWidth">
           <el-input v-model="currentModify.feed"></el-input>
         </el-form-item>
-        <el-form-item label="医疗箱" :label-width="formLabelWidth">
+        <el-form-item label="医疗箱(%)" :label-width="formLabelWidth">
           <el-input v-model="currentModify.medicine"></el-input>
         </el-form-item>
         <el-form-item label="传感器自动清洗（天）" :label-width="formLabelWidth">
@@ -191,6 +199,7 @@
         showModifyDialog:false,
         formLabelWidth:'140px',
         strategy:'',
+        robotNumber:[]
       }
     },
     methods:{
@@ -313,7 +322,8 @@
       reset() {
         this.strategy = '';
         this.loadList();
-      }
+      },
+
     },
     mounted() {
       this.loadList();

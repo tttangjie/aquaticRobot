@@ -95,7 +95,7 @@
             <el-button
               style="width: 40px;padding: 5px"
               size="mini"
-              @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              @click="handleEdit(scope.$index, scope.row)">修改</el-button>
             <el-button
               style="width: 40px;padding: 5px"
               size="mini"
@@ -152,9 +152,9 @@
           <el-form-item label="类别">
             <el-input v-model="addRobot.type" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="客户ID">
-            <el-input v-model="addRobot.user_id" autocomplete="off" :disabled="true"></el-input>
-          </el-form-item>
+          <!--<el-form-item label="客户ID">-->
+            <!--<el-input v-model="addRobot.user_id" autocomplete="off" :disabled="true"></el-input>-->
+          <!--</el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible2 = false">取 消</el-button>
@@ -494,6 +494,7 @@
         getAllRobotType(){
           this.$axios.get('/robert/all/type')
             .then(res => {
+              console.log(res);
               if (res.data.code === 1){
                 this.robotType = res.data.data;
               }

@@ -24,6 +24,8 @@
       highlight-current-row>
       <el-table-column
         type="index"
+        label="序号"
+        align="center"
         width="50">
       </el-table-column>
       <el-table-column type="expand">
@@ -40,7 +42,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="子类">
+        label="类别">
         <template slot-scope="scope">{{ scope.row.subKind }}</template>
       </el-table-column>
       <el-table-column
@@ -48,14 +50,14 @@
         label="名称">
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
+      <!--<el-table-column-->
+        <!--align="center"-->
+        <!--label="访问数量">-->
+        <!--<template slot-scope="scope">{{ scope.row.visitCount }}</template>-->
+      <!--</el-table-column>-->
       <el-table-column
         align="center"
-        label="访问数量">
-        <template slot-scope="scope">{{ scope.row.visitCount }}</template>
-      </el-table-column>
-      <el-table-column
-        align="center"
-        label="编辑"
+        label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>
@@ -183,6 +185,7 @@
           }
         )
           .then((res) => {
+            console.log(res);
             if(res.data.code === 1) {
               this.productList = res.data.data.list;
               this.page.pages = res.data.data.pages;

@@ -27,6 +27,8 @@
       highlight-current-row>
       <el-table-column
         type="index"
+        label="序号"
+        align="center"
         width="50">
       </el-table-column>
       <el-table-column type="expand" >
@@ -43,14 +45,13 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="子类">
+        label="类别">
         <template slot-scope="scope">{{ scope.row.subKind }}</template>
       </el-table-column>
       <el-table-column
         align="center"
         label="名称">
-        <template slot-scope="scope">
-          <span style="color: blue;cursor:pointer;">{{ scope.row.title }}</span>
+        <template slot-scope="scope">{{ scope.row.title }}
         </template>
       </el-table-column>
 
@@ -97,7 +98,7 @@
 
       <el-table-column
         align="center"
-        label="编辑"
+        label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>

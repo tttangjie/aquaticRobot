@@ -82,7 +82,7 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            @click="handleEdit(scope.$index, scope.row)">修改</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -367,7 +367,7 @@
         getTechnologyByPage:function (pageNum,pageSize,OrderBy,condition) {
           this.$axios.get('/technology/?pageNum=' + pageNum + '&pageSize=' + pageSize + '&OrderBy=' + OrderBy + '&condition=' + condition)
             .then( res => {
-              console.log(res);
+              // console.log(res);
               if (res.data.code === 1){
                 this.allTechnology = this.changeDateAndSexOfAllTechnology(res.data.data.list);
                 this.total = res.data.data.total
@@ -510,6 +510,7 @@
         getTaskListByName:function(username){
           this.$axios.get('/technology/task?username=' + username)
             .then(res => {
+              console.log(res);
               if (res.data.code === 1){
                 let arr = res.data.data;
                 arr.forEach(function (item,index,array) {

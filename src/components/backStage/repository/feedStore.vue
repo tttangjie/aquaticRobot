@@ -25,6 +25,8 @@
         highlight-current-row>
         <el-table-column
           type="index"
+          label="序号"
+          align="center"
           width="50">
         </el-table-column>
         <el-table-column type="expand">
@@ -43,7 +45,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="类型" align="center">
+          label="类别" align="center">
           <template slot-scope="scope">{{ scope.row.subKind }}</template>
         </el-table-column>
         <el-table-column
@@ -63,7 +65,13 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="编辑"
+          label="发布时间">
+          <!--显示时间，publishTime为date类型，格式化显示的时间-->
+          <template slot-scope="scope">{{ scope.row.publishTime }}</template>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="操作"
           width="150">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
@@ -252,8 +260,14 @@
             this.$axios.get('/feedStore/?pageNum=' + pageNum + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition)
               .then(res => {
                 if (res.data.code === 1){
-                  this.feedStores = res.data.data.list;
+                  const  resList= res.data.data.list;
+                  for (let item in resList) {
+                    if(resList.hasOwnProperty(item)) {
+                      resList[item].publishTime =resList[item].publishTime.substring(0, 11);
+                    }
+                  }
                   this.total = res.data.data.total;
+                  this.feedStores = resList;
                 }
               })
               .catch(err => {

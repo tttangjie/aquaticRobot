@@ -68,7 +68,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="编辑"
+        label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>

@@ -25,6 +25,8 @@
       highlight-current-row>
       <el-table-column
         type="index"
+        label="序号"
+        align="center"
         width="50">
       </el-table-column>
      <!-- 主界面折叠ban-->
@@ -48,7 +50,7 @@
       <!--</el-table-column>-->
       <el-table-column
         align="center"
-        label="子类">
+        label="类别">
         <template slot-scope="scope">{{ scope.row.subKind }}</template>
       </el-table-column>
       <el-table-column
@@ -98,7 +100,7 @@
 
       <el-table-column
         align="center"
-        label="编辑"
+        label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>
@@ -269,14 +271,17 @@
               this.drugList = res.data.data.list;
               this.page.pages = res.data.data.pages;
               this.page.total = res.data.data.total;
-             // console.log(this.drugList)
               // 对文本格式进行转换
               for (let item in this.drugList) {
                 if(this.drugList.hasOwnProperty(item)) {
                   this.drugList[item].publishTime = this.drugList[item].publishTime.substring(0, 11);
                 }
               }
-
+              for (let i=0;i< this.drugList.length;i++){
+                if (this.drugList[i].visitCount == null){
+                  this.drugList[i].visitCount = 0;
+                }
+              }
             }
           })
           .catch((err) => {

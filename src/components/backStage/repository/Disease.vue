@@ -24,9 +24,11 @@
       highlight-current-row>
       <el-table-column
         type="index"
+        label="序号"
+        align="center"
         width="50">
       </el-table-column>
-      <el-table-column type="expand" >
+      <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item >
@@ -46,6 +48,11 @@
       </el-table-column>
       <el-table-column
         align="center"
+        label="类别">
+        <template slot-scope="scope">{{ scope.row.subKind }}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
         label="名称">
         <template slot-scope="scope">{{ scope.row.diseaseName }}</template>
       </el-table-column>
@@ -61,7 +68,7 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="编辑"
+        label="操作"
         width="150">
         <template slot-scope="scope">
           <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>
@@ -181,7 +188,7 @@
         diseaseForm:{
           image:'',
         },
-        subKinds:["十字花科","其他","所有"],
+        subKinds:["鱼类","虾类","蟹类","其他","所有"],
         showRegisterDialog:false,
         showModifyDialog:false,
         formLabelWidth:'120px',

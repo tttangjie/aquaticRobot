@@ -65,7 +65,7 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="编辑"
+          label="操作"
           width="150">
           <template slot-scope="scope">
             <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
@@ -137,51 +137,51 @@
       </el-dialog>
 
       <!--更新某个客户信息-->
-      <el-dialog title="普通用户注册" :visible.sync="dialogFormVisible2" >
-        <el-form :model="customerRegist" label-width="80px" size="mini">
+      <el-dialog title="更新客户信息" :visible.sync="dialogFormVisible2" >
+        <el-form :model="customerChange" label-width="80px" size="mini">
           <el-form-item label="姓名">
-            <el-input v-model="customerRegist.realname" autocomplete="off" :disabled="true"></el-input>
+            <el-input v-model="customerChange.realname" autocomplete="off" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="用户名">
-            <el-input v-model="customerRegist.username" autocomplete="off" :disabled="true"></el-input>
+            <el-input v-model="customerChange.username" autocomplete="off" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="性别">
-            <el-radio-group v-model="customerRegist.sex" :disabled="true">
+            <el-radio-group v-model="customerChange.sex" :disabled="true">
               <el-radio label="1">男</el-radio>
               <el-radio label="0">女</el-radio>
             </el-radio-group>
           </el-form-item>
           <el-form-item label="年龄">
-            <el-input v-model="customerRegist.age" autocomplete="off"></el-input>
+            <el-input v-model="customerChange.age" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="地址">
             <el-row>
               <el-col :span="11">
-                <el-input v-model="customerRegist.province" :disabled="true" autocomplete="off" placeholder="省"></el-input>
+                <el-input v-model="customerChange.province" :disabled="true" autocomplete="off" placeholder="省"></el-input>
               </el-col>
               <el-col class="line" :span="2" style="text-align: center">-</el-col>
               <el-col :span="11">
-                <el-input v-model="customerRegist.city" :disabled="true" autocomplete="off" placeholder="市"></el-input>
+                <el-input v-model="customerChange.city" :disabled="true" autocomplete="off" placeholder="市"></el-input>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="11">
-                <el-input v-model="customerRegist.county" :disabled="true" autocomplete="off" placeholder="区"></el-input>
+                <el-input v-model="customerChange.county" :disabled="true" autocomplete="off" placeholder="区"></el-input>
               </el-col>
               <el-col class="line" :span="2" style="text-align: center">-</el-col>
               <el-col :span="11">
-                <el-input v-model="customerRegist.address" autocomplete="off" placeholder="详细地址"></el-input>
+                <el-input v-model="customerChange.address" autocomplete="off" placeholder="详细地址"></el-input>
               </el-col>
             </el-row>
           </el-form-item>
           <el-form-item label="电话">
-            <el-input v-model="customerRegist.tel" autocomplete="off"></el-input>
+            <el-input v-model="customerChange.tel" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="邮箱">
-            <el-input v-model="customerRegist.email" autocomplete="off"></el-input>
+            <el-input v-model="customerChange.email" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="负责类别">
-            <el-input v-model="customerRegist.type" autocomplete="off"></el-input>
+            <el-input v-model="customerChange.type" autocomplete="off"></el-input>
             <!--<el-select v-model="customerRegist.type" clearable placeholder="请选择">-->
             <!--<el-option-->
             <!--v-for="item in types"-->
@@ -228,6 +228,7 @@
           return {
             // types:[""],
             customerRegist:{},
+            customerChange:{},
             dialogFormVisible2:false,
             dialogFormVisible:false,
             multipleSelection:[],
@@ -313,30 +314,31 @@
           this.multipleSelection = ids.join("-");
         },
         handleEdit(index,row){
-          if (row.sex === "男"){
-            row.sex = "0";
-          } else {
-            row.sex = "1";
-          }
+          this.customerChange = row;
           this.currentCustomerID = row.id;
-          this.customerRegist = row;
           this.dialogFormVisible2 = true;
         },
         // 提交更新用户信息
         changeCustomer(){
+          let sex = -1;
+          if (this.customerChange.sex == "男"){
+            sex = 0;
+          } else {
+            sex = 1;
+          }
           this.$axios.put('/customer/' + this.currentCustomerID,{
-            "address": this.customerRegist.address,
-            "age": this.customerRegist.age,
-            "city": this.customerRegist.city,
-            "county": this.customerRegist.county,
-            "email": this.customerRegist.email,
+            "address": this.customerChange.address,
+            "age": this.customerChange.age,
+            "city": this.customerChange.city,
+            "county": this.customerChange.county,
+            "email": this.customerChange.email,
             "image": "",
-            "province": this.customerRegist.province,
-            "realname":this.customerRegist.realname,
-            "sex": this.customerRegist.sex,
-            "tel": this.customerRegist.tel,
-            "type": this.customerRegist.type,
-            "username": this.customerRegist.username
+            "province": this.customerChange.province,
+            "realname":this.customerChange.realname,
+            "sex": sex,
+            "tel": this.customerChange.tel,
+            "type": this.customerChange.type,
+            "username": this.customerChange.username
           })
             .then(res => {
               if (res.data.code === 1){
