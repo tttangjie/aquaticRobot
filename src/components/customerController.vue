@@ -376,9 +376,9 @@
           if(this.areaSelection.city)
             this.customerRegist.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
           else this.customerRegist.city = '';
-          if(this.areaSelection.block)
-            this.customerRegist.block = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
-          else this.customerRegist.block = '';
+          if(this.areaSelection.country)
+            this.customerRegist.country = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+          else this.customerRegist.country = '';
           this.$axios.post('/customer/',{
             "address": this.customerRegist.address,
             "age": this.customerRegist.age,
