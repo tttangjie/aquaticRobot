@@ -396,7 +396,11 @@
                 });
                 this.dialogFormVisible = false;
                 this.getAllCustomers();
-
+              } else {
+                this.$message.error({
+                  message:res.data.msg,
+                  showClose:true
+                });
               }
             })
             .catch(err => {
