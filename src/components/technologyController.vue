@@ -29,9 +29,15 @@
           label="入职时间">
         </el-table-column>
         <el-table-column
+          prop="username"
+          align="center"
+          label="用户名"
+          width="80">
+        </el-table-column>
+        <el-table-column
           prop="realname"
           align="center"
-          label="联系人"
+          label="姓名"
           width="80">
         </el-table-column>
         <el-table-column

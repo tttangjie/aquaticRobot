@@ -32,7 +32,12 @@
       </el-table-column>
       <el-table-column
         align="center"
-        label="客户">
+        label="用户名">
+        <template slot-scope="scope">{{ scope.row.username }}</template>
+      </el-table-column>
+      <el-table-column
+        align="center"
+        label="姓名">
         <template slot-scope="scope">{{ scope.row.realname }}</template>
       </el-table-column>
       <el-table-column

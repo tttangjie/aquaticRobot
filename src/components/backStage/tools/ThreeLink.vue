@@ -119,9 +119,13 @@
             for (let item in this.province) {
               if(e === this.province[item].value) {
                 this.city = this.province[item].children;
-                this.citySelection = this.province[item].children[0].value;
+                /*this.citySelection = this.province[item].children[0].value;
                 this.block = this.province[item].children[0].children;
-                this.blockSelection = this.province[item].children[0].children[0].value;
+                this.blockSelection = this.province[item].children[0].children[0].value;*/
+                this.citySelection = '';
+                this.block = [];
+                this.blockSelection = '';
+
               }
             }
             this.areaDate.province = this.provinceSelection;
@@ -133,7 +137,8 @@
             for(let item in this.city) {
               if(e === this.city[item].value) {
                 this.block = this.city[item].children;
-                this.blockSelection = this.city[item].children[0].value;
+                /*this.blockSelection = this.city[item].children[0].value;*/
+                this.blockSelection = '';
               }
             }
             this.areaDate.province = this.provinceSelection;
@@ -182,7 +187,7 @@
 
 <style scoped>
   .three_link {
-    display: inline-flex;
+    display: inline;
   }
   .el-select {
     margin-right: 5px;

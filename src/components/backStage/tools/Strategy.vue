@@ -60,11 +60,20 @@
             var queryData = Object.assign({}, this.areaSelection);
             // let  = new Object();
             // queryData = ;
-            if(queryData.city && queryData.province && queryData.block) {
+            if(queryData.province)
+              queryData.province = queryData.province.slice(0,queryData.province.length-1);
+            else queryData.province = '';
+            if(queryData.city)
+              queryData.city = queryData.city.slice(0,queryData.city.length-1);
+            else queryData.city = '';
+            if(queryData.block)
+              queryData.block = queryData.block.slice(0,queryData.block.length-1);
+            else queryData.block = '';
+           /* if(queryData.city && queryData.province && queryData.block) {
               queryData.province = queryData.province.slice(0,queryData.province.length-1);
               queryData.city = queryData.city.slice(0,queryData.city.length-1);
               queryData.block = queryData.block.slice(0,queryData.block.length-1);
-            }
+            }*/
             queryData.dateBegin = this.dateRange[0];
             queryData.dateEnd = this.dateRange[1];
             this.$emit('queryData', queryData);

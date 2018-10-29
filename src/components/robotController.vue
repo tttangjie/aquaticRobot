@@ -42,9 +42,16 @@
         </el-table-column>
         <el-table-column
           align="center"
-          label="联系人"
-        width="70">
+          label="用户名"
+          width="70">
           <template slot-scope="scope">{{scope.row.username}}
+          </template>>
+        </el-table-column>
+        <el-table-column
+          align="center"
+          label="姓名"
+        width="70">
+          <template slot-scope="scope">{{scope.row.realname}}
           </template>>
         </el-table-column>
         <el-table-column
@@ -282,7 +289,7 @@
         getAllRoobotsByParams(pageNum,pageSize,orderBy,condition){
           this.$axios.get('/robert/all?pageNum='+ pageNum  + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition)
             .then( res => {
-              // console.log(res);
+               console.log(res);
               if(res.data.code === 1){
                 this.robots = this.changeDateAndSex( res.data.data.list);
                 this.total = res.data.data.total;
@@ -494,7 +501,6 @@
         getAllRobotType(){
           this.$axios.get('/robert/all/type')
             .then(res => {
-              console.log(res);
               if (res.data.code === 1){
                 this.robotType = res.data.data;
               }
