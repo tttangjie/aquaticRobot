@@ -26,6 +26,7 @@
       </el-table-column>
       <el-table-column
         align="center"
+        width="50"
         label="负责类别">
         <template slot-scope="scope">{{ scope.row.major }}</template>
       </el-table-column>
@@ -41,6 +42,7 @@
       </el-table-column>
       <el-table-column
         align="center"
+        width="60"
         label="姓名">
         <template slot-scope="scope">{{ scope.row.realname }}</template>
       </el-table-column>
@@ -107,7 +109,7 @@
       title="专家注册"
       :visible.sync="showRegisterDialog"
       width="450px">
-      <el-form :model="expertForm">
+      <el-form :model="expertForm" size="mini">
         <el-form-item label="* 用户名" :label-width="formLabelWidth">
           <el-input v-model="expertForm.username"></el-input>
         </el-form-item>
@@ -142,17 +144,11 @@
         <el-form-item label="邮箱" :label-width="formLabelWidth">
           <el-input v-model="expertForm.email"></el-input>
         </el-form-item>
-        <el-form-item label="省份" :label-width="formLabelWidth">
-          <el-input v-model="expertForm.province"></el-input>
-        </el-form-item>
-        <el-form-item label="城市" :label-width="formLabelWidth">
-          <el-input v-model="expertForm.city"></el-input>
-        </el-form-item>
         <el-form-item label="地区" :label-width="formLabelWidth">
-          <el-input v-model="expertForm.county"></el-input>
+          <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
         </el-form-item>
         <el-form-item label="地址" :label-width="formLabelWidth">
-          <el-input v-model="expertForm.address"></el-input>
+          <el-input v-model="expertForm.address" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="备注" :label-width="formLabelWidth">
           <el-input v-model="expertForm.remark"></el-input>
@@ -210,13 +206,16 @@
 
 <script>
     import Strategy from '../tools/Strategy'
+    import ThreeLink from '../tools/ThreeLink'
     export default {
         name: "ExpertManagement",
         components:{
-          'strategy':Strategy
+          'strategy':Strategy,
+          ThreeLink
         },
         data() {
           return {
+            areaSelection:{},
             expertList:[],
             currentModify:{},
             page:{
@@ -355,7 +354,19 @@
           jumpToOtherPage() {
             this.loadList();
           },
+          areaDate(value) {
+            this.areaSelection = value;
+          },
           registerExpert() {
+            if(this.areaSelection.province)
+              this.expertForm.province = this.areaSelection.province.slice(0,this.areaSelection.province.length-1);
+            else this.expertForm.province = '';
+            if(this.areaSelection.city)
+              this.expertForm.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
+            else this.expertForm.city = '';
+            if(this.areaSelection.block)
+              this.expertForm.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+            else this.expertForm.county = '';
             this.$axios.post('/expert/', this.expertForm)
               .then((res) => {
                 if(res.data.code === 50003){

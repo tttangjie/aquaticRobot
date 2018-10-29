@@ -377,8 +377,8 @@
             this.customerRegist.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
           else this.customerRegist.city = '';
           if(this.areaSelection.block)
-            this.customerRegist.block = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
-          else this.customerRegist.block = '';
+            this.customerRegist.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+          else this.customerRegist.county = '';
           this.$axios.post('/customer/',{
             "address": this.customerRegist.address,
             "age": this.customerRegist.age,

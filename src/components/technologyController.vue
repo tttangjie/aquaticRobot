@@ -168,25 +168,11 @@
           <el-form-item label="职位">
             <el-input v-model="updateTechnology.position" autocomplete="off"></el-input>
           </el-form-item>
+          <el-form-item label="地区">
+            <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
+          </el-form-item>
           <el-form-item label="地址">
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.province" autocomplete="off" placeholder="省"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.city" autocomplete="off" placeholder="市"></el-input>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.county" autocomplete="off" placeholder="区"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.address" autocomplete="off" placeholder="详细地址"></el-input>
-              </el-col>
-            </el-row>
+            <el-input v-model="updateTechnology.address" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="电话">
             <el-input v-model="updateTechnology.tel" autocomplete="off"></el-input>
@@ -290,6 +276,7 @@
 
 <script>
   import Strategy from '../components/backStage/tools/Strategy'
+  import ThreeLink from './backStage/tools/ThreeLink'
     export default {
        name: "technologyController",
       data(){
@@ -340,10 +327,11 @@
            }],
            currentStatus:'',
            currentTaskId:-1,
-           currentTechnologyUsername:''
+           currentTechnologyUsername:'',
+           areaSelection:{}
          }
       },
-      components:{Strategy},
+      components:{Strategy,ThreeLink},
       methods:{
          //拉取全部技术人员 性别，日期转换  地区转换
         changeDateAndSexOfAllTechnology:function(arr){
@@ -455,9 +443,21 @@
           this.dialogFormVisible = true;
           this.updateTechnology = {};
         },
-
+        areaDate(value) {
+          this.areaSelection = value;
+        },
         // 提交新建或更新
         submitForm:function () {
+          console.log(this.areaSelection);
+          if(this.areaSelection.province)
+            this.updateTechnology.province = this.areaSelection.province.slice(0,this.areaSelection.province.length-1);
+          else this.updateTechnology.province = '';
+          if(this.areaSelection.city)
+            this.updateTechnology.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
+          else this.updateTechnology.city = '';
+          if(this.areaSelection.block)
+            this.updateTechnology.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+          else this.updateTechnology.county = '';
           // 时间转为时间戳
           let enter_time = Date.parse(this.updateTechnology.enter_time)
           // 判断是新建还是更新
