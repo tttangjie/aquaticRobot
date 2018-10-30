@@ -87,6 +87,9 @@ export default {
                 that.$cookie.set("username",res.data.data.username);
                 that.$cookie.set("user_id",res.data.data.user_id);
                 that.$cookie.set("token",res.data.data.token);
+                that.$cookie.set("role",res.data.data.role);
+                that.$cookie.set("image",res.data.data.image);
+                that.$cookie.set("username",res.data.data.username);
                 // console.log(that.$cookie.get("token"));
                 that.$router.push({path:'/index/robot'});
               }

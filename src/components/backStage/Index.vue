@@ -94,14 +94,19 @@
     </div>
 
     <div class="right">
+      <web-header></web-header>
       <router-view></router-view>
     </div>
   </div>
 </template>
 
 <script>
+  import webHeader from '../Header'
   export default {
     name: "Index",
+    components:{
+      'web-header':webHeader,
+    },
     data() {
       return {
         isRouter: true
