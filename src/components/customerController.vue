@@ -74,7 +74,7 @@
         </el-table-column>
       </el-table>
 
-      <!--新建某个技术人员信息-->
+      <!--新建某个客户信息-->
       <el-dialog title="普通用户注册" :visible.sync="dialogFormVisible" >
         <el-form :model="customerRegist" label-width="80px" size="mini">
           <el-form-item label="姓名">
@@ -376,9 +376,9 @@
           if(this.areaSelection.city)
             this.customerRegist.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
           else this.customerRegist.city = '';
-          if(this.areaSelection.country)
-            this.customerRegist.country = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
-          else this.customerRegist.country = '';
+          if(this.areaSelection.block)
+            this.customerRegist.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+          else this.customerRegist.county = '';
           this.$axios.post('/customer/',{
             "address": this.customerRegist.address,
             "age": this.customerRegist.age,

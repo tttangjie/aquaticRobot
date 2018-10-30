@@ -43,14 +43,14 @@
         <el-table-column
           align="center"
           label="用户名"
-        width="70">
+        width="60">
           <template slot-scope="scope">{{scope.row.username}}
           </template>>
         </el-table-column>
         <el-table-column
           align="center"
           label="姓名"
-        width="70">
+        width="60">
           <template slot-scope="scope">{{scope.row.realname}}
           </template>>
         </el-table-column>
