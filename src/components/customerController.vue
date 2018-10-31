@@ -132,7 +132,7 @@
             <el-input v-model="customerChange.username" autocomplete="off" :disabled="true"></el-input>
           </el-form-item>
           <el-form-item label="性别">
-            <el-radio-group v-model="customerChange.sex" :disabled="true">
+            <el-radio-group v-model="customerChange.sex">
               <el-radio label="1">男</el-radio>
               <el-radio label="0">女</el-radio>
             </el-radio-group>
@@ -140,25 +140,11 @@
           <el-form-item label="年龄">
             <el-input v-model="customerChange.age" autocomplete="off"></el-input>
           </el-form-item>
+          <el-form-item label="地区">
+            <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
+          </el-form-item>
           <el-form-item label="地址">
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="customerChange.province" :disabled="true" autocomplete="off" placeholder="省"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="customerChange.city" :disabled="true" autocomplete="off" placeholder="市"></el-input>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="customerChange.county" :disabled="true" autocomplete="off" placeholder="区"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="customerChange.address" autocomplete="off" placeholder="详细地址"></el-input>
-              </el-col>
-            </el-row>
+            <el-input v-model="customerChange.address" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="电话">
             <el-input v-model="customerChange.tel" autocomplete="off"></el-input>
@@ -302,18 +288,28 @@
           this.multipleSelection = ids.join("-");
         },
         handleEdit(index,row){
-          this.customerChange = row;
+          var b = Object.assign({}, row)
+          this.customerChange = b;
           this.currentCustomerID = row.id;
           this.dialogFormVisible2 = true;
+          if (this.customerChange.sex == "男"){
+            this.customerChange.sex = '1';
+          } else {
+            this.customerChange.sex = '0';
+          }
+          console.log(this.customerChange.sex);
         },
         // 提交更新用户信息
         changeCustomer(){
-          let sex = -1;
-          if (this.customerChange.sex == "男"){
-            sex = 0;
-          } else {
-            sex = 1;
-          }
+          if(this.areaSelection.province)
+            this.customerChange.province = this.areaSelection.province.slice(0,this.areaSelection.province.length-1);
+          else this.customerChange.province = '';
+          if(this.areaSelection.city)
+            this.customerChange.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
+          else this.customerChange.city = '';
+          if(this.areaSelection.block)
+            this.customerChange.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+          else this.customerChange.county = '';
           this.$axios.put('/customer/' + this.currentCustomerID,{
             "address": this.customerChange.address,
             "age": this.customerChange.age,
@@ -323,7 +319,7 @@
             "image": "",
             "province": this.customerChange.province,
             "realname":this.customerChange.realname,
-            "sex": sex,
+            "sex": this.customerChange.sex,
             "tel": this.customerChange.tel,
             "type": this.customerChange.type,
             "username": this.customerChange.username

@@ -375,12 +375,14 @@
 
         // 编辑某一个技术员状态
         handleEdit:function (index,row) {
-          if (row.sex === "男"){
-            row.sex = "0";
+          var b = Object.assign({}, row);
+          this.updateTechnology = b;
+          if (this.updateTechnology.sex === "男"){
+            this.updateTechnology.sex = "1";
           } else {
-            row.sex = "1";
+            this.updateTechnology.sex = "0";
           }
-            this.updateTechnology = row;
+            // this.updateTechnology = row;
             this.isNew = false;
             this.dialogFormVisible2 = true;
             this.currentId = row.id;
