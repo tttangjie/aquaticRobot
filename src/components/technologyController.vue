@@ -190,14 +190,17 @@
       <!--编辑某个技术人员信息-->
       <el-dialog title="更新人员信息" :visible.sync="dialogFormVisible2" >
         <el-form :model="updateTechnology" label-width="80px" size="mini">
-          <el-form-item label="姓名">
-            <el-input v-model="updateTechnology.realname" autocomplete="off" :disabled="true"></el-input>
-          </el-form-item>
           <el-form-item label="用户名">
             <el-input v-model="updateTechnology.username" autocomplete="off" :disabled="true"></el-input>
           </el-form-item>
+          <el-form-item label="工号">
+            <el-input v-model="updateTechnology.number" autocomplete="off" :disabled="true"></el-input>
+          </el-form-item>
+          <el-form-item label="姓名">
+            <el-input v-model="updateTechnology.realname" autocomplete="off"></el-input>
+          </el-form-item>
           <el-form-item label="性别">
-            <el-radio-group v-model="updateTechnology.sex" :disabled="true">
+            <el-radio-group v-model="updateTechnology.sex">
               <el-radio label="1">男</el-radio>
               <el-radio label="0">女</el-radio>
             </el-radio-group>
@@ -205,36 +208,14 @@
           <el-form-item label="年龄">
             <el-input v-model="updateTechnology.age" autocomplete="off"></el-input>
           </el-form-item>
-          <el-form-item label="时间" >
-            <el-col :span="11">
-              <el-date-picker type="date" placeholder="选择日期" v-model="updateTechnology.enter_time" style="width: 100%;" :disabled="true"></el-date-picker>
-            </el-col>
-          </el-form-item>
-          <el-form-item label="工号">
-            <el-input v-model="updateTechnology.number" autocomplete="off" :disabled="true"></el-input>
-          </el-form-item>
           <el-form-item label="职位">
             <el-input v-model="updateTechnology.position" autocomplete="off"></el-input>
           </el-form-item>
+          <el-form-item label="地区">
+            <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
+          </el-form-item>
           <el-form-item label="地址">
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.province" autocomplete="off" placeholder="省" :disabled="true"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.city" autocomplete="off" placeholder="市" :disabled="true"></el-input>
-              </el-col>
-            </el-row>
-            <el-row>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.county" autocomplete="off" placeholder="区" :disabled="true"></el-input>
-              </el-col>
-              <el-col class="line" :span="2" style="text-align: center">-</el-col>
-              <el-col :span="11">
-                <el-input v-model="updateTechnology.address" autocomplete="off" placeholder="详细地址"></el-input>
-              </el-col>
-            </el-row>
+            <el-input v-model="updateTechnology.address" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="电话">
             <el-input v-model="updateTechnology.tel" autocomplete="off"></el-input>
@@ -450,7 +431,6 @@
         },
         // 提交新建或更新
         submitForm:function () {
-          console.log(this.areaSelection);
           if(this.areaSelection.province)
             this.updateTechnology.province = this.areaSelection.province.slice(0,this.areaSelection.province.length-1);
           else this.updateTechnology.province = '';
@@ -460,8 +440,8 @@
           if(this.areaSelection.block)
             this.updateTechnology.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
           else this.updateTechnology.county = '';
-          // 时间转为时间戳
-          let enter_time = Date.parse(this.updateTechnology.enter_time)
+          /*// 时间转为时间戳
+          let enter_time = Date.parse(this.updateTechnology.enter_time)*/
           // 判断是新建还是更新
           if (this.isNew === true){  //新建
             this.$axios.post('/technology/',{
@@ -494,13 +474,15 @@
               "address": this.updateTechnology.address,
               "age": this.updateTechnology.age,
               "email": this.updateTechnology.email,
-              "enter_time": enter_time,
               "number": this.updateTechnology.number,
               "position": this.updateTechnology.position,
               "realname":this.updateTechnology.realname,
               "sex": this.updateTechnology.sex,
               "tel": this.updateTechnology.tel,
-              "username": this.updateTechnology.username
+              "username": this.updateTechnology.username,
+              "province": this.updateTechnology.province,
+              "city": this.updateTechnology.city,
+              "county": this.updateTechnology.county,
             })
               .then( res => {
                 console.log(res);
