@@ -21,8 +21,8 @@
       <!--小操作-->
       <div class="options">
         <div>
-          <el-checkbox v-model="checked">记住密码</el-checkbox>
-          <a class="forgetPassword">忘记密码？</a>
+          <!--<el-checkbox v-model="checked">记住密码</el-checkbox>-->
+          <!--<a class="forgetPassword">忘记密码？</a>-->
         </div>
       </div>
 
@@ -32,7 +32,7 @@
       </div>
 
       <div class="toRegist">
-        <el-button  style="margin-top: 20px;width: 80%;clear: both">注&#160&#160&#160册</el-button>
+        <!--<el-button  style="margin-top: 20px;width: 80%;clear: both">注&#160&#160&#160册</el-button>-->
       </div>
     </div>
   </div>
