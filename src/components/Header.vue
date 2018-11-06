@@ -2,16 +2,16 @@
   <div>
     <header>
       <span>欢迎您，{{role}} {{username}}</span>
-      <span v-show="!showDefault">
-        <img class="image-style"
-             @click="showModifyHeadImageDialog = true"
+      <el-dropdown @command="handleCommand">
+        <img class="image-style el-dropdown-link"
              :src="image"/>
-      </span>
-      <span v-show="showDefault">
-        <img class="image-style"
-             @click="showModifyHeadImageDialog = true"
-             src="../../static/img/default-image.jpg"/>
-      </span>
+        <el-dropdown-menu slot="dropdown">
+          <el-dropdown-item command="info">个人信息</el-dropdown-item>
+          <el-dropdown-item command="head">修改头像</el-dropdown-item>
+          <el-dropdown-item command="pwd">修改密码</el-dropdown-item>
+        </el-dropdown-menu>
+      </el-dropdown>
+
       <a @click="toLogin()">【退出】</a>
     </header>
 
@@ -46,7 +46,6 @@
             username:this.$cookie.get('username'),
             image:this.$cookie.get('image'),
             imageURL:'',
-            showDefault:false,
             showModifyHeadImageDialog:false,
           }
         },
@@ -81,22 +80,30 @@
                 .then((res) =>{
                   this.$cookie.set('image', res.data.data.image);
                   this.image = res.data.data.image;
-                  this.showDefault = false;
                   this.showModifyHeadImageDialog = false;
                 })
                 .catch((err) => {
                   console.log(err)
                 })
             },
-          handleImageChange(file) {
-            this.imageURL = URL.createObjectURL(file.raw);
-            this.image = file.raw
-          },
+            handleImageChange(file) {
+              this.imageURL = URL.createObjectURL(file.raw);
+              this.image = file.raw
+            },
+            handleCommand(command) {
+              if(command === 'info') {
+
+              } else if(command === 'head') {
+                this.showModifyHeadImageDialog = true;
+              } else if(command === 'pwd') {
+
+              }
+            }
         },
         mounted(){
           if(this.image === 'null' ) {
-            this.showDefault = true;
-            this.imageURL = null;
+            this.image = '../../static/img/default-image.jpg';
+            this.imageURL = this.image;
           }
           else this.imageURL = this.image;
           this.getRole();
@@ -132,6 +139,7 @@ header{
     line-height: 32px;
     border-radius: 90px;
     vertical-align: top;
+    cursor: pointer;
   }
   /*图片样式*/
   .avatar-uploader-icon {
