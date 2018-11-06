@@ -126,7 +126,7 @@
       <el-dialog title="更新客户信息" :visible.sync="dialogFormVisible2" >
         <el-form :model="customerChange" label-width="80px" size="mini">
           <el-form-item label="姓名">
-            <el-input v-model="customerChange.realname" autocomplete="off" :disabled="true"></el-input>
+            <el-input v-model="customerChange.realname" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="用户名">
             <el-input v-model="customerChange.username" autocomplete="off" :disabled="true"></el-input>
@@ -154,14 +154,6 @@
           </el-form-item>
           <el-form-item label="负责类别">
             <el-input v-model="customerChange.type" autocomplete="off"></el-input>
-            <!--<el-select v-model="customerRegist.type" clearable placeholder="请选择">-->
-            <!--<el-option-->
-            <!--v-for="item in types"-->
-            <!--:key="item.value"-->
-            <!--:label="item.value"-->
-            <!--:value="item.value">-->
-            <!--</el-option>-->
-            <!--</el-select>          -->
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

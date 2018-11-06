@@ -188,4 +188,9 @@
     color: #1d4e79;
 
   }
+  .el-menu-item{
+    margin-left: 30px;
+    height: 40px;
+    line-height: 40px;
+  }
 </style>

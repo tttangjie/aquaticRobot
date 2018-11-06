@@ -166,15 +166,21 @@
       title="专家信息更新"
       :visible.sync="showModifyDialog"
       width="450px">
-      <el-form :model="currentModify">
+      <el-form :model="currentModify" size="mini">
         <el-form-item label="用户名" :label-width="formLabelWidth">
           <el-input v-model="currentModify.username" disabled ></el-input>
+        </el-form-item>
+        <el-form-item label="姓名" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.realname"></el-input>
         </el-form-item>
         <el-form-item label="联系电话" :label-width="formLabelWidth">
           <el-input v-model="currentModify.tel"></el-input>
         </el-form-item>
         <el-form-item label="年龄" :label-width="formLabelWidth">
           <el-input v-model="currentModify.age"></el-input>
+        </el-form-item>
+        <el-form-item label="产品类别" :label-width="formLabelWidth">
+          <el-input v-model="currentModify.product"></el-input>
         </el-form-item>
         <el-form-item label="学位" :label-width="formLabelWidth">
           <el-input v-model="currentModify.degree"></el-input>
@@ -187,6 +193,9 @@
         </el-form-item>
         <el-form-item label="邮箱" :label-width="formLabelWidth">
           <el-input v-model="currentModify.email"></el-input>
+        </el-form-item>
+        <el-form-item label="地区" :label-width="formLabelWidth">
+          <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
         </el-form-item>
         <el-form-item label="地址" :label-width="formLabelWidth">
           <el-input v-model="currentModify.address"></el-input>
@@ -281,10 +290,12 @@
           },
           modifyRow(row) {
             this.showModifyDialog = true;
+            this.currentModify.realname = row.realname;
             this.currentModify.id = row.id;
             this.currentModify.username = row.username;
             this.currentModify.major = row.major;
             this.currentModify.degree = row.degree;
+            this.currentModify.product = row.product;
             this.currentModify.company = row.company;
             this.currentModify.tel = row.tel;
             this.currentModify.email = row.email;
@@ -293,13 +304,27 @@
             this.currentModify.remark = row.remark;
           },
           modifyExpert() {
+            if(this.areaSelection.province)
+              this.currentModify.province = this.areaSelection.province.slice(0,this.areaSelection.province.length-1);
+            else this.currentModify.province = '';
+            if(this.areaSelection.city)
+              this.currentModify.city = this.areaSelection.city.slice(0,this.areaSelection.city.length-1);
+            else this.currentModify.city = '';
+            if(this.areaSelection.block)
+              this.currentModify.county = this.areaSelection.block.slice(0,this.areaSelection.block.length-1);
+            else this.currentModify.county = '';
             this.$axios.put('/expert/'+this.currentModify.id,{
+                realname:this.currentModify.realname,
                 major:this.currentModify.major,
+                product:this.currentModify.product,
                 degree:this.currentModify.degree,
                 company:this.currentModify.company,
                 tel:this.currentModify.tel,
                 email:this.currentModify.email,
                 age:this.currentModify.age,
+                city: this.currentModify.city,
+                county: this.currentModify.county,
+                province: this.currentModify.province,
                 address:this.currentModify.address,
                 remark:this.currentModify.remark
             })
@@ -404,7 +429,6 @@
                 document.body.removeChild(link);
               })
           },
-
           queryData(value) {
        /*     if(value.city && value.province && value.block) {
               value.province = value.province.slice(0,value.province.length-1);
