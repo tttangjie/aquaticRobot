@@ -184,8 +184,8 @@
 </template>
 
 <script>
-  import ThreeLink from './backStage/tools/ThreeLink'
-  import Strategy from '../components/backStage/tools/Strategy'
+  import ThreeLink from '../tools/ThreeLink'
+  import Strategy from '../tools/Strategy'
     export default {
       name: "customerController",
       components:{Strategy,ThreeLink},

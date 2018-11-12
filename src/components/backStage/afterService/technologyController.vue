@@ -256,8 +256,8 @@
 </template>
 
 <script>
-  import Strategy from '../components/backStage/tools/Strategy'
-  import ThreeLink from './backStage/tools/ThreeLink'
+  import Strategy from '../tools/Strategy'
+  import ThreeLink from '../tools/ThreeLink'
     export default {
        name: "technologyController",
       data(){

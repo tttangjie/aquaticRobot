@@ -118,10 +118,10 @@
 
 
       </el-form>
-      <span slot="footer" class="dialog-footer">
-    <el-button @click="showRegisterDialog = false">取 消</el-button>
-    <el-button type="primary" @click="registerExpert">注 册</el-button>
-  </span>
+        <span slot="footer" class="dialog-footer">
+          <el-button @click="showRegisterDialog = false">取 消</el-button>
+          <el-button type="primary" @click="registerExpert">注 册</el-button>
+        </span>
     </el-dialog>
 
     <!-- 更新用户的对话框 -->
@@ -183,6 +183,7 @@
           }
         )
           .then((res) => {
+            console.log(res)
             if(res.data.code === 1) {
               this.adminList = res.data.data.list;
               this.page.pages = res.data.data.pages;
@@ -224,7 +225,7 @@
           })
       },
       initPassword(status, username) {
-        if(status === 1) {
+        if(status == 1) {
           this.$message({
             message:'请先禁用该管理员权限！',
             type:'warning'

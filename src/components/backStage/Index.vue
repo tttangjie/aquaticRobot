@@ -6,13 +6,14 @@
       </div>
       <el-menu
         :router="isRouter"
+        :default-active="activeNav"
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
         background-color="#C1BEBF"
         style="height: auto;"
         text-color="#fff"
-        active-text-color="#ffd04b">
+        active-text-color="#fff04b">
         <el-submenu index="1">
           <template slot="title">
             <i class="el-icon-menu"></i>
@@ -109,7 +110,8 @@
     },
     data() {
       return {
-        isRouter: true
+        isRouter: true,
+        activeNav:'/index/robot',
       }
     },
     methods: {
@@ -190,7 +192,7 @@
   }
   .el-menu-item{
     margin-left: 30px;
-    height: 40px;
-    line-height: 40px;
+    height: 30px;
+    line-height: 30px;
   }
 </style>

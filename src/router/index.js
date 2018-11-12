@@ -12,6 +12,11 @@ export default new Router({
       component: (resolve) => require(['../components/Login'], resolve),
     },
     {
+      path: '/personal',
+      name: 'Personal',
+      component: (resolve) => require(['../components/backStage/personalManagement/Personal'], resolve),
+    },
+    {
       path: '/index',
       name: 'index',
       component: (resolve) => require(['../components/backStage/Index'], resolve),
@@ -19,17 +24,17 @@ export default new Router({
         {
           path: 'robot',
           name: 'robotController',
-          component: (resolve) => require(['../components/robotController'], resolve),
+          component: (resolve) => require(['../components/backStage/user/robotController'], resolve),
         },
         {
           path: 'customer',
           name: 'customerController',
-          component: (resolve) => require(['../components/customerController'], resolve),
+          component: (resolve) => require(['../components/backStage/user/customerController'], resolve),
         },
         {
           path: 'technology',
           name: 'technologyController',
-          component: (resolve) => require(['../components/technologyController'], resolve),
+          component: (resolve) => require(['../components/backStage/afterService/technologyController'], resolve),
         },
         {
           path: 'service',
