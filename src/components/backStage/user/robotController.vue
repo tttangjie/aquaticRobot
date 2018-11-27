@@ -6,6 +6,7 @@
           <el-select v-model="select"  placeholder="筛选类型" style="width: 130px;" @change="selectChange">
             <el-option label="机器人类型" value="1"></el-option>
             <el-option label="客户ID" value="2"></el-option>
+            <el-option label="机器人编号" value="3"></el-option>
           </el-select>
         <el-select v-model="input5"  placeholder="筛选内容" style="width: 130px;">
           <el-option
@@ -15,19 +16,25 @@
             :value="item">
           </el-option>
         </el-select>
-        <el-button size="medium" @click.native="searchByKey">筛选</el-button>
-        <el-button size="medium" @click.native="reset">重置</el-button>
+        <el-button size="medium" class="plain_button" @click.native="searchByKey">筛选</el-button>
+        <el-button size="medium" class="plain_button" @click.native="reset">重置</el-button>
       </div>
 
       <!--机器人列表展示-->
       <el-table
         :data="robots"
-        style="width: 100%;margin-top: 20px;text-align: center">
+        size="mini"
+        style="margin-top: 20px;"
+        height="500">
+        <el-table-column
+          type="index"
+          align="center"
+          width="40">
+        </el-table-column>
         <el-table-column
           prop="position"
           align="center"
-          label="地区"
-          width="80">
+          label="地区">
         </el-table-column>
         <el-table-column
           prop="type"
@@ -43,22 +50,22 @@
         <el-table-column
           align="center"
           label="用户名"
-        width="60">
+          width="60">
           <template slot-scope="scope">{{scope.row.username}}
           </template>>
         </el-table-column>
         <el-table-column
           align="center"
           label="姓名"
-        width="60">
+           width="60">
           <template slot-scope="scope">{{scope.row.realname}}
-          </template>>
+          </template>
         </el-table-column>
         <el-table-column
           prop="sex"
           align="center"
           label="性别"
-        width="50">
+          width="50">
         </el-table-column>
         <el-table-column
           prop="age"
@@ -70,19 +77,18 @@
           prop="tel"
           align="center"
           label="电话"
-          width="120">
+          width="100">
         </el-table-column>
         <el-table-column
           prop="category"
           align="center"
-          label="养殖种类"
-          width="60">
+          label="养殖种类">
         </el-table-column>
         <el-table-column
           prop="feed_name"
           align="center"
           label="饵料"
-          width="80">
+          width="50">
         </el-table-column>
         <el-table-column
           align="center"
@@ -97,21 +103,22 @@
           label="编号"
           width="80">
         </el-table-column>
-        <el-table-column label="操作" align="center"  width="180">
+        <el-table-column label="操作" align="center"  width="170">
           <template slot-scope="scope">
             <el-button
-              style="width: 40px;padding: 5px"
+              class="plain_button"
               size="mini"
+              style="width: 40px;padding: 5px;"
               @click="handleEdit(scope.$index, scope.row)">修改</el-button>
             <el-button
-              style="width: 40px;padding: 5px"
+              class="normal_button"
               size="mini"
-              type="primary"
-              @click="changeCustomer(scope.$index, scope.row)">分配</el-button>
+              style="width: 40px;padding: 5px;"
+              @click="changeCustomer(scope.$index, scope.row)">查看</el-button>
             <el-button
-              style="width: 40px;padding: 5px"
+              class="normal_button"
               size="mini"
-              type="danger"
+              style="width: 40px;padding: 5px;"
               @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
@@ -145,8 +152,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button class="plain_button" @click="dialogFormVisible = false">取 消</el-button>
+          <el-button class="normal_button" @click="submitForm">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -164,8 +171,8 @@
           <!--</el-form-item>-->
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button class="plain_button" @click="dialogFormVisible2 = false">取 消</el-button>
+          <el-button class="normal_button" @click="submitForm">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -181,16 +188,18 @@
           </el-option>
         </el-select>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible3 = false">取 消</el-button>
-          <el-button type="primary" @click="submitAssgin">确 定</el-button>
+          <el-button class="plain_button" @click="dialogFormVisible3 = false">取 消</el-button>
+          <el-button class="normal_button" @click="submitAssgin">确 定</el-button>
         </div>
       </el-dialog>
 
       <!--对表格的操作-->
       <div class="options">
         <ul>
-          <li><el-button  plain @click="newRobot">新建</el-button></li>
-          <li><el-button type="primary" plain @click.native="getExcel">导出excel</el-button></li>
+          <li><el-button size="medium"  class="plain_button" @click="newRobot">新建</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getExcel">导出excel</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getWord">导出word</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getPDF">导出pdf</el-button></li>
         </ul>
       </div>
 
@@ -214,12 +223,13 @@
         name: "robotController",
       data(){
           return {
+            total:0,
+            allList:[],
             restaurants: [],
             isNew:false,
             dialogFormVisible:false,
             dialogFormVisible2:false,
             dialogFormVisible3:false,
-            total:10,
             robots:[],
             currentPage:1,
             currentRobotId:'',
@@ -239,6 +249,7 @@
             currentCustomerRealname:'',
             robotType:[],
             select_keys:[],
+            robotNumber:[],
           }
       },
       methods:{
@@ -252,6 +263,8 @@
           } else if(this.select == 2) {
             // console.log(this.customersRealname);
             this.select_keys = this.customersRealname
+          } else if(this.select == 3) {
+            this.select_keys = this.robotNumber;
           }
         },
 
@@ -289,6 +302,7 @@
         getAllRoobotsByParams(pageNum,pageSize,orderBy,condition){
           this.$axios.get('/robert/all?pageNum='+ pageNum  + '&pageSize=' + pageSize + '&orderBy=' + orderBy + '&condition=' + condition)
             .then( res => {
+              console.log(res)
               if(res.data.code === 1){
                 this.robots = this.changeDateAndSex( res.data.data.list);
                 this.total = res.data.data.total;
@@ -378,15 +392,12 @@
         },
         // 分页
         handleCurrentChange(val){
-          console.log(this.select);
-          console.log(val);
           //判断是什么条件下的分页
           switch (this.select) {
             case '':
               this.getAllRoobotsByParams(val, 10);
               break;
             case '1':
-              console.log(1111);
               this.getRobotsByType(val, 10, "", "", this.input5);
               break;
             case '2':
@@ -426,6 +437,23 @@
               console.log(err);
             })
         },
+
+        //根据机器人编号获取机器人
+        getRobotsByNumber(number) {
+          this.$axios.get('/robert/number?number=' + number)
+            .then(res => {
+              if (res.data.code === 1){
+                let robotNumber = [];
+                robotNumber.push(res.data.data);
+                this.robots = this.changeDateAndSex(robotNumber);
+                this.total = res.data.data.total;
+                this.currentPage = 10;
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            })
+        },
         //根据客户Id或者机器人类型获取机器人
         searchByKey(){
           let select_id = -1;
@@ -438,6 +466,8 @@
               }
             }
             this.getRobotsByCustomer(1,10,"","",select_id);
+          }else if(this.select == 3) {
+            this.getRobotsByNumber(this.input5);
           } else {
             this.getAllRoobotsByParams(1,10);
           }
@@ -508,6 +538,15 @@
               console.log(err);
             })
         },
+        //获取所有机器人编号
+        getAllRobotNumber() {
+          this.$axios.get('/robert/all/number')
+            .then(res => {
+              if(res.data.code === 1)
+                for(let item in res.data.data)
+                  this.robotNumber.push(res.data.data[item].number);
+            })
+        },
         // 导出excel
         getExcel(){
           this.$axios.get('/excel/robert',{
@@ -523,15 +562,97 @@
             .catch(err => {
               console.log(err);
             })
-        }
+        },
+        loadAllList() {
+          this.$axios.get('/robert/all',{
+            params:{
+              pageNum:1,
+              pageSize:this.total,
+            }
+          })
+            .then( res => {
+              if(res.data.code === 1){
+                this.allList = res.data.data.list;
+              }
+            })
+            .catch(function (err) {
+              console.log(err);
+            })
+        },
+        dataToTable() {
+          let info = [];
+          let table = '';
+          table += '<table>';
+          table += '<tr>' +
+            '<th>序号</th>' +
+            '<th>分类</th>' +
+            '<th>注册时间</th>' +
+            '<th>联系人</th>'+
+            '<th>性别</th>' +
+            '<th>年龄</th>' +
+            '<th>联系电话</th>' +
+            '<th>省</th>' +
+            '<th>市</th>' +
+            '<th>区（县）</th>' +
+            '<th>地址</th>' +
+            '<th>机器人编号</th>' +
+            '<th>养殖种类</th>' +
+            '<th>饵料</th>' +
+            '<th>药品</th>'+
+            '</tr>';
+          for(let item in this.allList) {
+            info[item] = Object.assign({}, this.allList[item]);
+            let index = parseInt(item)+1;
+            if(info[item].sex === 0)
+              info[item].sex = '男';
+            else if(info[item].sex === 1)
+              info[item].sex = '女';
+            else info[item].sex = '';
+            if(info[item].registertime)
+              info[item].registertime = info[item].registertime.replace(' ', '').slice(0,10);
+            for(let i in info[item])
+              if(info[item][i] === null)
+                info[item][i] = ' ';
+            table+='<tr>';
+            table+='<td>'+index+'</td>';
+            table+='<td>'+info[item].type +'</td>';
+            table+='<td>'+info[item].registertime+'</td>';
+            table+='<td>'+info[item].username+'</td>';
+            table+='<td>'+info[item].sex+'</td>';
+            table+='<td>'+info[item].age+'</td>';
+            table+='<td>'+info[item].tel+'</td>';
+            table+='<td>'+info[item].province+'</td>';
+            table+='<td>'+info[item].city+'</td>';
+            table+='<td>'+info[item].county+'</td>';
+            table+='<td>'+info[item].address+'</td>';
+            table+='<td>'+info[item].number+'</td>';
+            table+='<td>'+info[item].category+'</td>';
+            table+='<td>'+info[item].feed_name+'</td>';
+            table+='<td>'+info[item].medicine_name+'</td>';
+            table+='</tr>';
+          }
+          table = table.replace(new RegExp('<th>', 'g'), '<th style="border: 1px solid #ebebeb; background: #ebebeb">');
+          table = table.replace(new RegExp('<td>', 'g'), '<td style="border-bottom: 1px solid #ebebeb">');
+          table+='</table>'
+          return table;
+        },
+        getWord() {
+          this.GLOBAL.wordExport('doc', this.dataToTable(), '机器人信息');
+        },
+        getPDF() {
+          this.GLOBAL.pdfExport(this.dataToTable(), '机器人信息');
+        },
       },
       mounted(){
-          // 初始化获取第一页机器人信息
+        this.loadAllList();
+        // 初始化获取第一页机器人信息
         this.getAllRoobotsByParams(1,10);
         //获取所有客户的id
         this.getCustomersID();
         //获取所有机器人类型
         this.getAllRobotType();
+        //获取所有机器人编号
+        this.getAllRobotNumber();
       }
     }
 </script>

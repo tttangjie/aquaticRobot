@@ -5,9 +5,14 @@
       :data="adminList"
       tooltip-effect="dark"
       size="mini"
-      style="width: 100%;"
-      height="550"
+      style="margin-top: 20px;"
+      height="500"
       highlight-current-row>
+      <el-table-column
+        type="index"
+        align="center"
+        width="40">
+      </el-table-column>
       <el-table-column
         align="center"
         label="姓名">
@@ -72,8 +77,10 @@
       </el-table-column>
     </el-table>
     <div class="btns">
-      <el-button size="medium" @click="showRegisterDialog = true">新建</el-button>
-      <el-button size="medium" type="primary" plain @click="exportExcel">导出excel</el-button>
+      <el-button size="medium" class="plain_button" @click="showRegisterDialog = true">新建</el-button>
+      <el-button size="medium" class="light_button" plain @click="exportExcel">导出excel</el-button>
+      <el-button size="medium"  class="light_button" @click.native="getWord">导出word</el-button>
+      <el-button size="medium"  class="light_button" @click.native="getPDF">导出pdf</el-button>
     </div>
 
     <el-pagination
@@ -89,6 +96,7 @@
     <el-dialog
       title="一般管理员注册"
       :visible.sync="showRegisterDialog"
+      @closed="handleRegisterClose"
       width="450px">
       <el-form :model="adminForm">
         <el-form-item label="* 用户名" :label-width="formLabelWidth">
@@ -116,11 +124,10 @@
           <el-input v-model="adminForm.remark"></el-input>
         </el-form-item>
 
-
       </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="showRegisterDialog = false">取 消</el-button>
-          <el-button type="primary" @click="registerExpert">注 册</el-button>
+          <el-button class="plain_button" @click="showRegisterDialog = false">取 消</el-button>
+          <el-button class="normal_button" @click="registerAdmin">注 册</el-button>
         </span>
     </el-dialog>
 
@@ -141,8 +148,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="showModifyDialog = false">取 消</el-button>
-    <el-button type="primary" @click="modifyAdmin">保 存</el-button>
+    <el-button class="plain_button" @click="showModifyDialog = false">取 消</el-button>
+    <el-button class="normal_button" @click="modifyAdmin">保 存</el-button>
   </span>
     </el-dialog>
   </div>
@@ -153,6 +160,7 @@
     name: "AdminController",
     data() {
       return {
+        allList:[],
         adminList:[],
         currentModify:{},
         page:{
@@ -183,7 +191,6 @@
           }
         )
           .then((res) => {
-            console.log(res)
             if(res.data.code === 1) {
               this.adminList = res.data.data.list;
               this.page.pages = res.data.data.pages;
@@ -202,7 +209,12 @@
       jumpToOtherPage() {
         this.loadList();
       },
-      registerExpert() {
+      handleRegisterClose() {
+        this.adminForm = {};
+        this.adminForm.user_group = '一般管理员';
+        this.adminForm.status=1;
+      },
+      registerAdmin() {
         this.$axios.post('/admin/', this.adminForm)
           .then((res) => {
             if(res.data.code === 50003){
@@ -298,9 +310,67 @@
             document.body.removeChild(link);
           })
       },
+      loadAllList() {
+        this.$axios.get('/admin/list',{
+          params:{
+            pageNum:1,
+            pageSize:this.page.total,
+          }
+        })
+          .then( res => {
+            if(res.data.code === 1){
+              console.log(res)
+              this.allList = res.data.data.list;
+            }
+          })
+          .catch(function (err) {
+            console.log(err);
+          })
+      },
+      dataToTable() {
+        let info = [];
+        let table = '';
+        table += '<table>';
+        table += '<tr>' +
+          '<th>序号</th>' +
+          '<th>姓名</th>' +
+          '<th>工号</th>' +
+          '<th>部门</th>'+
+          '<th>所属用户组</th>' +
+          '<th>注册时间</th>' +
+          '</tr>';
+        for(let item in this.allList) {
+          info[item] = Object.assign({}, this.allList[item]);
+          let index = parseInt(item)+1;
+          if(info[item].login_time)
+            info[item].login_time = info[item].login_time.replace(' ', '').slice(0,10);
+          for(let i in info[item])
+            if(info[item][i] === null)
+              info[item][i] = ' ';
+          table+='<tr>';
+          table+='<td>'+index+'</td>';
+          table+='<td>'+info[item].username +'</td>';
+          table+='<td>'+info[item].number+'</td>';
+          table+='<td>'+info[item].department+'</td>';
+          table+='<td>'+info[item].user_group+'</td>';
+          table+='<td>'+info[item].login_time+'</td>';
+          table+='</tr>';
+        }
+        table = table.replace(new RegExp('<th>', 'g'), '<th style="border: 1px solid #ebebeb; background: #ebebeb">');
+        table = table.replace(new RegExp('<td>', 'g'), '<td style="border-bottom: 1px solid #ebebeb">');
+        table+='</table>'
+        return table;
+      },
+      getWord() {
+        this.GLOBAL.wordExport('doc', this.dataToTable(), '管理人员信息');
+      },
+      getPDF() {
+        this.GLOBAL.pdfExport(this.dataToTable(), '管理人员信息');
+      },
     },
     mounted() {
       this.loadList();
+      this.loadAllList();
     }
   }
 </script>

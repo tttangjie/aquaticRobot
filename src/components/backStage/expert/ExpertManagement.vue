@@ -6,13 +6,19 @@
       :data="expertList"
       tooltip-effect="dark"
       size="mini"
-      style="width: 100%;"
+      style="margin-top: 20px;"
+      height="500"
       highlight-current-row
       @selection-change="handleSelectionChange">
       <el-table-column
         align="center"
         type="selection"
         width="55">
+      </el-table-column>
+      <el-table-column
+        type="index"
+        align="center"
+        width="40">
       </el-table-column>
       <el-table-column
         align="center"
@@ -26,7 +32,6 @@
       </el-table-column>
       <el-table-column
         align="center"
-        width="50"
         label="负责类别">
         <template slot-scope="scope">{{ scope.row.major }}</template>
       </el-table-column>
@@ -78,8 +83,8 @@
         label="操作"
         width="150">
         <template slot-scope="scope">
-          <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>
-          <el-button size="mini" @click="deleteRow(scope.row.id)" type="danger">删除</el-button>
+          <el-button size="mini" class="plain_button" @click="modifyRow(scope.row)">修改</el-button>
+          <el-button size="mini" class="normal_button" @click="deleteRow(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
       <el-table-column
@@ -90,9 +95,11 @@
     </el-table>
 
     <div class="btns">
-      <el-button size="medium" @click="showRegisterDialog = true">新建</el-button>
-      <el-button size="medium" @click="batchDelete">批量删除</el-button>
-      <el-button size="medium" type="primary" plain @click="exportExcel">导出excel</el-button>
+      <el-button size="medium" class="plain_button" @click="showRegisterDialog = true">新建</el-button>
+      <el-button size="medium" class="plain_button" @click="batchDelete">批量删除</el-button>
+      <el-button size="medium" class="light_button" @click="exportExcel">导出excel</el-button>
+      <el-button size="medium"  class="light_button" @click.native="getWord">导出word</el-button>
+      <el-button size="medium"  class="light_button" @click.native="getPDF">导出pdf</el-button>
     </div>
 
     <el-pagination
@@ -105,10 +112,10 @@
     </el-pagination>
 
     <!-- 新建用户的对话框 -->
-    <el-dialog
-      title="专家注册"
-      :visible.sync="showRegisterDialog"
-      width="450px">
+    <el-dialog title="专家注册"
+               :visible.sync="showRegisterDialog"
+               width="450px"
+               @closed="handleRegisterClose">
       <el-form :model="expertForm" size="mini">
         <el-form-item label="* 用户名" :label-width="formLabelWidth">
           <el-input v-model="expertForm.username"></el-input>
@@ -126,8 +133,8 @@
           <el-input v-model="expertForm.age"></el-input>
         </el-form-item>
         <el-form-item label="性别" :label-width="formLabelWidth">
-          <el-radio v-model="expertForm.sex" :label=0>男</el-radio>
-          <el-radio v-model="expertForm.sex" :label=1>女</el-radio>
+          <el-radio v-model="expertForm.sex" :label=1>男</el-radio>
+          <el-radio v-model="expertForm.sex" :label=0>女</el-radio>
         </el-form-item>
         <el-form-item label="产品类别" :label-width="formLabelWidth">
           <el-input v-model="expertForm.product"></el-input>
@@ -145,7 +152,7 @@
           <el-input v-model="expertForm.email"></el-input>
         </el-form-item>
         <el-form-item label="地区" :label-width="formLabelWidth">
-          <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
+          <ThreeLink :reset="flag.reset" v-on:areaDate = areaDate> </ThreeLink>
         </el-form-item>
         <el-form-item label="地址" :label-width="formLabelWidth">
           <el-input v-model="expertForm.address" autocomplete="off"></el-input>
@@ -156,9 +163,9 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="showRegisterDialog = false">取 消</el-button>
-    <el-button type="primary" @click="registerExpert">注 册</el-button>
-  </span>
+        <el-button class="plain_button" @click="showRegisterDialog = false">取 消</el-button>
+        <el-button class="normal_button" @click="registerExpert">注 册</el-button>
+      </span>
     </el-dialog>
 
     <!--更新信息的对话框-->
@@ -178,6 +185,12 @@
         </el-form-item>
         <el-form-item label="年龄" :label-width="formLabelWidth">
           <el-input v-model="currentModify.age"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" :label-width="formLabelWidth">
+          <el-radio-group v-model="currentModify.sex">
+            <el-radio label="1">男</el-radio>
+            <el-radio label="0">女</el-radio>
+          </el-radio-group>
         </el-form-item>
         <el-form-item label="产品类别" :label-width="formLabelWidth">
           <el-input v-model="currentModify.product"></el-input>
@@ -206,8 +219,8 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="showModifyDialog = false">取 消</el-button>
-    <el-button type="primary" @click="modifyExpert">修 改</el-button>
+    <el-button class="plain_button" @click="showModifyDialog = false">取 消</el-button>
+    <el-button class="normal_button" @click="modifyExpert">修 改</el-button>
   </span>
     </el-dialog>
   </div>
@@ -224,6 +237,8 @@
         },
         data() {
           return {
+            total:10,
+            allList:[],
             areaSelection:{},
             expertList:[],
             currentModify:{},
@@ -237,8 +252,9 @@
             selectIDs:'',
             showRegisterDialog:false,
             showModifyDialog:false,
-            expertForm:{
-              sex:0,
+            expertForm:{},
+            flag:{
+              reset:false,
             },
             formLabelWidth:'120px'
           }
@@ -256,6 +272,7 @@
               }
             )
               .then((res) => {
+                console.log(res)
                 if(res.data.code === 1) {
                   this.expertList = res.data.data.list;
                   this.page.pages = res.data.data.pages;
@@ -287,20 +304,14 @@
           handleSelectionChange(val) {
             this.selectionData = val;
           },
+          handleRegisterClose() {
+            this.flag.reset = !this.flag.reset;
+            this.expertForm = {};
+          },
           modifyRow(row) {
             this.showModifyDialog = true;
-            this.currentModify.realname = row.realname;
-            this.currentModify.id = row.id;
-            this.currentModify.username = row.username;
-            this.currentModify.major = row.major;
-            this.currentModify.degree = row.degree;
-            this.currentModify.product = row.product;
-            this.currentModify.company = row.company;
-            this.currentModify.tel = row.tel;
-            this.currentModify.email = row.email;
-            this.currentModify.age = row.age;
-            this.currentModify.address = row.address;
-            this.currentModify.remark = row.remark;
+            this.currentModify = Object.assign({}, row);
+            this.currentModify.sex += '';
           },
           modifyExpert() {
             if(this.areaSelection.province)
@@ -325,7 +336,8 @@
                 county: this.currentModify.county,
                 province: this.currentModify.province,
                 address:this.currentModify.address,
-                remark:this.currentModify.remark
+                remark:this.currentModify.remark,
+                sex:this.currentModify.sex
             })
               .then((res) => {
                 if(res.data.code === 1) {
@@ -428,6 +440,85 @@
                 document.body.removeChild(link);
               })
           },
+          loadAllList() {
+            this.$axios.get('/expert/',{
+              params:{
+                pageNum:1,
+                pageSize:this.page.total,
+              }
+            })
+              .then( res => {
+                if(res.data.code === 1){
+                  this.allList = res.data.data.list;
+                }
+              })
+              .catch(function (err) {
+                console.log(err);
+              })
+          },
+          dataToTable() {
+            let info = [];
+            let table = '';
+            table += '<table>';
+            table += '<tr>' +
+              '<th>序号</th>' +
+              '<th>产品类别</th>' +
+              '<th>负责类别</th>' +
+              '<th>签约时间</th>' +
+              '<th>联系人</th>'+
+              '<th>性别</th>' +
+              '<th>年龄</th>' +
+              '<th>联系电话</th>' +
+              '<th>省</th>' +
+              '<th>市</th>' +
+              '<th>区（县）</th>' +
+              '<th>地址</th>' +
+              '<th>工号</th>' +
+              '<th>学历</th>' +
+              '<th>所在单位</th>' +
+              '</tr>';
+            for(let item in this.allList) {
+              info[item] = Object.assign({}, this.allList[item]);
+              let index = parseInt(item)+1;
+              if(info[item].sex === 0)
+                info[item].sex = '男';
+              else if(info[item].sex === 1)
+                info[item].sex = '女';
+              else info[item].sex = '';
+              if(info[item].sign_time)
+                info[item].sign_time = info[item].sign_time.replace(' ', '').slice(0,10);
+              for(let i in info[item])
+                if(info[item][i] === null)
+                  info[item][i] = ' ';
+              table+='<tr>';
+              table+='<td>'+index+'</td>';
+              table+='<td>'+info[item].product +'</td>';
+              table+='<td>'+info[item].major+'</td>';
+              table+='<td>'+info[item].sign_time+'</td>';
+              table+='<td>'+info[item].username+'</td>'
+              table+='<td>'+info[item].sex+'</td>';
+              table+='<td>'+info[item].age+'</td>';
+              table+='<td>'+info[item].tel+'</td>';
+              table+='<td>'+info[item].province+'</td>';
+              table+='<td>'+info[item].city+'</td>';
+              table+='<td>'+info[item].county+'</td>';
+              table+='<td>'+info[item].address+'</td>';
+              table+='<td>'+info[item].number+'</td>';
+              table+='<td>'+info[item].degree+'</td>';
+              table+='<td>'+info[item].company+'</td>';
+              table+='</tr>';
+            }
+            table = table.replace(new RegExp('<th>', 'g'), '<th style="border: 1px solid #ebebeb; background: #ebebeb">');
+            table = table.replace(new RegExp('<td>', 'g'), '<td style="border-bottom: 1px solid #ebebeb">');
+            table+='</table>'
+            return table;
+          },
+          getWord() {
+            this.GLOBAL.wordExport('doc', this.dataToTable(), '专家信息');
+          },
+          getPDF() {
+            this.GLOBAL.pdfExport(this.dataToTable(), '专家信息');
+          },
           queryData(value) {
        /*     if(value.city && value.province && value.block) {
               value.province = value.province.slice(0,value.province.length-1);
@@ -472,6 +563,7 @@
         },
         mounted() {
           this.loadList();
+          this.loadAllList();
         }
     }
 </script>

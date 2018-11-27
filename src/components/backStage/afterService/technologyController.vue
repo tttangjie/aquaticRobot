@@ -9,7 +9,9 @@
       <!--技术人员信息展示-->
       <el-table
         :data="allTechnology"
-        style="width: 100%;margin-top: 20px"
+        size="mini"
+        style="margin-top: 20px;"
+        height="500"
         @selection-change="handleSelectionChange">
         <el-table-column
           type="selection"
@@ -17,27 +19,28 @@
           width="55">
         </el-table-column>
         <el-table-column
+          type="index"
+          align="center"
+          width="40">
+        </el-table-column>
+        <el-table-column
           prop="location"
           align="center"
-          label="地区"
-        width="55">
+          label="地区">
         </el-table-column>
         <el-table-column
           prop="enter_time"
           align="center"
-          width="100"
           label="入职时间">
         </el-table-column>
         <el-table-column
           prop="username"
           align="center"
-          width="70"
           label="用户名">
         </el-table-column>
         <el-table-column
           prop="realname"
           align="center"
-          width="70"
           label="姓名">
         </el-table-column>
         <el-table-column
@@ -54,33 +57,31 @@
         </el-table-column>
         <el-table-column
           prop="tel"
-          width="120"
           align="center"
           label="联系电话">
         </el-table-column>
         <el-table-column
           prop="email"
-          width="120"
           align="center"
           label="邮箱">
         </el-table-column>
         <el-table-column
           prop="number"
           align="center"
-          label="工号"
-          width="70">
+          label="工号">
         </el-table-column>
         <el-table-column
           prop="position"
           align="center"
-          label="职位"
-          width="70">
+          label="职位">
         </el-table-column>
         <el-table-column
-          label="正在维修数量" align="center">
+          label="正在维修数量"
+          align="center"
+          width="100">
           <template slot-scope="scope">
             <span>{{scope.row.repairNum}}</span>
-            <a style="text-decoration: none;color: red;cursor:pointer;" v-show="scope.row.repairNum"
+            <a style="text-decoration: none;color: #1ABC9C;cursor:pointer;" v-show="scope.row.repairNum"
             @click="getDetails(scope.$index, scope.row)">(详情)</a>
           </template>
         </el-table-column>
@@ -88,10 +89,11 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
+            class="plain_button"
             @click="handleEdit(scope.$index, scope.row)">修改</el-button>
           <el-button
             size="mini"
-            type="danger"
+            class="normal_button"
             @click="handleDelete(scope.$index, scope.row)">删除</el-button>
         </template>
         </el-table-column>
@@ -102,21 +104,21 @@
         <el-table :data="tasks" style="text-align: center">
           <el-table-column property="type" label="产品类型" width="100" align="center"></el-table-column>
           <el-table-column property="number" label="机器人编号" width="100" align="center"></el-table-column>
-          <el-table-column property="time" label="送修时间" width="120" align="center"></el-table-column>
+          <el-table-column property="time" label="送修时间" width="100" align="center"></el-table-column>
           <el-table-column property="username" label="用户名" align="center"></el-table-column>
           <el-table-column property="realname" label="姓名" align="center"></el-table-column>
           <el-table-column property="age" label="年龄" align="center" width="55" ></el-table-column>
           <el-table-column property="sex" label="性别" align="center" width="55"></el-table-column>
           <el-table-column property="tel" label="电话" width="120" align="center"></el-table-column>
           <el-table-column property="technology_name" label="技术员" width="100" align="center"></el-table-column>
-          <el-table-column property="description" label="故障描述" width="150" align="center"></el-table-column>
-          <el-table-column label="状态" align="center">
+          <el-table-column property="description" label="故障描述" width="120" align="center"></el-table-column>
+          <el-table-column label="状态" width="120px" align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.status === 0">待维修</span>
               <span v-if="scope.row.status === 1">维修中</span>
               <span v-if="scope.row.status === 2">维修完成</span>
               <span v-if="scope.row.status === 3">无法维修</span>
-              <a style="text-decoration: none;color: red;cursor:pointer;" v-show="scope.row.status != 2"
+              <a style="text-decoration: none;color: #1ABC9C ;cursor:pointer;" v-show="scope.row.status != 2"
                  @click="changeStatus(scope.$index, scope.row)">(更改)</a>
             </template>
           </el-table-column>
@@ -136,8 +138,8 @@
             </el-option>
           </el-select>
           <span slot="footer" class="dialog-footer">
-              <el-button @click="innerVisible = false">取 消</el-button>
-              <el-button type="primary" @click="submitStatus">确 定</el-button>
+              <el-button class="plain_button" @click="innerVisible = false">取 消</el-button>
+              <el-button class="normal_button" @click="submitStatus">确 定</el-button>
           </span>
         </el-dialog>
 
@@ -145,7 +147,10 @@
       </el-dialog>
 
       <!--新建某个技术人员信息-->
-      <el-dialog title="新建人员信息" :visible.sync="dialogFormVisible" >
+      <el-dialog title="新建人员信息"
+                 :visible.sync="dialogFormVisible"
+                 width="450px"
+                 @closed="handleRegisterClose">
         <el-form :model="updateTechnology" label-width="80px" size="mini">
           <el-form-item label="姓名">
             <el-input v-model="updateTechnology.realname" autocomplete="off"></el-input>
@@ -169,7 +174,7 @@
             <el-input v-model="updateTechnology.position" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="地区">
-            <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
+            <ThreeLink :reset="flag.reset" v-on:areaDate = areaDate> </ThreeLink>
           </el-form-item>
           <el-form-item label="地址">
             <el-input v-model="updateTechnology.address" autocomplete="off"></el-input>
@@ -182,8 +187,8 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button class="plain_button" @click="dialogFormVisible = false">取 消</el-button>
+          <el-button class="normal_button" @click="submitForm">确 定</el-button>
         </div>
       </el-dialog>
 
@@ -225,17 +230,19 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button class="plain_button" @click="dialogFormVisible2 = false">取 消</el-button>
+          <el-button class="normal_button" @click="submitForm">确 定</el-button>
         </div>
       </el-dialog>
 
       <!--对表格的操作-->
       <div class="options">
         <ul>
-          <li><el-button  plain @click="newTechnology">新建</el-button></li>
-          <li><el-button plain @click="removeMany">批量删除</el-button></li>
-          <li><el-button type="primary" plain @click.native="getExcel">导出excel</el-button></li>
+          <li><el-button class="plain_button" @click="newTechnology">新建</el-button></li>
+          <li><el-button class="plain_button" @click="removeMany">批量删除</el-button></li>
+          <li><el-button class="light_button" plain @click.native="getExcel">导出excel</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getWord">导出word</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getPDF">导出pdf</el-button></li>
         </ul>
       </div>
 
@@ -262,6 +269,8 @@
        name: "technologyController",
       data(){
          return {
+           total:0,
+           allList:[],
            isNew:true,
            isFilter:false,
            tableWidth:'80%',
@@ -270,7 +279,6 @@
            dialogTableVisible:false,
            innerVisible:false,
            tasks:[],
-           total:0,
            currentPage:1,
            allTechnology:[],
            updateTechnology:{
@@ -293,6 +301,9 @@
            multipleSelection: [],
            currentId:"",
            queryDatas:{},
+           flag:{
+             reset:false,
+           },
            repairStatus: [{
              value: '0',
              label: '待维修'
@@ -421,6 +432,10 @@
           this.multipleSelection = ids.join("-");
         },
 
+        handleRegisterClose() {
+          this.flag.reset = !this.flag.reset;
+          this.updateTechnology = {};
+        },
         // 新建一个技术人员
         newTechnology:function () {
           this.dialogFormVisible = true;
@@ -633,11 +648,87 @@
             .catch(err => {
               console.log(err);
             })
-        }
+        },
+        loadAllList() {
+          this.$axios.get('/technology/',{
+            params:{
+              pageNum:1,
+              pageSize:this.total,
+            }
+          })
+            .then( res => {
+              if(res.data.code === 1){
+                this.allList = res.data.data.list;
+              }
+            })
+            .catch(function (err) {
+              console.log(err);
+            })
+        },
+        dataToTable() {
+          let info = [];
+          let table = '';
+          table += '<table>';
+          table += '<tr>' +
+            '<th>序号</th>' +
+            '<th>入职时间</th>' +
+            '<th>联系人</th>'+
+            '<th>性别</th>' +
+            '<th>年龄</th>' +
+            '<th>联系电话</th>' +
+            '<th>省</th>' +
+            '<th>市</th>' +
+            '<th>区（县）</th>' +
+            '<th>地址</th>' +
+            '<th>工号</th>' +
+            '<th>职位</th>' +
+            '<th>正在维修数量</th>' +
+            '</tr>';
+          for(let item in this.allList) {
+            info[item] = Object.assign({}, this.allList[item]);
+            let index = parseInt(item)+1;
+   /*         if(info[item].sex === 0)
+              info[item].sex = '男';
+            else if(info[item].sex === 1)
+              info[item].sex = '女';
+            else info[item].sex = '';*/
+            if(info[item].enter_time)
+              info[item].enter_time = info[item].enter_time.replace(' ', '').slice(0,10);
+            for(let i in info[item])
+              if(info[item][i] === null)
+                info[item][i] = ' ';
+            table+='<tr>';
+            table+='<td>'+index+'</td>';
+            table+='<td>'+info[item].enter_time+'</td>';
+            table+='<td>'+info[item].username+'</td>';
+            table+='<td>'+info[item].sex+'</td>';
+            table+='<td>'+info[item].age+'</td>';
+            table+='<td>'+info[item].tel+'</td>';
+            table+='<td>'+info[item].province+'</td>';
+            table+='<td>'+info[item].city+'</td>';
+            table+='<td>'+info[item].county+'</td>';
+            table+='<td>'+info[item].address+'</td>';
+            table+='<td>'+info[item].number+'</td>';
+            table+='<td>'+info[item].position+'</td>';
+            table+='<td>'+info[item].repairNum+'</td>';
+            table+='</tr>';
+          }
+          table = table.replace(new RegExp('<th>', 'g'), '<th style="border: 1px solid #ebebeb; background: #ebebeb">');
+          table = table.replace(new RegExp('<td>', 'g'), '<td style="border-bottom: 1px solid #ebebeb">');
+          table+='</table>'
+          return table;
+        },
+        getWord() {
+          this.GLOBAL.wordExport('doc', this.dataToTable(), '技术人员信息');
+        },
+        getPDF() {
+          this.GLOBAL.pdfExport(this.dataToTable(), '技术人员信息');
+        },
       },
       mounted(){
         // 初始化页面获取第一页技术人员
         this.getTechnologyByPage(1,10,"","");
+        this.loadAllList();
       },
     }
 </script>

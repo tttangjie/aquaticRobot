@@ -5,7 +5,7 @@
       @change="chooseProvince"
       placeholder="省级地区"
       style="width: 160px;"
-      size="mini">
+      size="medium">
       <el-option
         v-for = "item in province"
         :key = item.id
@@ -19,7 +19,7 @@
       @change="chooseCity"
       placeholder="市级地区"
       style="width: 160px;"
-      size="mini">
+      size="medium">
       <el-option
         v-for = "item in city"
         :key = item.id
@@ -33,7 +33,7 @@
       @change = "chooseBlock"
       placeholder="区级地区"
       style="width: 160px;"
-      size="mini">
+      size="medium">
       <el-option
         v-for = "item in block"
         :key = item.id

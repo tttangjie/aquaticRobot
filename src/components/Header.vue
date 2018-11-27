@@ -18,9 +18,9 @@
           <el-dropdown-item command="info" v-show="role !== '超级管理员'">个人空间</el-dropdown-item>
           <el-dropdown-item command="image" v-show="role === '超级管理员'">修改头像</el-dropdown-item>
           <el-dropdown-item command="pwd" v-show="role === '超级管理员'">修改密码</el-dropdown-item>
-          <el-dropdown-item command="exit">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
+      <span @click="toLogin"class="exit">【退出】</span>
     </header>
 
     <el-dialog title="修改密码"
@@ -38,8 +38,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showModifyPWDDialog = false">取 消</el-button>
-        <el-button type="primary" @click="modifyPWD">保 存</el-button>
+        <el-button class="plain_button" @click="showModifyPWDDialog = false">取 消</el-button>
+        <el-button class="normal_button" @click="modifyPWD">保 存</el-button>
       </span>
     </el-dialog>
 
@@ -59,8 +59,8 @@
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
           </el-upload>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="showModifyHeadImageDialog = false">取 消</el-button>
-        <el-button type="primary" @click="modifyHeadImage">确 认</el-button>
+        <el-button class="plain_button" @click="showModifyHeadImageDialog = false">取 消</el-button>
+        <el-button class="normal_button" @click="modifyHeadImage">确 认</el-button>
       </span>
     </el-dialog>
   </div>
@@ -175,8 +175,6 @@
             handleCommand(command) {
               if(command === 'info') {
                 this.$router.push('/personal')
-              } else if(command === 'exit') {
-                this.toLogin();
               }else if(command === 'pwd') {
                 this.showModifyPWDDialog = true;
               }else if(command === 'image') {
@@ -265,7 +263,14 @@ header{
     border-radius: 90px;
     vertical-align: top;
     cursor: pointer;
-    margin: 0 25px 0 10px;
+    margin: 0 0 0 10px;
+  }
+  .exit {
+    cursor: pointer;
+    color: #6d6d6d;
+  }
+  .exit:hover{
+    color: #000;
   }
   /*图片样式*/
   .avatar-uploader-icon {

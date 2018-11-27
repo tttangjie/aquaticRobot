@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="btns">
-      <el-button size="medium" @click="showRegisterDialog = true" type="primary">新建</el-button>
+      <el-button class="normal_button" size="medium" @click="showRegisterDialog = true">新建</el-button>
       <el-select v-model="strategy" placeholder="请选择" style="width: 120px;">
         <el-option
           v-for="(item,index) in subKinds"
@@ -11,22 +11,22 @@
         </el-option>
       </el-select>
       <!--<el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>-->
-      <el-button size="medium" @click="query">筛选</el-button>
-      <el-button size="medium" @click="reset">重置</el-button>
+      <el-button class="plain_button" size="medium" @click="query">筛选</el-button>
+      <el-button class="plain_button" size="medium" @click="reset">重置</el-button>
     </div>
     <el-table
       ref="multipleTable"
       :data="diseaseList"
       tooltip-effect="dark"
       size="mini"
+      style="margin-top: 20px;"
+      height="550"
       @expand-change="rowClick"
-      style="width: 100%;"
       highlight-current-row>
       <el-table-column
         type="index"
-        label="序号"
         align="center"
-        width="50">
+        width="40">
       </el-table-column>
       <el-table-column type="expand">
         <template slot-scope="scope">
@@ -71,8 +71,8 @@
         label="操作"
         width="150">
         <template slot-scope="scope">
-          <el-button size="mini" @click="modifyRow(scope.row)">修改</el-button>
-          <el-button size="mini" @click="deleteRow(scope.row.id)" type="danger">删除</el-button>
+          <el-button class="plain_button" size="mini" @click="modifyRow(scope.row)">修改</el-button>
+          <el-button class="normal_button" size="mini" @click="deleteRow(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -90,7 +90,8 @@
     <el-dialog
       title="疾病添加"
       :visible.sync="showRegisterDialog"
-      width="450px">
+      width="450px"
+      @closed="handleRegisterClose">
       <el-form :model="diseaseForm">
         <el-form-item :label-width="formLabelWidth">
           <el-upload
@@ -123,8 +124,8 @@
         <!--</el-form-item>-->
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="showRegisterDialog = false">取 消</el-button>
-    <el-button type="primary" @click="registerExpert">注 册</el-button>
+    <el-button class="plain_button" @click="showRegisterDialog = false">取 消</el-button>
+    <el-button class="normal_button" @click="registerDisease">注 册</el-button>
   </span>
     </el-dialog>
 
@@ -165,8 +166,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="showModifyDialog = false">取 消</el-button>
-    <el-button type="primary" @click="modifyDisease">保 存</el-button>
+    <el-button class="plain_button" @click="showModifyDialog = false">取 消</el-button>
+    <el-button class="normal_button" @click="modifyDisease">保 存</el-button>
   </span>
     </el-dialog>
   </div>
@@ -232,7 +233,11 @@
           this.query();
         }
       },
-      registerExpert() {
+      handleRegisterClose() {
+        this.diseaseForm = {};
+        this.diseaseForm.image = '';
+      },
+      registerDisease() {
         this.diseaseForm.publishTime = new Date().getTime();
         let formdata = new FormData();
         formdata.append("cause",this.diseaseForm.cause);

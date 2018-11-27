@@ -1,7 +1,7 @@
 <template>
     <div id="feedStore">
       <div class="btns">
-        <el-button size="medium" @click="showRegisterDialog = true" type="primary">新建</el-button>
+        <el-button size="medium" @click="showRegisterDialog = true" class="normal_button">新建</el-button>
         <el-select v-model="subKind" placeholder="请选择" style="width: 120px;">
           <el-option
             v-for="(item,index) in subKinds"
@@ -10,8 +10,8 @@
             :value="item">
           </el-option>
         </el-select>
-        <el-button size="medium" @click="query">筛选</el-button>
-        <el-button size="medium" @click="reset">重置</el-button>
+        <el-button class="plain_button" size="medium" @click="query">筛选</el-button>
+        <el-button class="plain_button" size="medium" @click="reset">重置</el-button>
       </div>
 
       <!--投喂百科展示-->
@@ -21,13 +21,13 @@
         tooltip-effect="dark"
         @expand-change="rowClick"
         size="mini"
-        style="width: 100%;"
+        style="margin-top: 20px;"
+        height="550"
         highlight-current-row>
         <el-table-column
           type="index"
-          label="序号"
           align="center"
-          width="50">
+          width="40">
         </el-table-column>
         <el-table-column type="expand">
           <template slot-scope="scope">
@@ -74,8 +74,8 @@
           label="操作"
           width="150">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
+            <el-button class="plain_button" size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+            <el-button class="normal_button" size="mini" @click="handleDelete(scope.$index, scope.row)" >删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -84,7 +84,8 @@
       <el-dialog
         title="投喂添加"
         :visible.sync="showRegisterDialog"
-        width="450px">
+        width="450px"
+        @closed="handleRegisterClose">
         <el-form :model="feedStoreForm">
           <el-form-item :label-width="formLabelWidth">
             <el-upload
@@ -130,8 +131,8 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-    <el-button @click="showRegisterDialog = false">取 消</el-button>
-    <el-button type="primary" @click="registerFeedStore">注 册</el-button>
+    <el-button class="plain_button" @click="showRegisterDialog = false">取 消</el-button>
+    <el-button class="normal_button" @click="registerFeedStore">注 册</el-button>
   </span>
       </el-dialog>
 
@@ -139,7 +140,8 @@
       <el-dialog
         title="投喂添加"
         :visible.sync="changeRegisterDialog"
-        width="450px">
+        width="450px"
+        @closed="handleRegisterClose">
         <el-form :model="feedStoreForm">
           <el-form-item :label-width="formLabelWidth">
             <el-upload
@@ -185,8 +187,8 @@
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-    <el-button @click="changeRegisterDialog = false">取&#160消</el-button>
-    <el-button type="primary" @click="changeOneFeedStore">更&#160改</el-button>
+    <el-button class="plain_button" @click="changeRegisterDialog = false">取&#160消</el-button>
+    <el-button class="normal_button" @click="changeOneFeedStore">更&#160改</el-button>
   </span>
       </el-dialog>
 
@@ -231,6 +233,10 @@
           }
       },
       methods:{
+        handleRegisterClose() {
+          this.feedStoreForm = {};
+          this.feedStoreForm.image = '';
+        },
           // 新建投喂百科
         registerFeedStore(){
           let formdata = new FormData();

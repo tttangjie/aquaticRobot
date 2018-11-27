@@ -10,10 +10,10 @@
         class="el-menu-vertical-demo"
         @open="handleOpen"
         @close="handleClose"
-        background-color="#C1BEBF"
+        background-color="#EBEDF0"
         style="height: auto;"
-        text-color="#fff"
-        active-text-color="#fff04b">
+        text-color="#404040"
+        active-text-color="#1d4e79">
         <el-submenu index="1">
           <template slot="title">
             <i class="el-icon-menu"></i>
@@ -146,7 +146,7 @@
     float: left;
     overflow:scroll;
     padding-bottom:9999px; margin-bottom:-9999px;
-    background: #c1bebf;
+    background: #EBEDF1;
   }
   /*滚动条样式*/
   .left::-webkit-scrollbar {/*滚动条整体样式*/
@@ -191,8 +191,12 @@
 
   }
   .el-menu-item{
-    margin-left: 30px;
     height: 30px;
     line-height: 30px;
+    font-size: 12px;
+  }
+  .is-active {
+    background-color: #fff !important;
+    color: #1ABC9C !important;
   }
 </style>

@@ -13,13 +13,13 @@
           value-format="yyyy-MM-dd"
           placeholder="选择日期"
           style="width: 280px;"
-          size="mini">
+          size="medium">
         </el-date-picker>
       </div>
 
       <div class="btn_tools">
-        <el-button @click="query" size="mini">查询</el-button>
-        <el-button @click="reset" size="mini">重置</el-button>
+        <el-button class="plain_button" @click="query" size="medium">查询</el-button>
+        <el-button class="plain_button" @click="reset" size="medium">重置</el-button>
       </div>
     </div>
 </template>
@@ -88,7 +88,8 @@
 
 <style scoped>
   .strategy_body {
-    margin-top: 10px;
+    margin-top: 15px;
+    margin-bottom: 15px;
     display: inline-flex;
     font-size: 16px;
     font-weight: 100;

@@ -10,16 +10,22 @@
         </el-option>
       </el-select>
       <!--<el-input size="medium" v-model="strategy" style="width: 120px;"></el-input>-->
-      <el-button size="medium" @click="query">筛选</el-button>
-      <el-button size="medium" @click="reset">重置</el-button>
+      <el-button class="plain_button" size="medium" @click="query">筛选</el-button>
+      <el-button class="plain_button" size="medium" @click="reset">重置</el-button>
     </div>
     <el-table
       ref="multipleTable"
       :data="serviceList"
       tooltip-effect="dark"
       size="mini"
-      style="width: 100%;"
+      style="margin-top: 20px;"
+      height="550"
       highlight-current-row>
+      <el-table-column
+        type="index"
+        align="center"
+        width="40">
+      </el-table-column>
       <el-table-column
         align="center"
         label="产品类别">
@@ -75,7 +81,7 @@
         label="操作"
         width="120">
         <template slot-scope="scope">
-          <el-button size="mini" @click="modifyRow(scope.row)" :disabled="scope.row.canModify">修改</el-button>
+          <el-button size="mini" class="plain_button" @click="modifyRow(scope.row)" :disabled="scope.row.canModify">修改</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -111,8 +117,8 @@
 
       </el-form>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="showModifyDialog = false">取 消</el-button>
-    <el-button type="primary" @click="modifyService">保 存</el-button>
+    <el-button class="plain_button" @click="showModifyDialog = false">取 消</el-button>
+    <el-button class="normal_button" @click="modifyService">保 存</el-button>
   </span>
     </el-dialog>
   </div>

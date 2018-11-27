@@ -12,13 +12,19 @@
         :data="customers"
         tooltip-effect="dark"
         size="mini"
-        style="width: 100%;"
+        style="margin-top: 20px;"
+        height="500"
         highlight-current-row
         @selection-change="handleSelectionChange">
         <el-table-column
           align="center"
           type="selection"
           width="55">
+        </el-table-column>
+        <el-table-column
+          type="index"
+          align="center"
+          width="40">
         </el-table-column>
       <el-table-column
         align="center"
@@ -68,14 +74,17 @@
           label="操作"
           width="150">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
-            <el-button size="mini" @click="handleDelete(scope.$index, scope.row)" type="danger">删除</el-button>
+            <el-button class="plain_button" size="mini" @click="handleEdit(scope.$index, scope.row)">修改</el-button>
+            <el-button class="normal_button" size="mini" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
 
       <!--新建某个客户信息-->
-      <el-dialog title="普通用户注册" :visible.sync="dialogFormVisible" >
+      <el-dialog title="普通用户注册"
+                 :visible.sync="dialogFormVisible"
+                 width="450px"
+                 @closed="handleRegisterClose">
         <el-form :model="customerRegist" label-width="80px" size="mini">
           <el-form-item label="姓名">
             <el-input v-model="customerRegist.realname" autocomplete="off"></el-input>
@@ -93,7 +102,7 @@
             <el-input v-model="customerRegist.age" autocomplete="off"></el-input>
           </el-form-item>
           <el-form-item label="地区">
-            <ThreeLink v-on:areaDate = areaDate> </ThreeLink>
+            <ThreeLink :reset="flag.reset" v-on:areaDate = areaDate> </ThreeLink>
           </el-form-item>
           <el-form-item label="地址">
             <el-input v-model="customerRegist.address" autocomplete="off"></el-input>
@@ -117,13 +126,15 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submitForm">确 定</el-button>
+          <el-button class="plain_button" @click="dialogFormVisible = false">取 消</el-button>
+          <el-button class="normal_button" @click="submitForm">确 定</el-button>
         </div>
       </el-dialog>
 
       <!--更新某个客户信息-->
-      <el-dialog title="更新客户信息" :visible.sync="dialogFormVisible2" >
+      <el-dialog title="更新客户信息"
+                 :visible.sync="dialogFormVisible2"
+                 width="450px">
         <el-form :model="customerChange" label-width="80px" size="mini">
           <el-form-item label="姓名">
             <el-input v-model="customerChange.realname" autocomplete="off"></el-input>
@@ -157,17 +168,20 @@
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
-          <el-button @click="dialogFormVisible2 = false">取 消</el-button>
-          <el-button type="primary" @click="changeCustomer">确 定</el-button>
+          <el-button class="plain_button" @click="dialogFormVisible2 = false">取 消</el-button>
+          <el-button class="normal_button" @click="changeCustomer">确 定</el-button>
         </div>
       </el-dialog>
 
       <!--对表格的操作-->
       <div class="options">
         <ul>
-          <li><el-button  plain @click="newCustomer">新建</el-button></li>
-          <li><el-button plain @click="removeMany">批量删除</el-button></li>
-          <li><el-button type="primary" plain @click.native="getExcel">导出excel</el-button></li>
+          <li><el-button size="medium"  class="plain_button" @click="newCustomer">新建</el-button></li>
+          <li><el-button size="medium"  class="plain_button" @click="removeMany">批量删除</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getExcel">导出excel</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getWord">导出word</el-button></li>
+          <li><el-button size="medium"  class="light_button" @click.native="getPDF">导出pdf</el-button></li>
+
         </ul>
       </div>
 
@@ -192,6 +206,7 @@
       data(){
           return {
             // types:[""],
+            allList:[],
             customerRegist:{},
             customerChange:{},
             dialogFormVisible2:false,
@@ -203,6 +218,9 @@
               size: 10,
               pages: 0,
               total: 0,
+            },
+            flag:{
+              reset:false,
             },
             isFilter:false,
             queryDatas:{},
@@ -247,7 +265,6 @@
             }
           })
             .then(res => {
-              console.log(res);
               if (res.data.code === 1){
                 this.customers = this.changeDateAndSex( res.data.data.list);
                 this.page.total = res.data.data.total;
@@ -329,6 +346,10 @@
             .catch(err => {
               console.log(err);
             })
+        },
+        handleRegisterClose() {
+          this.flag.reset = !this.flag.reset;
+          this.customerRegist = {};
         },
         handleDelete(index,row){
           this.removeCustomer(row.id)
@@ -417,6 +438,77 @@
               console.log(err);
             })
         },
+        loadAllList() {
+          this.$axios.get('/customer/',{
+            params:{
+              pageNum:1,
+              pageSize:this.page.total,
+            }
+          })
+            .then( res => {
+              if(res.data.code === 1){
+                this.allList = res.data.data.list;
+              }
+            })
+            .catch(function (err) {
+              console.log(err);
+            })
+        },
+        dataToTable() {
+          let info = [];
+          let table = '';
+          table += '<table>';
+          table += '<tr>' +
+            '<th>序号</th>' +
+            '<th>客户名称</th>' +
+            '<th>账号名称</th>' +
+            '<th>产品类别</th>'+
+            '<th>性别</th>' +
+            '<th>年龄</th>' +
+            '<th>联系电话</th>' +
+            '<th>电子邮箱</th>' +
+            '<th>省</th>' +
+            '<th>市</th>' +
+            '<th>区（县）</th>' +
+            '<th>地址</th>' +
+            '</tr>';
+          for(let item in this.allList) {
+            info[item] = Object.assign({}, this.allList[item]);
+            let index = parseInt(item)+1;
+            if(info[item].sex === 0)
+              info[item].sex = '男';
+            else if(info[item].sex === 1)
+              info[item].sex = '女';
+            else info[item].sex = '';
+            for(let i in info[item])
+              if(info[item][i] === null)
+                info[item][i] = ' ';
+            table+='<tr>';
+            table+='<td>'+index+'</td>';
+            table+='<td>'+info[item].realname +'</td>';
+            table+='<td>'+info[item].username+'</td>';
+            table+='<td>'+info[item].type+'</td>';
+            table+='<td>'+info[item].sex+'</td>';
+            table+='<td>'+info[item].age+'</td>';
+            table+='<td>'+info[item].tel+'</td>';
+            table+='<td>'+info[item].email+'</td>';
+            table+='<td>'+info[item].province+'</td>';
+            table+='<td>'+info[item].city+'</td>';
+            table+='<td>'+info[item].county+'</td>';
+            table+='<td>'+info[item].address+'</td>';
+            table+='</tr>';
+          }
+          table = table.replace(new RegExp('<th>', 'g'), '<th style="border: 1px solid #ebebeb; background: #ebebeb">');
+          table = table.replace(new RegExp('<td>', 'g'), '<td style="border-bottom: 1px solid #ebebeb">');
+          table+='</table>'
+          return table;
+        },
+        getWord() {
+          this.GLOBAL.wordExport('doc', this.dataToTable(), '客户信息');
+        },
+        getPDF() {
+          this.GLOBAL.pdfExport(this.dataToTable(), '客户信息');
+        },
       // 分页
         handleCurrentChange(val){
           this.getAllCustomers();
@@ -447,7 +539,8 @@
 
       },
       mounted(){
-          this.getAllCustomers();
+        this.getAllCustomers();
+        this.loadAllList();
       }
     }
 </script>
